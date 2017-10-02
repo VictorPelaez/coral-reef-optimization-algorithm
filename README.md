@@ -17,8 +17,7 @@ python python main_cro.py --Ngen=400 --N=40 --Fb=0.8 --problem=max_ones --opt_ty
 
 *Name* | *Epoch 400 Fb=0.8* | *Epoch 800 Fb =0.9* |
 :---: | :---: | :---: |
-Max-One-Problem | <img src = 'assets/max_ones_results/max_ones_ngen400_n40_l100_fb08.png' height = '200px'> 
-| <img src = 'assets/max_ones_results/max_ones_ngen800_n40_l100.png' height = '200px'> |
+Max-One-Problem | <img src = 'assets/max_ones_results/max_ones_ngen400_n40_l100_fb08.png' height = '200px'> |
 
 ### Results for features selection problem
 (to be added)
