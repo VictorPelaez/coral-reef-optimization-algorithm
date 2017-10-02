@@ -1,2 +1,2 @@
 # coral-reef-optimization-algorithm
-Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (namely, solutions to the optimization problem considered) grow and reproduce in coral colonies, fighting by choking out other corals for space in the reef
+Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space
