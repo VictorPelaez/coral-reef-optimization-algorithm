@@ -3,7 +3,7 @@ Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, wh
 
 Flow diagram of the proposed CRO algorithm:
 
-<img src = 'assets/flow_diagram_cro.png' height ='400px'>
+<img src = 'assets/flow_diagram_cro.png' height ='600px'>
 
 The main file is in main_cro.py. It proceeds to call to the rest of functions implemented.
 
