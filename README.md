@@ -1,6 +1,9 @@
 # coral-reef-optimization-algorithm
 Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space
 
+Flow diagram of the proposed CRO algorithm:
+<img src = 'assets/flow_diagram_cro.png'>
+
 The main file is in main_cro.py. It proceeds to call to the rest of functions implemented.
 
 ### Results for max_ones problem
@@ -15,7 +18,7 @@ The following results can be reproduced with command:
 python python main_cro.py --Ngen=400 --N=40 --Fb=0.8 --problem=max_ones --opt_type=max
 ```
 
-*Name* | *Epoch 400 Fb=0.8* | *Epoch 800 Fb =0.9* |
+*Name* | *Epoch 400 Fb=0.8* |
 :---: | :---: | :---: |
 Max-One-Problem | <img src = 'assets/max_ones_results/max_ones_ngen400_n40_l100_fb08.png' height = '200px'> |
 
@@ -28,6 +31,10 @@ The following shows basic folder structure.
 ├── main_cro.py # gateway
 ├── CRO.py #libs
 ├── assests
+│   ├── data # dataset examples
+│   |   ├── voice.csv
+│   ├── max_ones_results
+
 ```
 
 ## Acknowledgements
