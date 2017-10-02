@@ -3,7 +3,7 @@ Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, wh
 
 Flow diagram of the proposed CRO algorithm:
 
-<img src = 'assets/flow_diagram_cro.png' height ='600px'>
+<img src = 'assets/flow_diagram_cro.png' height ='500px'>
 
 The main file is in main_cro.py. It proceeds to call to the rest of functions implemented.
 
@@ -16,7 +16,7 @@ The function lavaecorrection() is void in this case, since it is not necessary i
 
 The following results can be reproduced with command:  
 ```
-python python main_cro.py --Ngen=400 --N=40 --Fb=0.8 --problem=max_ones --opt_type=max
+python main_cro.py --Ngen=400 --N=40 --Fb=0.8 --problem=max_ones --opt_type=max
 ```
 
 *Name* | *Epoch 400 Fb=0.8* |
