@@ -23,7 +23,7 @@ python main_cro.py --Ngen=400 --N=40 --Fb=0.8 --problem=max_ones --opt_type=max
 :---: | :---: |
 Max-One-Problem | <img src = 'assets/max_ones_results/max_ones_ngen400_n40_l100_fb08.png' height = '200px'> |
 
-### Results for features selection problem
+### Results for feature selection problem
 (to be added)
 
 ## Folder structure

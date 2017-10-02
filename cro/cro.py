@@ -10,11 +10,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.utils import shuffle
 from sklearn import metrics  # mean_squared_error, mean_absolute_error, r2_score
 
-from load_dataset import load_data 
+from utils import load_data 
 
 
 class CRO(object):
-    def __init__(self, Ngen, N, Fb, Fa, Fd, r0, k, Pd, opt, L, seed, problem_name, metric, dataset_name):
+    def __init__(self, Ngen, N, Fb, Fa, Fd, r0, k, Pd, opt, L, seed, problem_name, metric, dataset_name, ml_problem):
         
         self.Ngen = Ngen
         self.N = N
@@ -46,6 +46,7 @@ class CRO(object):
         self.metric = metric
         self.model_name = "CRO" 
         self.dataset = dataset_name
+        self.ml_problem = ml_problem
         
         if self.problem_name=='max_ones': self.metric='(%)'; self.opt='max'; self.dataset=''
         print("[*] Initialization: ", self.problem_name, self.opt, self.metric, self.L, self.dataset)
@@ -105,15 +106,16 @@ class CRO(object):
                 X_test, y_test = X[offset:], y[offset:]
                
                 # #############################################################################
-                # Fit regression model
-                params = {'n_estimators': 30, 'max_depth': 4, 'min_samples_split': 2}
-                #clf = linear_model.LinearRegression()
-                #clf = ensemble.GradientBoostingRegressor(**params)                
-                #clf = ensemble.RandomForestRegressor(**params)
+                if self.ml_problem =='regression':
+                    # Fit regression model
+                    params = {'n_estimators': 30, 'max_depth': 4, 'min_samples_split': 2}
+                    #clf = linear_model.LinearRegression()
+                    clf = ensemble.GradientBoostingRegressor(**params)                
+                    #clf = ensemble.RandomForestRegressor(**params)
                 
-                # clf = ensemble.GradientBoostingClassifier()
-                
-                clf = KNeighborsClassifier(2)
+                if self.ml_problem =='classification':
+                    # clf = ensemble.GradientBoostingClassifier()
+                    clf = KNeighborsClassifier(2)
                 
                 clf.fit(X_train, y_train)   
                               

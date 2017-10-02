@@ -3,8 +3,6 @@ import numpy as np
 from sklearn import datasets
 
 # https://www.kaggle.com/adhok93/feature-importance-and-pca
-# http://scikit-learn.org/stable/auto_examples/model_selection/plot_roc_crossval.html#sphx-glr-auto-examples-model-selection-plot-roc-crossval-py
-# http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html#sphx-glr-auto-examples-ensemble-plot-forest-importances-py
 
 def load_data(name):
     # csv file

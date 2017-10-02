@@ -4,9 +4,9 @@ import os
 import time
 import numpy as np
 import argparse
-from CRO import CRO
+from cro import CRO
 
-# python C:\Users\victor\Documents\Repositorios\coral_reef_optimization\main_cro.py --Ngen=400 --N=40 --L=100 --Fb=0.8 --problem=max_ones
+# python C:\Users\victor\Documents\Repositorios\coral-reef-optimization-algorithm\cro\main_cro.py --Ngen=400 --N=40 --L=100 --Fb=0.8 --problem=max_ones
 # python C:\Users\victor\Documents\Repositorios\coral_reef_optimization\main_cro.py --Ngen=50 --N=10 --problem=feature_selection
 
 
@@ -30,6 +30,9 @@ def parse_args():
     parser.add_argument('--metric', type=str, default='r2', choices=['mse', 'mae', 'r2'],
                         help='Metric', required=False)
     parser.add_argument('--dataset', type=str, default='boston', help='Dataset', required=False)
+    parser.add_argument('--ml_problem', type=str, default='regression', choices=['regression', 'classification'],
+                        help='Machine Learning problem to solve', required=False)
+    
     return check_args(parser.parse_args())
 
 """checking arguments"""
@@ -52,7 +55,7 @@ def main():
 
     print(" [*] Testing CRO!")
     cro = CRO(Ngen=args.Ngen, N=args.N, Fb=args.Fb, Fa=args.Fa, Fd=args.Fd, r0=.7, k=3, Pd=args.Pd, opt=args.opt_type, L=args.L, seed=13,
-              problem_name=args.problem, metric=args.metric, dataset_name=args.dataset)
+              problem_name=args.problem, metric=args.metric, dataset_name=args.dataset, ml_problem = args.ml_problem)
     
     (REEF, REEFpob) = cro.reefinitialization ()
     REEFfitness = cro.fitness(REEFpob)
