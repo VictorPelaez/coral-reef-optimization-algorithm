@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 from __future__ import division
+
 import os
 import time
 import numpy as np
@@ -8,23 +9,23 @@ from sklearn import datasets, linear_model
 from sklearn import ensemble
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.utils import shuffle
-from sklearn import metrics  # mean_squared_error, mean_absolute_error, r2_score
+from sklearn import metrics  
 
 from utils import load_data 
 
-
 class CRO(object):
-    def __init__(self, Ngen, N, Fb, Fa, Fd, r0, k, Pd, opt, L, seed, problem_name, metric, dataset_name, ml_problem):
+    def __init__(self, Ngen, N, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
+                 seed=13, problem_name=None, metric=None, dataset_name=None, ml_problem=None, verbose=False):
         
         self.Ngen = Ngen
-        self.N = N
-        self.Fb = Fb
-        self.Fa = Fa
-        self.Fd = Fd              
-        self.r0 = r0
-        self.k = k
-        self.Pd = Pd
-        self.opt = opt
+        self.N    = N
+        self.Fb   = Fb
+        self.Fa   = Fa
+        self.Fd   = Fd              
+        self.r0   = r0
+        self.k    = k
+        self.Pd   = Pd
+        self.opt  = opt
         
         if (problem_name=='feature_selection') & (dataset_name=='boston'):
             self.L = datasets.load_boston().data.shape[1] 
@@ -41,15 +42,18 @@ class CRO(object):
         else:
             self.L=L   
             
+            
+        self.ke = ke    
         self.seed = seed
         self.problem_name = problem_name
         self.metric = metric
         self.model_name = "CRO" 
         self.dataset = dataset_name
         self.ml_problem = ml_problem
+        self.verbose = verbose
         
         if self.problem_name=='max_ones': self.metric='(%)'; self.opt='max'; self.dataset=''
-        print("[*] Initialization: ", self.problem_name, self.opt, self.metric, self.L, self.dataset)
+        print("[*test] Initialization: ", self.problem_name, self.opt, self.metric, self.L, self.dataset)
     
     def reefinitialization (self):   
         """    
@@ -351,7 +355,6 @@ class CRO(object):
     
     def extremedepredation(self, REEF, REEFpob, REEFfitness, ke):
         """    
-        function [REEF,REEFpob,REEFfitness]=extremedepredation(REEF,REEFpob,REEFfitness,ke)
         Allow only K equal corals in the reef, the rest are eliminated.
         Input:
             - REEF: coral reef
@@ -418,5 +421,73 @@ class CRO(object):
     def dataset_names(self, REEFpob_best):
         names = np.array(self.feature_names)
         return names[REEFpob_best>0]
-
+    
+    def fit(self):
         
+        Ngen = self.Ngen
+        N = self.N
+        verbose = self.verbose 
+        opt = self.opt
+        
+        #Reef initialization
+        (REEF, REEFpob) = self.reefinitialization ()
+        REEFfitness = self.fitness(REEFpob)
+        
+        Bestfitness = []
+        Meanfitness = []
+
+        if opt=='max':
+            if verbose: print('Reef initialization:', np.max(REEFfitness))
+            Bestfitness.append(np.max(REEFfitness))
+        else: 
+            if verbose: print('Reef initialization:', np.min(REEFfitness))
+            Bestfitness.append(np.min(REEFfitness))
+        Meanfitness.append(np.mean(REEFfitness))
+
+
+        for n in range(Ngen):
+            ESlarvae = self.broadcastspawning(REEF, REEFpob)
+            ISlarvae = self.brooding(REEF, REEFpob, 'op_mutation')
+
+            # larvae fitness
+            ESfitness = self.fitness(ESlarvae)
+            ISfitness = self.fitness(ISlarvae)
+
+            # Larvae setting
+            larvae = np.concatenate([ESlarvae,ISlarvae],axis=1)
+            larvaefitness = np.concatenate([ESfitness, ISfitness])
+            (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, larvae, larvaefitness)
+
+            # Asexual reproduction
+            (Alarvae, Afitness) = self.budding(REEF, REEFpob, REEFfitness)
+            (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
+
+            if n!=Ngen:
+                (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
+                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*N)) )
+
+            if opt=='max': Bestfitness.append(np.max(REEFfitness))
+            else: Bestfitness.append(np.min(REEFfitness))              
+            Meanfitness.append(np.mean(REEFfitness))
+
+            if (n%100==0) & (n!=Ngen):
+                if (opt=='max') & (verbose): print('Best-fitness:', np.max(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
+                if (opt=='min') & (verbose): print('Best-fitness:', np.min(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
+
+        if opt=='max':
+            if verbose: print('Best-fitness:', np.max(REEFfitness), '\n', str(100) + '% completado \n' ) 
+            ind_best = np.where(REEFfitness == np.max(REEFfitness))[0][0]
+        else:
+            if verbose: print('Best-fitness:', np.min(REEFfitness), '\n', str(100) + '% completado \n' ) 
+            ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
+
+
+        if self.problem_name=='feature_selection': print(self.dataset_names(REEFpob[:, ind_best]))
+
+        self.plot_results(REEF, REEFpob, REEFfitness, Bestfitness, Meanfitness)
+        print('Best coral: ', REEFpob[:, ind_best])
+        print('Best solution:', REEFfitness[ind_best])
+        
+        return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
+
+   
