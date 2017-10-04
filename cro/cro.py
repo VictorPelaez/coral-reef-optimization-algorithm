@@ -14,11 +14,12 @@ from sklearn import metrics
 from utils import load_data 
 
 class CRO(object):
-    def __init__(self, Ngen, N, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
+    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
                  seed=13, problem_name=None, metric=None, dataset_name=None, ml_problem=None, verbose=False):
         
         self.Ngen = Ngen
-        self.N    = N
+        self.N   = N
+        self.M   = M
         self.Fb   = Fb
         self.Fa   = Fa
         self.Fd   = Fd              
@@ -41,8 +42,7 @@ class CRO(object):
             
         else:
             self.L=L   
-            
-            
+                       
         self.ke = ke    
         self.seed = seed
         self.problem_name = problem_name
@@ -54,6 +54,7 @@ class CRO(object):
         
         if self.problem_name=='max_ones': self.metric='(%)'; self.opt='max'; self.dataset=''
         print("[*test] Initialization: ", self.problem_name, self.opt, self.metric, self.L, self.dataset)
+    
     
     def reefinitialization (self):   
         """    
@@ -69,13 +70,14 @@ class CRO(object):
             - REEFpob: population matrix
         """    
         np.random.seed(seed = self.seed)
-        O = int(np.round(self.N*self.N*self.r0)) # number of occupied reefs    
+        O = int(np.round(self.N*self.M*self.r0)) # number of occupied reefs    
         A = np.random.randint(2, size=[self.L, O])
-        B = np.zeros([self.L, ( (self.N*self.N)-O)], int)
+        B = np.zeros([self.L, ( (self.N*self.M)-O)], int)
         REEFpob = np.concatenate([A,B], axis=1) # Population creation
         REEF = np.array((REEFpob.any(axis=0)),int) 
         return (REEF, REEFpob)
-    
+   
+
     def fitness(self, REEFpob):
         """
         Description: This function calculates the health function for each coral in the reef, 
@@ -142,6 +144,7 @@ class CRO(object):
                 ftns.append(fitness)
             return np.array(ftns)  
 
+        
     def broadcastspawning(self, REEF,REEFpob): 
         """
         function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
@@ -181,7 +184,8 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2], axis=1)
         return ESlarvae
 
-    def brooding(self, REEF, REEFpob, type_brooding='bin'):
+    
+    def brooding(self, REEF, REEFpob, type_brooding='op_mutation'):
         """
         function [ISlarvae]=brooding(REEF,REEFpob,Fb,type)
         Create new larvae by internal sexual reproduction.   
@@ -216,6 +220,7 @@ class CRO(object):
         
         return ISlarvae
 
+    
     def larvaesetting(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
         """
         function [REEF,REEFpob]=larvaesetting(REEF,REEFpob,ESlarvae,ISlarvae)
@@ -314,6 +319,7 @@ class CRO(object):
         Afitness = fitness[0:NA]
         return (Alarvae, Afitness)
     
+    
     def depredation(self, REEF, REEFpob, REEFfitness):    
         """
         function [REEF,REEFpob,REEFfitness]=depredation(REEF,REEFpob,REEFfitness,Fd,Pd,opt)
@@ -409,7 +415,7 @@ class CRO(object):
             
             
             titlepro = self.problem_name + ' Problem with Length vector (L): ' + str(self.L)
-            titlepar = 'Ngen: '+ str(self.Ngen)+', N: '+str(self.N)+', Fb: '+str(self.Fb)+', Fa: '+str(self.Fa)+', Fd: '+str(self.Fd)+', Pd: '+ str(self.Pd)
+            titlepar = 'Ngen: '+ str(self.Ngen)+', N: '+str(self.N)+', M: '+str(self.M)+', Fb: '+str(self.Fb)+', Fa: '+str(self.Fa)+', Fd: '+str(self.Fd)+', Pd: '+ str(self.Pd)
 
             plt.title( titlepro+'\n'+ titlepar)
             
@@ -426,6 +432,7 @@ class CRO(object):
         
         Ngen = self.Ngen
         N = self.N
+        M = self.M
         verbose = self.verbose 
         opt = self.opt
         
@@ -464,7 +471,7 @@ class CRO(object):
 
             if n!=Ngen:
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
-                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*N)) )
+                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)) )
 
             if opt=='max': Bestfitness.append(np.max(REEFfitness))
             else: Bestfitness.append(np.min(REEFfitness))              
