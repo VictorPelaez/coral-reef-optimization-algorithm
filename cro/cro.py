@@ -4,56 +4,31 @@ from __future__ import division
 import os
 import time
 import numpy as np
-
-from sklearn import datasets, linear_model
-from sklearn import ensemble
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.utils import shuffle
-from sklearn import metrics  
-
-from utils import load_data 
+from sklearn.metrics import auc, roc_curve
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
-                 seed=13, problem_name=None, metric=None, dataset_name=None, ml_problem=None, verbose=False):
+                 seed=13, problem_name=None, metric=None, verbose=False):
         
         self.Ngen = Ngen
-        self.N   = N
-        self.M   = M
+        self.N    = N
+        self.M    = M
         self.Fb   = Fb
         self.Fa   = Fa
         self.Fd   = Fd              
         self.r0   = r0
         self.k    = k
         self.Pd   = Pd
-        self.opt  = opt
-        
-        if (problem_name=='feature_selection') & (dataset_name=='boston'):
-            self.L = datasets.load_boston().data.shape[1] 
-            self.feature_names = datasets.load_boston().feature_names
-
-        elif (problem_name=='feature_selection') & (dataset_name=='diabetes'):
-            self.L = datasets.load_diabetes().data.shape[1]
-            self.feature_names = ['age', 'sex', 'bmi', 'bp','s1', 's2', 's3', 's4', 's5', 's6']
-            
-        elif (problem_name=='feature_selection'): # other file name
-            self.L = load_data(dataset_name).data.shape[1]
-            self.feature_names = load_data(dataset_name).feature_names 
-            
-        else:
-            self.L=L   
-                       
-        self.ke = ke    
+        self.opt  = opt           
+        self.L    = L                          
+        self.ke   = ke     
         self.seed = seed
         self.problem_name = problem_name
         self.metric = metric
-        self.model_name = "CRO" 
-        self.dataset = dataset_name
-        self.ml_problem = ml_problem
         self.verbose = verbose
         
-        if self.problem_name=='max_ones': self.metric='(%)'; self.opt='max'; self.dataset=''
-        print("[*test] Initialization: ", self.problem_name, self.opt, self.metric, self.L, self.dataset)
+        print("[*Running] Initialization: ", self.problem_name, self.opt) 
     
     
     def reefinitialization (self):   
@@ -78,7 +53,7 @@ class CRO(object):
         return (REEF, REEFpob)
    
 
-    def fitness(self, REEFpob):
+    def fitness(self, REEFpob, Xt, yt, clf):
         """
         Description: This function calculates the health function for each coral in the reef, 
         and is the most dependant function on the application.
@@ -90,57 +65,27 @@ class CRO(object):
         
         if self.problem_name=='feature_selection':
             np.random.seed(seed = self.seed)
-            M = np.transpose(REEFpob)
-            if (self.dataset=='boston'):
-                df = datasets.load_boston()
-                # ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
-            elif (self.dataset=='diabetes'):
-                df = datasets.load_diabetes()
-                # ['age', 'sex', 'bmi', 'bp','s1', 's2', 's3', 's4', 's5', 's6']
-            else: # other file name
-                df = load_data(self.dataset)
-                
+            M = np.transpose(REEFpob)               
         
             ftns = [] 
             for m in M:
-                X, y = shuffle(df.data, df.target, random_state=self.seed)
+                X, y = shuffle(Xt, yt, random_state=self.seed)
                 X = X.astype(np.float32)
                 X = np.multiply(X, m)
                 
                 offset = int(X.shape[0] * 0.9)
                 X_train, y_train = X[:offset], y[:offset]
                 X_test, y_test = X[offset:], y[offset:]
-               
-                # #############################################################################
-                if self.ml_problem =='regression':
-                    # Fit regression model
-                    params = {'n_estimators': 30, 'max_depth': 4, 'min_samples_split': 2}
-                    #clf = linear_model.LinearRegression()
-                    clf = ensemble.GradientBoostingRegressor(**params)                
-                    #clf = ensemble.RandomForestRegressor(**params)
-                
-                if self.ml_problem =='classification':
-                    # clf = ensemble.GradientBoostingClassifier()
-                    clf = KNeighborsClassifier(2)
-                
+                 
+                # train model
                 clf.fit(X_train, y_train)   
                               
-                # #############################################################################
                 # Metrics
-                if self.metric=='mse': # Mean squared error regression loss (best is 0)
-                    fitness = metrics.mean_squared_error(y_test, clf.predict(X_test)) 
-                elif self.metric=='r2': # R^2 (coefficient of determination) regression score function (best is 1.0)
-                    fitness = metrics.r2_score(y_test, clf.predict(X_test))
-                elif self.metric=='mae': # Mean absolute error regression loss
-                    fitness = metrics.mean_absolute_error(y_test, clf.predict(X_test)) 
-                elif self.metric=='auc':  
-                    fpr, tpr, thresholds = metrics.roc_curve(y_test, clf.predict(X_test))    
-                    #fpr, tpr, thresholds = metrics.roc_curve(y, pred, pos_label=2)
-                    fitness = metrics.auc(fpr, tpr)
+                if self.metric=='auc':  
+                    fpr, tpr, thresholds = roc_curve(y_test, clf.predict(X_test))    
+                    fitness = auc(fpr, tpr)
                 else: 
-                    print('[error] not a valid metric')
-                    return -1
-             
+                    fitness = self.metric(y_test, clf.predict(X_test))
                 ftns.append(fitness)
             return np.array(ftns)  
 
@@ -355,7 +300,6 @@ class CRO(object):
         # let's fix it: input the value for worst sol or empty sol
         if (self.opt=='min'): REEFfitness[sortind[dep]] = np.max(REEFfitness)
         else: REEFfitness[sortind[dep]] = np.min(REEFfitness)
-        #REEFfitness[sortind[dep]] = 0
         
         return (REEF,REEFpob,REEFfitness)
     
@@ -407,7 +351,7 @@ class CRO(object):
             ax.plot(ngen, Bestfitness, 'b')     
             ax.plot(ngen, Meanfitness, 'r--')           
             plt.xlabel('Number of generation')
-            plt.ylabel('Fitness function \n' + self.metric)
+            #plt.ylabel('Fitness function \n' + self.metric)
             
             if self.opt=='min': legend_place = (1,1);
             else: legend_place = (1,.3);
@@ -423,12 +367,8 @@ class CRO(object):
             ax.annotate('Best: ' + str(Bestfitness[-1]) , (self.Ngen, Bestfitness[-1]))
             
             plt.show()
-            
-    def dataset_names(self, REEFpob_best):
-        names = np.array(self.feature_names)
-        return names[REEFpob_best>0]
-    
-    def fit(self):
+                
+    def fit(self, X=None, y=None, clf=None):
         
         Ngen = self.Ngen
         N = self.N
@@ -438,7 +378,7 @@ class CRO(object):
         
         #Reef initialization
         (REEF, REEFpob) = self.reefinitialization ()
-        REEFfitness = self.fitness(REEFpob)
+        REEFfitness = self.fitness(REEFpob, X, y, clf)
         
         Bestfitness = []
         Meanfitness = []
@@ -454,11 +394,11 @@ class CRO(object):
 
         for n in range(Ngen):
             ESlarvae = self.broadcastspawning(REEF, REEFpob)
-            ISlarvae = self.brooding(REEF, REEFpob, 'op_mutation')
+            ISlarvae = self.brooding(REEF, REEFpob)
 
             # larvae fitness
-            ESfitness = self.fitness(ESlarvae)
-            ISfitness = self.fitness(ISlarvae)
+            ESfitness = self.fitness(ESlarvae, X, y, clf)
+            ISfitness = self.fitness(ISlarvae, X, y, clf)
 
             # Larvae setting
             larvae = np.concatenate([ESlarvae,ISlarvae],axis=1)
@@ -487,9 +427,6 @@ class CRO(object):
         else:
             if verbose: print('Best-fitness:', np.min(REEFfitness), '\n', str(100) + '% completado \n' ) 
             ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
-
-
-        if self.problem_name=='feature_selection': print(self.dataset_names(REEFpob[:, ind_best]))
 
         self.plot_results(REEF, REEFpob, REEFfitness, Bestfitness, Meanfitness)
         print('Best coral: ', REEFpob[:, ind_best])
