@@ -55,7 +55,7 @@ cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L,  problem_name=problem)
 
 *Name* | *Epoch 400 Fb=0.8* |
 :---: | :---: |
-Max-One-Problem | <img src = 'cro/assets/max_ones_results/max_ones_ngen400_n40_m_40_l100_fb08.png' height = '200px'> |
+Max-One-Problem | <img src = 'cro/assets/max_ones_results/max_ones_ngen400_n40_m40_l100_fb08.png' height = '200px'> |
 
 ### Results for feature selection problem
 (to be added)
