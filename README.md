@@ -29,7 +29,7 @@ The following results can be reproduced with command:
 ```python
 import numpy as np
 import seaborn as sns #not necessary, just better plots
-from cro.cro import *
+from cro import *
 
 ## ------------------------------------------------------
 ## Parameters initialization

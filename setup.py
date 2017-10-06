@@ -14,7 +14,7 @@ with open('README.txt') as file:
 
 setup(
     name='cro',
-    version='0.0.3',
+    version='0.0.4',
     author='Victor Pelaez',
     author_email='victor.m.pelaez@outlook.com',
     packages= ['cro'],
