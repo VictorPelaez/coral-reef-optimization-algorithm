@@ -60,7 +60,7 @@ cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L,  problem_name=problem)
 ### Results for feature selection problem
 
 This example uses a database which was created to identify a voice as male or female (binary target), based upon acoustic properties of the voice and speech. Originally, it contains 20 features and I added 10 noisy ones at the end.
-More examples in this [notebook](https://github.com/VictorPelaez/coral-reef-optimization-algorithm/blob/master/cro/test.ipynb)
+More examples in this [notebook](cro/test.ipynb)
 
 ```python
 
@@ -100,6 +100,7 @@ print(names[REEFpob[:, ind_best]>0])
 ```
 
 Output:
+<img src = 'cro/assets/max_ones_results/voice_feature_selection.png' height = '350px'> 
 
 ```
 Best coral:  [0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
