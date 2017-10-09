@@ -1,5 +1,5 @@
 # coral-reef-optimization-algorithm
-Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space
+Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space and find depredation. Basically, the CRO is based on the artificial modeling of a coral, consisting of a nxm grid, where a candidate solution is able to be allocated. 
 
 Flow diagram of the proposed CRO algorithm:
 
@@ -56,7 +56,46 @@ cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L,  problem_name=problem)
 <img src = 'cro/assets/max_ones_results/max_ones_ngen400_n40_m40_l100_fb08.png' height = '400px'> 
 
 ### Results for feature selection problem
-(to be added)
+
+This database was created to identify a voice as male or female, based upon acoustic properties of the voice and speech.
+It contains 20 features and I added 10 noisy ones at the end
+
+```python
+
+import numpy as np
+import seaborn as sns 
+from cro import *
+from sklearn.neighbors import KNeighborsClassifier
+
+## ------------------------------------------------------
+## Parameters initialization
+
+Ngen = 80                  # Number of generations
+N  = 10                    # MxN: reef size
+M  = 10                    # MxN: reef size
+Fb = 0.8                   # Broadcast prob.
+Fa = 0.3                   # Asexual reproduction prob.
+Fd = 0.1                   # Fraction of the corals to be eliminated in the depredation operator.
+r0 = 0.6                   # Free/total initial proportion
+k  = 3                     # Number of opportunities for a new coral to settle in the reef
+Pd = 0.1                   # Depredation prob.
+opt= 'max'                 # flag: 'max' for maximizing and 'min' for minimizing
+problem ='feature_selection'
+## ------------------------------------------------------
+
+dataset = load_data('voice')
+L = dataset.data.shape[1] # number of features
+X = dataset.data
+y = dataset.target
+
+clf = KNeighborsClassifier(2)
+
+cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L, seed=13, problem_name=problem, metric= 'auc', verbose=True)
+%time (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, clf)
+
+names = np.array(dataset.feature_names)
+print(names[REEFpob[:, ind_best]>0])
+```
 
 ## Folder structure
 The following shows basic folder structure.
@@ -64,13 +103,11 @@ The following shows basic folder structure.
 ├── cro #package name
 │   ├── cro.py # libs
 │   ├── utils.py
-│   ├── main_cro.py # used with args as shell script
 ├── assests
-│   ├── data # dataset examples
+│   ├── data # dataset examples (download and run test.ipynb)
 │   |   ├── voice.csv
-│   ├── max_ones_results
 
 ```
 
 ## Acknowledgements
-This implementation has been based on Sancho Salcedo's idea and [this proyect](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) and tested with Python over ver3.0 on Windows 10
+This implementation has been based on Sancho Salcedo's idea and [this proyect](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) and tested with Python over version 3.0
