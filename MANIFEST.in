@@ -1,0 +1,2 @@
+include cro/assets/data/voice.csv
+include test.ipynb
