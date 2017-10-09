@@ -14,21 +14,17 @@ with open('README.txt') as file:
 
 setup(
     name='cro',
-    version='0.0.4',
+    version='0.0.4.9',
     author='Victor Pelaez',
     author_email='victor.m.pelaez@outlook.com',
     packages= ['cro'],
-    include_package_data = True,   
     url='https://github.com/VictorPelaez/coral-reef-optimization-algorithm',
     license = 'MIT',
     description='Coral Reef Optimization (CRO) Algorithm',
     long_description= long_description,
     keywords ='optimization algorithm meta-heuristic coral reef',
     python_requires='>=3',
-	install_requires=[
-        'numpy>=1.13.1',
-        'scikit-learn>=0.18.0'
-		],
+    #install_requires=['numpy>=1.13.1', 'scikit-learn>=0.18.0'],
     classifiers = [],
 
 )
