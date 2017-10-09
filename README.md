@@ -4,6 +4,7 @@ Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, wh
 Flow diagram of the proposed CRO algorithm:
 
 <img src = 'cro/assets/flow_diagram_cro.png' height ='500px'>
+
 [Sancho_Salcedo](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
 
 
