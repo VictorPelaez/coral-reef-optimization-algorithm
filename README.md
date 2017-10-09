@@ -5,7 +5,7 @@ Flow diagram of the proposed CRO algorithm:
 
 <img src = 'cro/assets/flow_diagram_cro.png' height ='500px'>
 
-Te original idea was proposed by [Sancho Salcedo](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
+The original idea was proposed by [Sancho Salcedo](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
 
 Publication link: [The Coral Reefs Optimization Algorithm: A Novel Metaheuristic for Efficiently Solving Optimization Problems](https://www.researchgate.net/publication/264985908_The_Coral_Reefs_Optimization_Algorithm_A_Novel_Metaheuristic_for_Efficiently_Solving_Optimization_Problems)
 
