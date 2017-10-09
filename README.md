@@ -4,6 +4,7 @@ Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, wh
 Flow diagram of the proposed CRO algorithm:
 
 <img src = 'cro/assets/flow_diagram_cro.png' height ='500px'>
+[Sancho_Salcedo](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
 
 
 Install
@@ -51,8 +52,7 @@ cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L,  problem_name=problem)
 (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
 ```
 
-<img src = 'cro/assets/max_ones_results/max_ones_ngen400_n40_m40_l100_fb08.png' height = '400px'> 
-[Sancho Salcedo's idea](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
+<img src = 'cro/assets/max_ones_results/max_ones_ngen400_n40_m40_l100_fb08.png' height = '350px'> 
 
 ### Results for feature selection problem
 
