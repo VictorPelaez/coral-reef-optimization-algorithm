@@ -20,9 +20,7 @@ or clone the repo and just type the following on your shell:
 
 Usage examples
 --------------
-Example of usage for max_ones problem: 
-
-In this problem, [max_ones problem](https://github.com/Oddsor/EvolAlgo/wiki/Max-One-Problem), the health function is just the number of ones in the coral in percentage
+Example of usage for max_ones problem. In this problem, [max_ones problem](https://github.com/Oddsor/EvolAlgo/wiki/Max-One-Problem), the health function is just the number of ones in the coral in percentage
 
 The following results can be reproduced with command:  
 
@@ -54,11 +52,11 @@ cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L,  problem_name=problem)
 ```
 
 <img src = 'cro/assets/max_ones_results/max_ones_ngen400_n40_m40_l100_fb08.png' height = '400px'> 
+[Sancho Salcedo's idea](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
 
 ### Results for feature selection problem
 
-This database was created to identify a voice as male or female, based upon acoustic properties of the voice and speech.
-It contains 20 features and I added 10 noisy ones at the end
+This example uses a database which was created to identify a voice as male or female (binary target), based upon acoustic properties of the voice and speech. Originally, it contains 20 features and I added 10 noisy ones at the end
 
 ```python
 
@@ -103,8 +101,9 @@ The following shows basic folder structure.
 ├── cro #package name
 │   ├── cro.py # libs
 │   ├── utils.py
+│   ├── test.ipynb
 ├── assests
-│   ├── data # dataset examples (download and run test.ipynb)
+│   ├── data
 │   |   ├── voice.csv
 
 ```
