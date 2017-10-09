@@ -99,6 +99,15 @@ names = np.array(dataset.feature_names)
 print(names[REEFpob[:, ind_best]>0])
 ```
 
+Output:
+
+```
+Best coral:  [0 1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+Best solution: 0.9873815779
+Wall time: 2min 7s
+['sd' 'Q25' 'centroid' 'meanfun' 'minfun' 'mindom']
+```
+
 ## Folder structure
 The following shows basic folder structure.
 ```
