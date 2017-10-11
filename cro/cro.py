@@ -7,7 +7,7 @@ import numpy as np
 
 
 class CRO(object):
-    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_individual, opt, L=None,
+    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke = 0.2, seed=13, problem_name=None, verbose=False):
         
         self.Ngen = Ngen
@@ -19,7 +19,7 @@ class CRO(object):
         self.r0   = r0
         self.k    = k
         self.Pd   = Pd
-        self.fitness_individual = fitness_individual
+        self.fitness_coral = fitness_coral
         self.opt  = opt           
         self.L    = L                          
         self.ke   = ke     
