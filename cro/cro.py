@@ -4,13 +4,11 @@ from __future__ import division
 import os
 import time
 import numpy as np
-from sklearn.utils import shuffle
-from sklearn.metrics import auc, roc_curve
 
 
 class CRO(object):
-    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
-                 seed=13, problem_name=None, metric=None, verbose=False):
+    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_individual, opt, L=None,
+                 ke = 0.2, seed=13, problem_name=None, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -21,12 +19,12 @@ class CRO(object):
         self.r0   = r0
         self.k    = k
         self.Pd   = Pd
+        self.fitness_individual = fitness_individual
         self.opt  = opt           
         self.L    = L                          
         self.ke   = ke     
         self.seed = seed
         self.problem_name = problem_name
-        self.metric = metric
         self.verbose = verbose
         
         print("[*Running] Initialization: ", self.problem_name, self.opt) 
@@ -74,41 +72,9 @@ class CRO(object):
         """
         Description: This function calculates the health function for each coral in the reef
         """
-        
-        if self.problem_name=='max_ones':
-            # In this case (max-ones), the health function is just the number of ones in the coral in %
-            return 100*(np.sum(REEFpob, axis=0)/REEFpob.shape[0])
-        
-        if self.problem_name=='feature_selection':
-            np.random.seed(seed = self.seed)
-            M = np.transpose(REEFpob)  
-            offset = int(Xt.shape[0] * 0.9)
-        
-            ftns = [] 
-            for m in M:
-                if (sum(m)>0) | (fec==None):
-                    X, y = shuffle(Xt, yt, random_state=self.seed)
-                    #X = X.astype(np.float32)
-                    X = np.multiply(X, m)
-                   
-                    X_train, y_train = X[:offset], y[:offset]
-                    X_test, y_test = X[offset:], y[offset:]
+        # TODO: loop over the reef and apply the fitness function to each coral in it
+        pass
 
-                    # train model
-                    clf.fit(X_train, y_train)   
-
-                    # Metrics
-                    if self.metric=='auc':  
-                        fpr, tpr, thresholds = roc_curve(y_test, clf.predict(X_test))    
-                        fitness = auc(fpr, tpr)
-                    else: 
-                        fitness = self.metric(y_test, clf.predict(X_test))
-                    ftns.append(fitness)
-                else:
-                    ftns.append(fec)      
-            return np.array(ftns)  
-
-        
     def broadcastspawning(self, REEF,REEFpob): 
         """
         function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
@@ -364,7 +330,6 @@ class CRO(object):
             ax.plot(ngen, Bestfitness, 'b')     
             ax.plot(ngen, Meanfitness, 'r--')           
             plt.xlabel('Number of generation')
-            #plt.ylabel('Fitness function \n' + self.metric)
             
             if self.opt=='min': legend_place = (1,1);
             else: legend_place = (1,.3);
