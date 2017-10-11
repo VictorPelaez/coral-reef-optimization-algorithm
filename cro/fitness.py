@@ -20,25 +20,23 @@ def auc_metric(X_test, y_test):
     fpr, tpr, thresholds = roc_curve(y_test, clf.predict(X_test))    
     return auc(fpr, tpr)
 
-def feature_selection(coral, Xt, yt, clf, metric=auc_metric)
+def feature_selection(coral, Xt, yt, clf, metric=auc_metric, random_seed=None)
     """Returns the fitness (given by metric) of the selected features given by coral,
     when using Xt and yt for training the model clf
     """
     # offset % of data for training, the rest for testing
     offset = int(Xt.shape[0] * 0.9)
 
-    if (sum(coral)>0) | (fec==None):
-        X, y = shuffle(Xt, yt)
-        X = np.multiply(X, m)
-       
-        X_train, y_train = X[:offset], y[:offset]
-        X_test, y_test = X[offset:], y[offset:]
+    X, y = shuffle(Xt, yt, random_state=random_seed)
+    X = np.multiply(X, m)
+   
+    X_train, y_train = X[:offset], y[:offset]
+    X_test, y_test = X[offset:], y[offset:]
 
-        # train model
-        clf.fit(X_train, y_train)   
+    # train model
+    clf.fit(X_train, y_train)   
 
-        # Compute metric
-        fitness = metric(y_test, clf.predict(X_test))
-        ftns.append(fitness)
-    else:
-        ftns.append(fec)      
+    # Compute metric
+    fitness = metric(y_test, clf.predict(X_test))
+
+    return fitness
