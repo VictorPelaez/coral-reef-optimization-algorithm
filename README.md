@@ -1,6 +1,4 @@
-===============
-coral-reef-optimization-algorithm
-===============
+*coral-reef-optimization-algorithm
 
 .. image:: https://img.shields.io/pypi/v/cro.svg
     :target: https://pypi.python.org/pypi/cro
