@@ -1,8 +1,6 @@
-*coral-reef-optimization-algorithm
+#coral-reef-optimization-algorithm
 
-.. image:: https://img.shields.io/pypi/v/cro.svg
-    :target: https://pypi.python.org/pypi/cro
-    :alt: PyPI Version
+[![Latest Version](https://pypip.in/version/<cro>/badge.svg)](https://pypi.python.org/pypi/<cro>/)    
     
 Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space and find depredation.
 
