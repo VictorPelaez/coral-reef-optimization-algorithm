@@ -24,7 +24,6 @@ setup(
     long_description= long_description,
     keywords ='optimization algorithm meta-heuristic coral reef',
     python_requires='>=3',
-    #install_requires=['numpy>=1.13.1', 'scikit-learn>=0.18.0'],
     classifiers = [],
 
 )
