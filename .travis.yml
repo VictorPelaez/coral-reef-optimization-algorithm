@@ -7,4 +7,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - coverage run test.py
+  - python test.py
