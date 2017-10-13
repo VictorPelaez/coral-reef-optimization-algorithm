@@ -241,7 +241,7 @@ class CRO(object):
         return (Alarvae, Afitness)
     
     
-    def depredation(self, REEF, REEFpob, REEFfitness, fec):    
+    def depredation(self, REEF, REEFpob, REEFfitness):    
         """
         function [REEF,REEFpob,REEFfitness]=depredation(REEF,REEFpob,REEFfitness,Fd,Pd,opt)
         Depredation operator. A fraction Fd of the worse corals is eliminated with probability Pd
@@ -271,12 +271,12 @@ class CRO(object):
         p = np.random.rand(len(sortind))
         dep = np.where(p<Pd)[0]
         REEF[sortind[dep]] = 0
-        REEFpob[sortind[dep], :] = np.zeros([len(dep), REEFpob.shape[1]], int)       
-        REEFfitness[sortind[dep]] = fec       
+        REEFpob[sortind[dep], :] = self.empty_coral
+        REEFfitness[sortind[dep]] = self.empty_coral_fitness
         return (REEF,REEFpob,REEFfitness)
 
     
-    def extremedepredation(self, REEF, REEFpob, REEFfitness, ke, fec):
+    def extremedepredation(self, REEF, REEFpob, REEFfitness, ke):
         """    
         Allow only K equal corals in the reef, the rest are eliminated.
         Input:
@@ -299,8 +299,8 @@ class CRO(object):
         while np.where(count>ke)[0].size>0:
             higherk = np.where(count>ke)[0]
             REEF[indices[higherk]] = 0
-            REEFpob[indices[higherk], :] = np.zeros([1, REEFpob.shape[1]], int)
-            REEFfitness[indices[higherk]] = fec
+            REEFpob[indices[higherk], :] = self.empty_coral
+            REEFfitness[indices[higherk]] = self.empty_coral_fitness
             
             (U, indices, count) = np.unique(REEFpob, return_index=True, return_counts=True, axis=0) 
             if len(np.where(np.sum(U, axis= 1)==0)[0]) !=0:
@@ -363,10 +363,10 @@ class CRO(object):
         (REEF, REEFpob) = self.reefinitialization ()
         REEFfitness = self.fitness(REEFpob, X, y, clf)
 
-        # 
+        # Store empty coral and its fitness in an attribute for later use
         empty_coral_index = np.where(REEF == 0)[0][0]
-        self.empty_coral = REEFpob[:, empty_coral_index]
-        self.fitness_empty_coral = 
+        self.empty_coral = REEFpob[empty_coral_index, :]
+        self.empty_coral_fitness = self.fitness(self.empty_coral.reshape((1, len(self.empty_coral))))
         
         Bestfitness = []
         Meanfitness = []
