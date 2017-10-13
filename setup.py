@@ -14,7 +14,7 @@ with open('README.txt') as file:
 
 setup(
     name='cro',
-    version='0.0.5',
+    version='0.0.4.10',
     author='Victor Pelaez',
     author_email='victor.m.pelaez@outlook.com',
     packages= ['cro'],
@@ -23,8 +23,7 @@ setup(
     description='Coral Reef Optimization (CRO) Algorithm',
     long_description= long_description,
     keywords ='optimization algorithm meta-heuristic coral reef',
-    python_requires='>=3',
-    #install_requires=['numpy>=1.13.1', 'scikit-learn>=0.18.0'],
+    #python_requires='>=3',
     classifiers = [],
 
 )

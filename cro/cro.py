@@ -6,6 +6,7 @@ import time
 import numpy as np
 
 
+
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke = 0.2, seed=13, problem_name=None, verbose=False):
@@ -45,10 +46,10 @@ class CRO(object):
         """    
         np.random.seed(seed = self.seed)
         O = int(np.round(self.N*self.M*self.r0)) # number of occupied reefs    
-        A = np.random.randint(2, size=[self.L, O])
-        B = np.zeros([self.L, ( (self.N*self.M)-O)], int)
-        REEFpob = np.concatenate([A,B], axis=1) # Population creation
-        REEF = np.array((REEFpob.any(axis=0)),int) 
+        A = np.random.randint(2, size=[O, self.L])
+        B = np.zeros([( (self.N*self.M)-O), self.L], int)
+        REEFpob = np.concatenate([A,B]) # Population creation
+        REEF = np.array((REEFpob.any(axis=1)),int) 
         return (REEF, REEFpob)
  
 
@@ -63,7 +64,7 @@ class CRO(object):
             - fec: fitness empty coral
         """ 
         if self.problem_name=='max_ones': return 0
-        if self.problem_name=='feature_selection':
+        if self.problem_name=='feature_selection': 
             ecoral = np.zeros([self.L, 1])
             return self.fitness(ecoral, X, y, clf, None)[0]
         
@@ -74,6 +75,7 @@ class CRO(object):
         """
         # TODO: loop over the reef and apply the fitness function to each coral in it
         pass
+
 
     def broadcastspawning(self, REEF,REEFpob): 
         """
@@ -93,6 +95,8 @@ class CRO(object):
         # get  number of spawners, forzed to be even (pairs of corals to create one larva)
         np.random.seed(seed = self.seed)
         nspawners = int(np.round(Fb*np.sum(REEF)))
+        #nspawners = int(np.round(Fb*REEF.shape[0]))
+
         if (nspawners%2) !=0: 
             nspawners=nspawners-1
 
@@ -100,8 +104,8 @@ class CRO(object):
         p = np.where(REEF!=0)[0]
         a = np.random.permutation(p)
         spawners = a[:nspawners]
-        spawners1 = REEFpob[:, spawners[0:int(nspawners/2)]]
-        spawners2 = REEFpob[:, spawners[int(nspawners/2):]]
+        spawners1 = REEFpob[spawners[0:int(nspawners/2)], :]
+        spawners2 = REEFpob[spawners[int(nspawners/2):], :]
 
         # get crossover mask for some of the methods below (one point crossover)
         (a,b) = spawners1.shape
@@ -111,7 +115,7 @@ class CRO(object):
 
         ESlarvae1 = np.multiply(spawners1, np.logical_not(mask)) + np.multiply(spawners2, mask)
         ESlarvae2 = np.multiply(spawners2, np.logical_not(mask)) + np.multiply(spawners1, mask)
-        ESlarvae = np.concatenate([ESlarvae1, ESlarvae2], axis=1)
+        ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
     
@@ -133,10 +137,12 @@ class CRO(object):
         #get the brooders
         np.random.seed(seed = self.seed)
         nbrooders= int(np.round((1-Fb)*np.sum((REEF))))
+        #nbrooders = int(np.round((1-Fb)*REEF.shape[0]))
+
         p = np.where(REEF!=0)[0] 
         a = np.random.permutation(p)
         brooders= a[0:nbrooders]
-        brooders=REEFpob[:, brooders]
+        brooders=REEFpob[brooders, :]
 
         ISlarvae=np.zeros(brooders.shape)
         if type_brooding == 'bin':
@@ -145,8 +151,8 @@ class CRO(object):
             
         if type_brooding == 'op_mutation':
             # one point mutation
-            pos = np.random.randint(brooders.shape[0], size=(1, nbrooders))
-            brooders[pos, range(brooders.shape[1])] = np.logical_not(brooders[pos, range(brooders.shape[1])])
+            pos = np.random.randint(brooders.shape[1], size=(1, nbrooders))
+            brooders[range(brooders.shape[0]), pos] = np.logical_not(brooders[range(brooders.shape[0]), pos])
             ISlarvae = brooders
         
         return ISlarvae
@@ -172,34 +178,34 @@ class CRO(object):
         k = self.k
 
         np.random.seed(seed = self.seed)
-        Nlarvae = larvae.shape[1]-1
+        Nlarvae = larvae.shape[0]
         a = np.random.permutation(Nlarvae)
-        larvae = larvae[:, a]
+        larvae = larvae[a, :]
         larvaefitness = larvaefitness[a]
 
         # Each larva is assigned a place in the reef to settle
-        P = REEFpob.shape[1]
+        P = REEFpob.shape[0]
         nreef = np.random.permutation(P)
         nreef = nreef[0:Nlarvae]
 
         # larvae occupies empty places
         free = np.intersect1d(nreef, np.where(REEF==0))
         REEF[free]=1
-        REEFpob[:, free] = larvae[:, :len(free)]
+        REEFpob[free, :] = larvae[:len(free), :]
         REEFfitness[free] = larvaefitness[:len(free)]
 
-        larvae = larvae[:, len(free):]  # update larvae
+        larvae = larvae[len(free):, :]  # update larvae
         larvaefitness = larvaefitness[len(free):] 
 
         # in the occupied places a fight for the space is produced
         nreef = np.random.permutation(P)
         ocup = np.intersect1d(nreef, np.where(REEF==1))
-        Nlarvae = larvae.shape[1]
+        Nlarvae = larvae.shape[0]
         
         for nlarvae in range(Nlarvae):
             for k0 in range(k):
                 if(len(larvaefitness)==0) | (len(ocup)==0) : 
-                    REEF = np.array((REEFpob.any(axis=0)),int)           
+                    REEF = np.array((REEFpob.any(axis=1)),int) 
                     return (REEF, REEFpob, REEFfitness)
                 
                 ind = np.random.randint(len(ocup))
@@ -209,14 +215,14 @@ class CRO(object):
                                                                       & (larvaefitness[0] < REEFfitness[ocup[ind]])): 
                     #settle the larva
                     REEF[ind] = 1
-                    REEFpob[:, ind] = larvae[:, 0]
+                    REEFpob[ind, :] = larvae[0, :]
                     REEFfitness[ind] = larvaefitness[0]
                     
                     #eliminate the larva from the larvae list
-                    larvae = larvae[:, 1:]  # update larvae
+                    larvae = larvae[1:, :]  # update larvae
                     larvaefitness = larvaefitness[1:]
                     #eliminate the place from the occupied ones
-                    ocup = np.delete(ocup, ind)   
+                    ocup = np.delete(ocup, ind)      
         
         return (REEF,REEFpob,REEFfitness)
 
@@ -237,16 +243,16 @@ class CRO(object):
         """
         Fa = self.Fa
         
-        pob = REEFpob[:, np.where(REEF==1)[0]]
+        pob = REEFpob[np.where(REEF==1)[0], :]
         fitness = fitness[np.where(REEF==1)]
-        N = pob.shape[1]
+        N = pob.shape[0]
         NA = int(np.round(Fa*N))
         
-        if self.opt=='max': ind = np.argsort(-fitness); # max optimization problem!
+        if self.opt=='max': ind = np.argsort(-fitness); 
         else: ind = np.argsort(fitness)    
             
         fitness = fitness[ind]
-        Alarvae = pob[:,ind[0:NA]]
+        Alarvae = pob[ind[0:NA], :]
         Afitness = fitness[0:NA]
         return (Alarvae, Afitness)
     
@@ -277,11 +283,11 @@ class CRO(object):
         else: 
             ind = np.argsort(-REEFfitness)
 
-        sortind = ind[:int(np.round(Fd*REEFpob.shape[1]))]
+        sortind = ind[:int(np.round(Fd*REEFpob.shape[0]))]
         p = np.random.rand(len(sortind))
         dep = np.where(p<Pd)[0]
         REEF[sortind[dep]] = 0
-        REEFpob[:, sortind[dep]] = np.zeros([REEFpob.shape[0], len(dep)], int)       
+        REEFpob[sortind[dep], :] = np.zeros([len(dep), REEFpob.shape[1]], int)       
         REEFfitness[sortind[dep]] = fec       
         return (REEF,REEFpob,REEFfitness)
 
@@ -300,28 +306,28 @@ class CRO(object):
             - REEFfitness: new reef fitness
         """
 
-        (U, indices, count) = np.unique(REEFpob, return_index=True, return_counts=True, axis=1) 
-        if len(np.where(np.sum(U, axis= 0)==0)[0]) !=0:
-            zero_ind = int(np.where(np.sum(U, axis= 0)==0)[0])
+        (U, indices, count) = np.unique(REEFpob, return_index=True, return_counts=True, axis=0) 
+        if len(np.where(np.sum(U, axis= 1)==0)[0]) !=0:
+            zero_ind = int(np.where(np.sum(U, axis= 1)==0)[0])
             indices = np.delete(indices, zero_ind)
             count = np.delete(count, zero_ind)
 
         while np.where(count>ke)[0].size>0:
             higherk = np.where(count>ke)[0]
             REEF[indices[higherk]] = 0
-            REEFpob[:, indices[higherk]] = np.zeros([REEFpob.shape[0], 1], int)
+            REEFpob[indices[higherk], :] = np.zeros([1, REEFpob.shape[1]], int)
             REEFfitness[indices[higherk]] = fec
             
-            (U, indices, count) = np.unique(REEFpob, return_index=True, return_counts=True, axis=1) 
-            if len(np.where(np.sum(U, axis= 0)==0)[0]) !=0:
-                zero_ind = int(np.where(np.sum(U, axis= 0)==0)[0])
+            (U, indices, count) = np.unique(REEFpob, return_index=True, return_counts=True, axis=0) 
+            if len(np.where(np.sum(U, axis= 1)==0)[0]) !=0:
+                zero_ind = int(np.where(np.sum(U, axis= 1)==0)[0])
                 indices = np.delete(indices, zero_ind)
                 count   = np.delete(count, zero_ind)
 
         return (REEF,REEFpob,REEFfitness)
     
     
-    def plot_results(self, REEF, REEFpob, REEFfitness, Bestfitness, Meanfitness):
+    def plot_results(self, Bestfitness, Meanfitness):
             import matplotlib.pyplot as plt
             
             ngen = range(self.Ngen+1)  
@@ -394,7 +400,7 @@ class CRO(object):
             ISfitness = self.fitness(ISlarvae, X, y, clf, fec)
 
             # Larvae setting
-            larvae = np.concatenate([ESlarvae,ISlarvae],axis=1)
+            larvae = np.concatenate([ESlarvae,ISlarvae])
             larvaefitness = np.concatenate([ESfitness, ISfitness])
             (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, larvae, larvaefitness)
 
@@ -421,8 +427,8 @@ class CRO(object):
             if verbose: print('Best-fitness:', np.min(REEFfitness), '\n', str(100) + '% completado \n' ) 
             ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
 
-        self.plot_results(REEF, REEFpob, REEFfitness, Bestfitness, Meanfitness)
-        print('Best coral: ', REEFpob[:, ind_best])
+        self.plot_results(Bestfitness, Meanfitness)
+        print('Best coral: ', REEFpob[ind_best, :])
         print('Best solution:', REEFfitness[ind_best])
         
         return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
