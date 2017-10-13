@@ -53,12 +53,16 @@ class CRO(object):
         return (REEF, REEFpob)
  
 
-    def fitness(self, REEFpob, Xt, yt, clf):
+    def fitness(self, REEFpob):
         """
         Description: This function calculates the health function for each coral in the reef
         """
-        # TODO: loop over the reef and apply the fitness function to each coral in it
-        pass
+        REEF_fitness = []
+        for coral in REEFpob:
+          REEF_fitness.append(self.fitness_coral(coral))
+
+        return np.array(REEF_fitness)
+
 
 
     def broadcastspawning(self, REEF,REEFpob): 
