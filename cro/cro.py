@@ -4,8 +4,8 @@ from __future__ import division
 import os
 import time
 import numpy as np
-#from sklearn.utils import shuffle
-#from sklearn.metrics import auc, roc_curve
+from sklearn.utils import shuffle
+from sklearn.metrics import auc, roc_curve
 
 
 class CRO(object):

@@ -11,6 +11,11 @@ try:
     import numpy as np
 except ImportError:
     import numpy
+    
+try:
+    import sklearn as sk
+except ImportError:
+    import sklearn    
 
     
 class TestStringMethods(unittest.TestCase):
