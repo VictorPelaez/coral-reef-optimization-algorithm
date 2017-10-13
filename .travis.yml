@@ -3,6 +3,8 @@ python:
   - "3.2"
   
 install:
+  - pip install cro
   - pip install -r requirements.txt
 
-script: test
+script:
+  - coverage run test.py
