@@ -28,6 +28,18 @@ class TestStringMethods(unittest.TestCase):
         with self.assertRaises(TypeError):
             s.split(2)    
 
+class TestCRO(unittest.TestCase):
+
+    def test_croCreation(self):
+        from cro import *
+        L= 8
+        N=2
+        M=2
+        cro = CRO(Ngen=10, N=N, M=M, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1, 'max', L=L)
+        (REEF, REEFpob) = cro.reefinitialization()
+        self.assertEqual(REEFpob.shape, (L, N*M))
+            
+            
 ###############################################################################
 
 if __name__ == "__main__":
