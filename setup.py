@@ -12,9 +12,11 @@ import os
 with open('README.txt') as file:
     long_description = file.read()
 
+_version = '0.0.4.10'	
+
 setup(
     name='cro',
-    version='0.0.4.10',
+    version=_version,
     author='Victor Pelaez',
     author_email='victor.m.pelaez@outlook.com',
     packages= ['cro'],
