@@ -5,6 +5,7 @@
 import os
 import sys
 import unittest
+from cro import *
 
 try:
     import numpy as np
@@ -31,7 +32,6 @@ class TestStringMethods(unittest.TestCase):
 class TestCRO(unittest.TestCase):
 
     def test_croCreation(self):
-        from cro import *
         L= 8
         N=2
         M=2
