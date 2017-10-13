@@ -30,7 +30,7 @@ class CRO(object):
         self.metric = metric
         self.verbose = verbose
         
-        print("[*Running transpose all] Initialization: ", self.problem_name, self.opt) 
+        print("[*Running] Initialization: ", self.problem_name, self.opt) 
     
     
     def reefinitialization (self):   
