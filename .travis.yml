@@ -3,8 +3,7 @@ python:
   - "3.4"
   
 install:
-  - pip install cro
   - pip install -r requirements.txt
 
 script:
-  - python tests.py
+  - python cro/tests.py
