@@ -10,12 +10,7 @@ from cro import *
 try:
     import numpy as np
 except ImportError:
-    import numpy
-    
-try:
-    import sklearn as sk
-except ImportError:
-    import sklearn    
+    import numpy 
 
     
 class TestStringMethods(unittest.TestCase):

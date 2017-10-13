@@ -8,6 +8,7 @@ from sklearn.utils import shuffle
 from sklearn.metrics import auc, roc_curve
 
 
+
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
                  seed=13, problem_name=None, metric=None, verbose=False):
