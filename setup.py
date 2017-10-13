@@ -12,7 +12,7 @@ import os
 with open('README.txt') as file:
     long_description = file.read()
 
-_version = '0.0.4.10'	
+_version = '0.0.4.11'	
 
 setup(
     name='cro',
