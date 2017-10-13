@@ -53,23 +53,7 @@ class CRO(object):
         return (REEF, REEFpob)
  
 
-    def fitness_emptycoral(self, X, y, clf):
-        """    
-        Description: Usefull get fitness function for a empty reef place (coral with all zeros)
-        Input: 
-            - X: 
-            - y: 
-            - clf: 
-        Output:
-            - fec: fitness empty coral
-        """ 
-        if self.problem_name=='max_ones': return 0
-        if self.problem_name=='feature_selection': 
-            ecoral = np.zeros([self.L, 1])
-            return self.fitness(ecoral, X, y, clf, None)[0]
-        
-        
-    def fitness(self, REEFpob, Xt, yt, clf, fec):
+    def fitness(self, REEFpob, Xt, yt, clf):
         """
         Description: This function calculates the health function for each coral in the reef
         """
@@ -351,7 +335,8 @@ class CRO(object):
             ax.annotate('Best: ' + str(Bestfitness[-1]) , (self.Ngen, Bestfitness[-1]))
             
             plt.show()
-                
+   
+   
     def fit(self, X=None, y=None, clf=None):
         """    
         Description: 
@@ -376,8 +361,12 @@ class CRO(object):
        
         #Reef initialization
         (REEF, REEFpob) = self.reefinitialization ()
-        fec = self.fitness_emptycoral(X, y, clf) # fitness for empty coral 
-        REEFfitness = self.fitness(REEFpob, X, y, clf, fec)
+        REEFfitness = self.fitness(REEFpob, X, y, clf)
+
+        # 
+        empty_coral_index = np.where(REEF == 0)[0][0]
+        self.empty_coral = REEFpob[:, empty_coral_index]
+        self.fitness_empty_coral = 
         
         Bestfitness = []
         Meanfitness = []
@@ -396,8 +385,8 @@ class CRO(object):
             ISlarvae = self.brooding(REEF, REEFpob)
 
             # larvae fitness
-            ESfitness = self.fitness(ESlarvae, X, y, clf, fec)
-            ISfitness = self.fitness(ISlarvae, X, y, clf, fec)
+            ESfitness = self.fitness(ESlarvae, X, y, clf)
+            ISfitness = self.fitness(ISlarvae, X, y, clf)
 
             # Larvae setting
             larvae = np.concatenate([ESlarvae,ISlarvae])
@@ -409,8 +398,8 @@ class CRO(object):
             (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
 
             if n!=Ngen:
-                (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness, fec)    
-                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)), fec)
+                (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
+                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
 
             if opt=='max': Bestfitness.append(np.max(REEFfitness))
             else: Bestfitness.append(np.min(REEFfitness))              
