@@ -5,7 +5,6 @@
 import os
 import sys
 import unittest
-import awesome
 
 try:
     import numpy as np
