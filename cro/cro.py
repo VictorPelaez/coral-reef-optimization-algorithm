@@ -64,7 +64,6 @@ class CRO(object):
         return np.array(REEF_fitness)
 
 
-
     def broadcastspawning(self, REEF,REEFpob): 
         """
         function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
