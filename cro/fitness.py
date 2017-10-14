@@ -8,7 +8,7 @@ from __future__ import division
 from sklearn.utils import shuffle
 from sklearn.metrics import auc, roc_curve
 
-def max_ones(coral)
+def max_ones(coral):
     """Returns the percentage of 1's in the coral.
 
     This function assumes 'coral' is a list, it could be further improved if it was a numpy
@@ -20,7 +20,7 @@ def auc_metric(X_test, y_test):
     fpr, tpr, thresholds = roc_curve(y_test, clf.predict(X_test))    
     return auc(fpr, tpr)
 
-def feature_selection(coral, Xt, yt, clf, metric=auc_metric, random_seed=None)
+def feature_selection(coral, Xt, yt, clf, metric=auc_metric, random_seed=None):
     """Returns the fitness (given by metric) of the selected features given by coral,
     when using Xt and yt for training the model clf
     """
