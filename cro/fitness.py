@@ -5,8 +5,9 @@ The fitness might require other arguments, in that case the partial function in 
 functools module is a very good option
 """
 from __future__ import division
+import numpy as np
 from sklearn.utils import shuffle
-from sklearn.metrics import auc, roc_curve
+from sklearn.metrics import roc_auc_score
 
 def max_ones(coral):
     """Returns the percentage of 1's in the coral.
@@ -16,11 +17,7 @@ def max_ones(coral):
     """
     return 100*(sum(coral) / len(coral))
 
-def auc_metric(X_test, y_test):
-    fpr, tpr, thresholds = roc_curve(y_test, clf.predict(X_test))    
-    return auc(fpr, tpr)
-
-def feature_selection(coral, Xt, yt, clf, metric=auc_metric, random_seed=None):
+def feature_selection(coral, Xt, yt, clf, metric=roc_auc_score, random_seed=None):
     """Returns the fitness (given by metric) of the selected features given by coral,
     when using Xt and yt for training the model clf
     """
@@ -28,7 +25,7 @@ def feature_selection(coral, Xt, yt, clf, metric=auc_metric, random_seed=None):
     offset = int(Xt.shape[0] * 0.9)
 
     X, y = shuffle(Xt, yt, random_state=random_seed)
-    X = np.multiply(X, m)
+    X = np.multiply(X, coral)
    
     X_train, y_train = X[:offset], y[:offset]
     X_test, y_test = X[offset:], y[offset:]
@@ -37,6 +34,6 @@ def feature_selection(coral, Xt, yt, clf, metric=auc_metric, random_seed=None):
     clf.fit(X_train, y_train)   
 
     # Compute metric
-    fitness = metric(y_test, clf.predict(X_test))
+    fitness = metric(y_test, clf.predict_proba(X_test))
 
     return fitness

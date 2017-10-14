@@ -59,7 +59,8 @@ class CRO(object):
         """
         REEF_fitness = []
         for coral in REEFpob:
-          REEF_fitness.append(self.fitness_coral(coral))
+            coral_fitness = self.fitness_coral(coral)
+            REEF_fitness.append(coral_fitness)
 
         return np.array(REEF_fitness)
 
@@ -364,7 +365,7 @@ class CRO(object):
        
         #Reef initialization
         (REEF, REEFpob) = self.reefinitialization ()
-        REEFfitness = self.fitness(REEFpob, X, y, clf)
+        REEFfitness = self.fitness(REEFpob)
 
         # Store empty coral and its fitness in an attribute for later use
         empty_coral_index = np.where(REEF == 0)[0][0]
@@ -388,8 +389,8 @@ class CRO(object):
             ISlarvae = self.brooding(REEF, REEFpob)
 
             # larvae fitness
-            ESfitness = self.fitness(ESlarvae, X, y, clf)
-            ISfitness = self.fitness(ISlarvae, X, y, clf)
+            ESfitness = self.fitness(ESlarvae)
+            ISfitness = self.fitness(ISlarvae)
 
             # Larvae setting
             larvae = np.concatenate([ESlarvae,ISlarvae])
