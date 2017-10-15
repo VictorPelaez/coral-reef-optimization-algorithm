@@ -14,6 +14,11 @@ def max_ones(coral):
 
     This function assumes 'coral' is a list, it could be further improved if it was a numpy
     array
+
+    Input:
+        - coral
+    Output:
+        - fitness
     """
     return 100*(sum(coral) / len(coral))
 
@@ -21,6 +26,17 @@ def feature_selection(coral, Xt, yt, clf, get_prediction=lambda clf, Xt: clf.pre
                       metric=roc_auc_score, random_seed=None):
     """Returns the fitness (given by metric) of the selected features given by coral,
     when using Xt and yt for training the model clf
+
+    Input:
+        - coral
+        - Xt: Data input
+        - yt: Data output
+        - clf: instance of the model to be trained
+        - get_prediction: function that accepts the model and Xt and outputs the vector
+            that will be used in the metric (predictions, scores...)
+        - metric: metric that will be used as fitness
+    Output:
+        - fitness
     """
     # offset % of data for training, the rest for testing
     offset = int(Xt.shape[0] * 0.9)
