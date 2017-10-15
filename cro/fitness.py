@@ -34,6 +34,6 @@ def feature_selection(coral, Xt, yt, clf, metric=roc_auc_score, random_seed=None
     clf.fit(X_train, y_train)   
 
     # Compute metric
-    fitness = metric(y_test, clf.predict_proba(X_test))
+    fitness = metric(y_test, clf.predict_proba(X_test)[:,1])
 
     return fitness
