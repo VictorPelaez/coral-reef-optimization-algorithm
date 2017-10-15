@@ -403,7 +403,7 @@ class CRO(object):
 
             if n!=Ngen:
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
-                #(REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
+                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
 
             if opt=='max': Bestfitness.append(np.max(REEFfitness))
             else: Bestfitness.append(np.min(REEFfitness))              
