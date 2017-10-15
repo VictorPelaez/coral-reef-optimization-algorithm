@@ -17,7 +17,8 @@ def max_ones(coral):
     """
     return 100*(sum(coral) / len(coral))
 
-def feature_selection(coral, Xt, yt, clf, metric=roc_auc_score, random_seed=None):
+def feature_selection(coral, Xt, yt, clf, get_prediction=lambda clf, Xt: clf.predict(Xt),
+                      metric=roc_auc_score, random_seed=None):
     """Returns the fitness (given by metric) of the selected features given by coral,
     when using Xt and yt for training the model clf
     """
@@ -34,6 +35,8 @@ def feature_selection(coral, Xt, yt, clf, metric=roc_auc_score, random_seed=None
     clf.fit(X_train, y_train)   
 
     # Compute metric
-    fitness = metric(y_test, clf.predict_proba(X_test)[:,1])
+    y_pred = get_prediction(clf, X_test)
+    fitness = metric(y_test, y_pred)
+
 
     return fitness
