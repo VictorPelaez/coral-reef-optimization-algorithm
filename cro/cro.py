@@ -370,7 +370,7 @@ class CRO(object):
         # Store empty coral and its fitness in an attribute for later use
         empty_coral_index = np.where(REEF == 0)[0][0]
         self.empty_coral = REEFpob[empty_coral_index, :]
-        self.empty_coral_fitness = self.fitness(self.empty_coral.reshape((1, len(self.empty_coral))))
+        self.empty_coral_fitness = self.fitness(self.empty_coral.reshape((1, len(self.empty_coral))))[0]
         
         Bestfitness = []
         Meanfitness = []
