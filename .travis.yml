@@ -1,23 +1,18 @@
 language: python
 python:
-  - "2.7"
-  - "3.4"
-  
+- '2.7'
+- '3.4'
 cache:
-  - pip
-
+- pip
 install:
-  - pip install -r requirements.txt
-  
+- pip install -r requirements.txt
 script:
-  - python cro/tests.py
-
+- python cro/tests.py
 deploy:
-  # Runs only on tagged commits to master branch
-  - provider: pypi
-    user: victorpelaez
-    password:
-        secure: "iYvsn+axqU3lf0ZFiYbl/SuV1mDJN/dm68Ty7jM0F/I3Rwlhlz18LIpgWRV7d5XVYovZ1M6SQ8wRTom5tVlz8HPxpNA/urAQd133GOMB1Ud8oWv11w0IUmge02SMK0vXNy9UBnP6tb9gNzeHAW21BkAht2ikdXdcGkRKu+EI5f9D+A/XXgasvxRV0K7Eoxd7fViI79+XSOJI10ld1H6LKUfBpMiYh3J2EMPuyNfZOLPbxfdGtz77rTV/CL5oOU4acRDmM/+Tw48G4lc61dOtCN6oSIb/i5hTD7ywO9XVXUbpRmjfEqzcpwcDT3pbpQiImp0HMxe0hTQmbBpprQt9XuI+AT/HM6Tt3bg2a0ApmOzHmbNZe/VHWXbXVTV4QfdrVL6hL9AtvemYecjum1wQsdsbFrVOEpHTJoyrKyRPWbGVCDtYiAK/56ZaR3OQuGKwrfysQjZ9+4r//z4/5BgT5h1+T0XykOyj1UNsMbL/9HWEfg7K/gzc1WAx4ute9JfQYQ0ZejdNQljiN1vgOc9V3wTQcBvcCKW1pfTq8zskXx0dVG/JVj4X2VY/COx7pBWk/0MteM2ofZ2bviNR+axSydRXQYuC5xJJ0axTANdHRcBugYCdBXuGIcesXzxYiS+QjvRJjvDrsmDB2cUvQP8ZWto7YxOkowfEryLDSzpXewE=" 
+  provider: pypi
+  user: victorpelaez
+  password:
+    secure: Qj3yst21NLpYykQBCrMXLcB1ESHEDx5f0vxxjqv5PCBpBgFKPBdEurl2gTA0yiun9VAaL0Qc/bfg+P31rditLqLXjPHUOySV8TWH2kzmITQOCM7eciHjPoQsy94r75bGP0b8Mel7J2cR5ygh88jZQP+P9dKjPQnqqIvEZnEeHMu3URPMfrY+wRUn3Sgn0SaX98Zll33EiOuWhdOL7kNWfj149uLaB1ZGfeGacj7gIeQyp/lotad3f8pkCgSCYFFlV16kUZ3DLG7poc9o3V8X4r69sPCypDZqAVsRTDmoW7/06xz32v+5hsyVTN7k9Emgz+ISOy0I33go9y5eJauvysrgaeSdkHuPaZoR3+2ymsxaXmVy0Y7QekrnCh208fVK9yGQjW0UJ0oP2tNGgr7Lg/Y6p47ZAXt/9fLLxKRa/PCkHDlhDTyQXiNzBtzmZtbg69z0cv+sf6J5PDCs9pbhuk0dVoPnsfxexcHKjB/sFWWuZ+UDFpXzNKU26OnLIm/I8gazmOh53Kr6cAx6i0zAPaYGn3Dq2bdZ+A2K4iRg+mlSW1mEx3vuA0Q/5RH45RERIUj+ZATqtAx0fKJcBtJHoFvJRuuNeky/8au4nvSLOt7He5FYfTsx+Da5IsN01ksvd13Xa8aocSyFAgPgnWcn5hRidPkiqBHEaLBPfuMo01I=
+  on:
     distributions: sdist bdist_wheel
-    on:
-        branch: master 
+    branch: master
