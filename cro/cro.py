@@ -201,9 +201,9 @@ class CRO(object):
                 if ( (self.opt=='max') & (larvaefitness[0] > REEFfitness[ocup[ind]])) | ( (self.opt=='min') 
                                                                       & (larvaefitness[0] < REEFfitness[ocup[ind]])): 
                     #settle the larva
-                    REEF[ind] = 1
-                    REEFpob[ind, :] = larvae[0, :]
-                    REEFfitness[ind] = larvaefitness[0]
+                    REEF[ocup[ind]] = 1
+                    REEFpob[ocup[ind], :] = larvae[0, :]
+                    REEFfitness[ocup[ind]] = larvaefitness[0]
                     
                     #eliminate the larva from the larvae list
                     larvae = larvae[1:, :]  # update larvae
