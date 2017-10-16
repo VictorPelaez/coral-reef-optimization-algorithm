@@ -9,7 +9,7 @@ import numpy as np
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke = 0.2, seed=13, problem_name=None, verbose=False):
+                 ke = 0.2, seed=13, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -25,10 +25,9 @@ class CRO(object):
         self.L    = L                          
         self.ke   = ke     
         self.seed = seed
-        self.problem_name = problem_name
         self.verbose = verbose
         
-        print("[*Running] Initialization: ", self.problem_name, self.opt) 
+        print("[*Running] Initialization: ", self.opt) 
     
     
     def reefinitialization (self):   
@@ -330,7 +329,7 @@ class CRO(object):
             plt.legend(['Best fitness', 'Mean fitness'], bbox_to_anchor=legend_place)
             
             
-            titlepro = self.problem_name + ' Problem with Length vector (L): ' + str(self.L)
+            titlepro = ' Problem with Length vector (L): ' + str(self.L)
             titlepar = 'Ngen: '+ str(self.Ngen)+', N: '+str(self.N)+', M: '+ str(self.M)+', Fb: '+str(self.Fb)+', Fa: '+str(self.Fa)+', Fd: '+str(self.Fd)+', Pd: '+ str(self.Pd)
 
             plt.title( titlepro+'\n'+ titlepar)
