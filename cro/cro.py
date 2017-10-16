@@ -4,14 +4,12 @@ from __future__ import division
 import os
 import time
 import numpy as np
-from sklearn.utils import shuffle
-from sklearn.metrics import auc, roc_curve
 
 
 
 class CRO(object):
-    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, opt, L=None, ke = 0.2,
-                 seed=13, problem_name=None, metric=None, verbose=False):
+    def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
+                 ke = 0.2, seed=13, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -22,15 +20,14 @@ class CRO(object):
         self.r0   = r0
         self.k    = k
         self.Pd   = Pd
+        self.fitness_coral = fitness_coral
         self.opt  = opt           
         self.L    = L                          
         self.ke   = ke     
         self.seed = seed
-        self.problem_name = problem_name
-        self.metric = metric
         self.verbose = verbose
         
-        print("[*Running] Initialization: ", self.problem_name, self.opt) 
+        print("[*Running] Initialization: ", self.opt) 
     
     
     def reefinitialization (self):   
@@ -55,65 +52,18 @@ class CRO(object):
         return (REEF, REEFpob)
  
 
-    def fitness_emptycoral(self, X, y, clf):
-        """    
-        Description: Usefull get fitness function for a empty reef place (coral with all zeros)
-        Input: 
-            - X: 
-            - y: 
-            - clf: 
-        Output:
-            - fec: fitness empty coral
-        """ 
-        if self.problem_name=='max_ones': return 0
-        if self.problem_name=='feature_selection': 
-            ecoral = np.zeros([self.L, 1])
-            return self.fitness(ecoral, X, y, clf, None)[0]
-        
-        
-    def fitness(self, REEFpob, Xt, yt, clf, fec):
+    def fitness(self, REEFpob):
         """
         Description: This function calculates the health function for each coral in the reef
         """
-        
-        if self.problem_name=='max_ones':
-            # In this case (max-ones), the health function is just the number of ones in the coral in %
-            return 100*(np.sum(REEFpob, axis=1)/REEFpob.shape[1])
-        
-        if self.problem_name=='feature_selection':
-            np.random.seed(seed = self.seed)
-            offset = int(Xt.shape[0] * 0.9)
-        
-            ftns = [] 
-            for m in REEFpob:
-                X, y = shuffle(Xt, yt, random_state=self.seed)
-                X_train, y_train = X[:offset], y[:offset]
-                X_test, y_test   = X[offset:], y[offset:]
-                if sum(m)>0:
-                    pos = np.where(m!=0)[0]
-                    clf.fit(X_train[:, pos], y_train)   
-                    # Metrics
-                    if self.metric=='auc':  
-                        fpr, tpr, thresholds = roc_curve(y_test, clf.predict(X_test[:, pos]))    
-                        fitness = auc(fpr, tpr)
-                    else: 
-                        fitness = self.metric(y_test, clf.predict(X_test[:, pos])) 
-                    ftns.append(fitness)
-                    
-                else: 
-                    if fec!=None: ftns.append(fec);
-                    else:
-                        clf.fit(np.multiply(X_train, m), y_train) #train empty
-                        if self.metric=='auc':
-                            fpr, tpr, thresholds = roc_curve(y_test, clf.predict(np.multiply(X_test, m)))    
-                            fitness = auc(fpr, tpr)
-                        else: 
-                            fitness = self.metric(y_test, clf.predict(np.multiply(X_test, m)))
-                    ftns.append(fitness)
-                        
-            return np.array(ftns) 
+        REEF_fitness = []
+        for coral in REEFpob:
+            coral_fitness = self.fitness_coral(coral)
+            REEF_fitness.append(coral_fitness)
 
-        
+        return np.array(REEF_fitness)
+
+
     def broadcastspawning(self, REEF,REEFpob): 
         """
         function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
@@ -294,7 +244,7 @@ class CRO(object):
         return (Alarvae, Afitness)
     
     
-    def depredation(self, REEF, REEFpob, REEFfitness, fec):    
+    def depredation(self, REEF, REEFpob, REEFfitness):    
         """
         function [REEF,REEFpob,REEFfitness]=depredation(REEF,REEFpob,REEFfitness,Fd,Pd,opt)
         Depredation operator. A fraction Fd of the worse corals is eliminated with probability Pd
@@ -324,12 +274,12 @@ class CRO(object):
         p = np.random.rand(len(sortind))
         dep = np.where(p<Pd)[0]
         REEF[sortind[dep]] = 0
-        REEFpob[sortind[dep], :] = np.zeros([len(dep), REEFpob.shape[1]], int)       
-        REEFfitness[sortind[dep]] = fec       
+        REEFpob[sortind[dep], :] = self.empty_coral
+        REEFfitness[sortind[dep]] = self.empty_coral_fitness
         return (REEF,REEFpob,REEFfitness)
 
     
-    def extremedepredation(self, REEF, REEFpob, REEFfitness, ke, fec):
+    def extremedepredation(self, REEF, REEFpob, REEFfitness, ke):
         """    
         Allow only K equal corals in the reef, the rest are eliminated.
         Input:
@@ -352,8 +302,8 @@ class CRO(object):
         while np.where(count>ke)[0].size>0:
             higherk = np.where(count>ke)[0]
             REEF[indices[higherk]] = 0
-            REEFpob[indices[higherk], :] = np.zeros([1, REEFpob.shape[1]], int)
-            REEFfitness[indices[higherk]] = fec
+            REEFpob[indices[higherk], :] = self.empty_coral
+            REEFfitness[indices[higherk]] = self.empty_coral_fitness
             
             (U, indices, count) = np.unique(REEFpob, return_index=True, return_counts=True, axis=0) 
             if len(np.where(np.sum(U, axis= 1)==0)[0]) !=0:
@@ -373,14 +323,13 @@ class CRO(object):
             ax.plot(ngen, Bestfitness, 'b')     
             ax.plot(ngen, Meanfitness, 'r--')           
             plt.xlabel('Number of generation')
-            #plt.ylabel('Fitness function \n' + self.metric)
             
             if self.opt=='min': legend_place = (1,1);
             else: legend_place = (1,.3);
             plt.legend(['Best fitness', 'Mean fitness'], bbox_to_anchor=legend_place)
             
             
-            titlepro = self.problem_name + ' Problem with Length vector (L): ' + str(self.L)
+            titlepro = ' Problem with Length vector (L): ' + str(self.L)
             titlepar = 'Ngen: '+ str(self.Ngen)+', N: '+str(self.N)+', M: '+ str(self.M)+', Fb: '+str(self.Fb)+', Fa: '+str(self.Fa)+', Fd: '+str(self.Fd)+', Pd: '+ str(self.Pd)
 
             plt.title( titlepro+'\n'+ titlepar)
@@ -389,7 +338,8 @@ class CRO(object):
             ax.annotate('Best: ' + str(Bestfitness[-1]) , (self.Ngen, Bestfitness[-1]))
             
             plt.show()
-                
+   
+   
     def fit(self, X=None, y=None, clf=None):
         """    
         Description: 
@@ -414,8 +364,12 @@ class CRO(object):
        
         #Reef initialization
         (REEF, REEFpob) = self.reefinitialization ()
-        fec = self.fitness_emptycoral(X, y, clf) # fitness for empty coral 
-        REEFfitness = self.fitness(REEFpob, X, y, clf, fec)
+        REEFfitness = self.fitness(REEFpob)
+
+        # Store empty coral and its fitness in an attribute for later use
+        empty_coral_index = np.where(REEF == 0)[0][0]
+        self.empty_coral = REEFpob[empty_coral_index, :].copy()
+        self.empty_coral_fitness = self.fitness(self.empty_coral.reshape((1, len(self.empty_coral))))[0]
         
         Bestfitness = []
         Meanfitness = []
@@ -434,8 +388,8 @@ class CRO(object):
             ISlarvae = self.brooding(REEF, REEFpob)
 
             # larvae fitness
-            ESfitness = self.fitness(ESlarvae, X, y, clf, fec)
-            ISfitness = self.fitness(ISlarvae, X, y, clf, fec)
+            ESfitness = self.fitness(ESlarvae)
+            ISfitness = self.fitness(ISlarvae)
 
             # Larvae setting
             larvae = np.concatenate([ESlarvae,ISlarvae])
@@ -447,14 +401,14 @@ class CRO(object):
             (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
 
             if n!=Ngen:
-                (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness, fec)    
-                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)), fec)
+                (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
+                (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
 
             if opt=='max': Bestfitness.append(np.max(REEFfitness))
             else: Bestfitness.append(np.min(REEFfitness))              
             Meanfitness.append(np.mean(REEFfitness))
 
-            if (n%100==0) & (n!=Ngen):
+            if (n%10==0) & (n!=Ngen):
                 if (opt=='max') & (verbose): print('Best-fitness:', np.max(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
                 if (opt=='min') & (verbose): print('Best-fitness:', np.min(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
 
