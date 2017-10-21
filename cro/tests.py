@@ -41,7 +41,7 @@ def test_reefinitializationDisc():
     L = 8
     N = 2
     M = 2
-    grid = {'x': [1, 10]}      # Discrete values between 2 and 10
+    grid = {'x': [2, 10]}      # Discrete values between 2 and 10
     fitness_coral = lambda coral: 1 # Dummy fitness
     
     cro = CRO(Ngen=10, N=N, M=M, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
