@@ -1,2 +1,2 @@
 include cro/assets/data/voice.csv
-include test.ipynb
+include cro/test.ipynb

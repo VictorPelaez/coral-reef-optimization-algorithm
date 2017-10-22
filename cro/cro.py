@@ -9,7 +9,7 @@ import numpy as np
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke = 0.2, seed=13, verbose=False):
+                 ke = 0.2, seed=13, mode='bin', param_grid={}, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -25,6 +25,8 @@ class CRO(object):
         self.L    = L                          
         self.ke   = ke     
         self.seed = seed
+        self.mode = mode
+        self.param_grid = param_grid
         self.verbose = verbose
         
         print("[*Running] Initialization: ", self.opt) 
@@ -42,15 +44,38 @@ class CRO(object):
         Output:
             - REEF: reef matrix
             - REEFpob: population matrix
-        """    
-        np.random.seed(seed = self.seed)
-        O = int(np.round(self.N*self.M*self.r0)) # number of occupied reefs    
-        A = np.random.randint(2, size=[O, self.L])
-        B = np.zeros([( (self.N*self.M)-O), self.L], int)
-        REEFpob = np.concatenate([A,B]) # Population creation
-        REEF = np.array((REEFpob.any(axis=1)),int) 
-        return (REEF, REEFpob)
+        """  
+        
+        # print error. Maybe use other place for all arg-checks
+        if ( (self.param_grid=={}) & (self.mode =='disc') ):
+            print('\nThis mode (', self.mode, ') needs a param_grid as a dictionary')
+            return -1
  
+        # commom for all modes
+        np.random.seed(seed = self.seed)
+        O = int(np.round(self.N*self.M*self.r0)) # number of occupied reefs 
+        
+        # Binary mode
+        if self.mode =='bin': 
+            A = np.random.randint(2, size=[O, self.L])
+            B = np.zeros([( (self.N*self.M)-O), self.L], int)          
+            REEFpob = np.concatenate([A,B]) # Population creation
+            REEF = np.array((REEFpob.any(axis=1)),int) 
+            return (REEF, REEFpob)
+        
+        # Discrete mode
+        elif self.mode =='disc':
+            for key, value in self.param_grid.items():
+                valmax = (value[1] - value[0] + 1)
+                A = np.random.randint(valmax, size=[O, self.L]) + value[0]
+                B = np.zeros([( (self.N*self.M)-O), self.L], int)
+                REEFpob = np.concatenate([A,B]) # Population creation
+                REEF = np.array((REEFpob.any(axis=1)),int) 
+                return (REEF, REEFpob)
+        
+        else: 
+            print('\nThis mode (', self.mode, ') is not available')
+            return -1
 
     def fitness(self, REEFpob):
         """
