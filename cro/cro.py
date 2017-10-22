@@ -188,7 +188,7 @@ class CRO(object):
         k = self.k
         opt = self.opt
 
-        np.random.seed(seed = self.seed)
+        np.random.seed(seed=self.seed)
         Nlarvae = larvae.shape[0]
         a = np.random.permutation(Nlarvae)
         larvae = larvae[a, :]
@@ -197,8 +197,7 @@ class CRO(object):
         nREEF = len(REEF)
 
         # Each larva is assigned a place in the reef to settle
-        P = REEFpob.shape[0]
-        nreef = np.random.permutation(P)
+        nreef = np.random.permutation(nREEF)
         nreef = nreef[0:Nlarvae]
 
         # larvae occupies empty places
@@ -211,24 +210,25 @@ class CRO(object):
         larvaefitness = larvaefitness[len(free):] 
 
         for larva, larva_fitness in zip(larvae, larvaefitness):
-            reef_ind = np.random.randint(nREEF)
+            reef_indices = np.random.randint(nREEF, size=k)
+            reef_index = reef_indices[0]
 
-            if not REEF[reef_ind]: # empty coral
-                REEFpob[reef_ind] = larva
-                REEFfitness[reef_ind] = larva_fitness
-                REEF[reef_ind] = 1
+            if not REEF[reef_index]: # empty coral
+                REEFpob[reef_index] = larva
+                REEFfitness[reef_index] = larva_fitness
+                REEF[reef_index] = 1
             else:                  # occupied coral
-                for _ in range(k):
-                    current_coral = REEFpob[reef_ind]
-                    current_fitness = REEFfitness[reef_ind]
-                    if ((opt == "max" and larva_fitness > current_fitness)
-                          or (opt == "min" and larva_fitness < current_fitness)):
-                        REEFpob[reef_ind] = larva
-                        REEFfitness[reef_ind] = larva_fitness
-                        break
-                    else:
-                        reef_ind = np.random.randint(nREEF)
-        
+                if opt == "max":
+                    fitness_comparison = larva_fitness > REEFfitness[reef_indices]
+                else:
+                    fitness_comparison = larva_fitness < REEFfitness[reef_indices]
+
+                if np.any(fitness_comparison):
+                    reef_index = reef_indices[np.where(fitness_comparison)[0][0]]
+                    REEFpob[reef_index] = larva
+                    REEFfitness[reef_index] = larva_fitness
+                    REEF[reef_index] = 1
+
         return (REEF,REEFpob,REEFfitness)
 
 
