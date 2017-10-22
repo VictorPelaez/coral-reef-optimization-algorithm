@@ -5,8 +5,6 @@ import os
 import time
 import numpy as np
 
-
-
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke = 0.2, seed=13, mode='bin', param_grid={}, verbose=False):
@@ -180,7 +178,7 @@ class CRO(object):
             - REEFfitness: reef fitness
             - larvae: larvae population
             - larvaefitness: larvae fitness
-            - k0: number of oportunities for each larva to settle in the reef
+            - k: number of oportunities for each larva to settle in the reef
             - opt: type of optimization ('min' or 'max')
         Output:
             - REEF: new coral reef
@@ -188,12 +186,15 @@ class CRO(object):
             - REEFfitness: new reef fitness
         """
         k = self.k
+        opt = self.opt
 
         np.random.seed(seed = self.seed)
         Nlarvae = larvae.shape[0]
         a = np.random.permutation(Nlarvae)
         larvae = larvae[a, :]
         larvaefitness = larvaefitness[a]
+
+        nREEF = len(REEF)
 
         # Each larva is assigned a place in the reef to settle
         P = REEFpob.shape[0]
@@ -209,32 +210,24 @@ class CRO(object):
         larvae = larvae[len(free):, :]  # update larvae
         larvaefitness = larvaefitness[len(free):] 
 
-        # in the occupied places a fight for the space is produced
-        nreef = np.random.permutation(P)
-        ocup = np.intersect1d(nreef, np.where(REEF==1))
-        Nlarvae = larvae.shape[0]
-        
-        for nlarvae in range(Nlarvae):
-            for k0 in range(k):
-                if(len(larvaefitness)==0) | (len(ocup)==0) : 
-                    REEF = np.array((REEFpob.any(axis=1)),int) 
-                    return (REEF, REEFpob, REEFfitness)
-                
-                ind = np.random.randint(len(ocup))
-                
-                #check if the larva is better than the installed coral
-                if ( (self.opt=='max') & (larvaefitness[0] > REEFfitness[ocup[ind]])) | ( (self.opt=='min') 
-                                                                      & (larvaefitness[0] < REEFfitness[ocup[ind]])): 
-                    #settle the larva
-                    REEF[ocup[ind]] = 1
-                    REEFpob[ocup[ind], :] = larvae[0, :]
-                    REEFfitness[ocup[ind]] = larvaefitness[0]
-                    
-                    #eliminate the larva from the larvae list
-                    larvae = larvae[1:, :]  # update larvae
-                    larvaefitness = larvaefitness[1:]
-                    #eliminate the place from the occupied ones
-                    ocup = np.delete(ocup, ind)      
+        for larva, larva_fitness in zip(larvae, larvaefitness):
+            reef_ind = np.random.randint(nREEF)
+
+            if not REEF[reef_ind]: # empty coral
+                REEFpob[reef_ind] = larva
+                REEFfitness[reef_ind] = larva_fitness
+                REEF[reef_ind] = 1
+            else:                  # occupied coral
+                for _ in range(k):
+                    current_coral = REEFpob[reef_ind]
+                    current_fitness = REEFfitness[reef_ind]
+                    if ((opt == "max" and larva_fitness > current_fitness)
+                          or (opt == "min" and larva_fitness < current_fitness)):
+                        REEFpob[reef_ind] = larva
+                        REEFfitness[reef_ind] = larva_fitness
+                        break
+                    else:
+                        reef_ind = np.random.randint(nREEF)
         
         return (REEF,REEFpob,REEFfitness)
 
@@ -449,5 +442,3 @@ class CRO(object):
         print('Best solution:', REEFfitness[ind_best])
         
         return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
-
-   
