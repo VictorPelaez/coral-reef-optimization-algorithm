@@ -190,10 +190,6 @@ class CRO(object):
 
         np.random.seed(seed=self.seed)
         Nlarvae = larvae.shape[0]
-        a = np.random.permutation(Nlarvae)
-        larvae = larvae[a, :]
-        larvaefitness = larvaefitness[a]
-
         nREEF = len(REEF)
 
         # Each larva is assigned a place in the reef to settle
