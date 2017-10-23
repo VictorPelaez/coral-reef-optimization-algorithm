@@ -178,9 +178,9 @@ class CRO(object):
         return REEF, REEFpob, REEFfitness
 
     
-    def larvaesetting(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
+    def larvaesettling(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
         """
-        function [REEF,REEFpob]=larvaesetting(REEF,REEFpob,ESlarvae,ISlarvae)
+        function [REEF,REEFpob]=larvaesettling(REEF,REEFpob,ESlarvae,ISlarvae)
         Settle the best larvae in the reef, eliminating those which are not good enough
         Input:    
             - REEF: coral reef
@@ -419,11 +419,11 @@ class CRO(object):
             # Larvae setting
             larvae = np.concatenate([ESlarvae,ISlarvae])
             larvaefitness = np.concatenate([ESfitness, ISfitness])
-            (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, larvae, larvaefitness)
+            (REEF, REEFpob, REEFfitness) = self.larvaesettling(REEF, REEFpob, REEFfitness, larvae, larvaefitness)
 
             # Asexual reproduction
             (Alarvae, Afitness) = self.budding(REEF, REEFpob, REEFfitness)
-            (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
+            (REEF, REEFpob, REEFfitness) = self.larvaesettling(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
 
             if n!=Ngen:
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
