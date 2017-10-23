@@ -167,6 +167,16 @@ class CRO(object):
         
         return ISlarvae
 
+    def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
+        """
+        Settle the given larvae in the REEF in the given indices
+        """
+        REEF[indices]=1
+        REEFpob[indices, :] = larvae
+        REEFfitness[indices] = larvaefitness
+
+        return REEF, REEFpob, REEFfitness
+
     
     def larvaesetting(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
         """
@@ -199,8 +209,10 @@ class CRO(object):
         # larvae occupies empty places
         free = np.intersect1d(nreef, np.where(REEF==0))
         REEF[free]=1
-        REEFpob[free, :] = larvae[:len(free), :]
-        REEFfitness[free] = larvaefitness[:len(free)]
+        larvae_emptycoral = larvae[:len(free), :]
+        fitness_emptycoral = larvaefitness[:len(free)]
+        REEF, REEFpob, REEFfitness = self._settle_larvae(larvae_emptycoral, fitness_emptycoral,
+                                                         REEF, REEFpob, REEFfitness, free)
 
         larvae = larvae[len(free):, :]  # update larvae
         larvaefitness = larvaefitness[len(free):] 
@@ -221,9 +233,8 @@ class CRO(object):
 
                 if np.any(fitness_comparison):
                     reef_index = reef_indices[np.where(fitness_comparison)[0][0]]
-                    REEFpob[reef_index] = larva
-                    REEFfitness[reef_index] = larva_fitness
-                    REEF[reef_index] = 1
+                    REEF, REEFpob, REEFfitness = self._settle_larvae(larva, larva_fitness, REEF,
+                                                                     REEFpob, REEFfitness, reef_index)
 
         return (REEF,REEFpob,REEFfitness)
 
