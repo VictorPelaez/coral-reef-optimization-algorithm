@@ -28,8 +28,7 @@ class CRO(object):
         self.verbose = verbose
         
         print("[*Running] Initialization: ", self.opt) 
-    
-    
+
     def reefinitialization (self):   
         """    
         function [REEF,REEFpob]=reefinitialization(M,N,r0,L)
@@ -86,7 +85,6 @@ class CRO(object):
 
         return np.array(REEF_fitness)
 
-
     def broadcastspawning(self, REEF,REEFpob): 
         """
         function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
@@ -128,7 +126,6 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
-    
     def brooding(self, REEF, REEFpob, type_brooding='op_mutation'):
         """
         function [ISlarvae]=brooding(REEF,REEFpob,Fb,type)
@@ -171,13 +168,12 @@ class CRO(object):
         """
         Settle the given larvae in the REEF in the given indices
         """
-        REEF[indices]=1
+        REEF[indices] = 1
         REEFpob[indices, :] = larvae
         REEFfitness[indices] = larvaefitness
 
         return REEF, REEFpob, REEFfitness
 
-    
     def larvaesettling(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
         """
         function [REEF,REEFpob]=larvaesettling(REEF,REEFpob,ESlarvae,ISlarvae)
@@ -208,7 +204,6 @@ class CRO(object):
 
         # larvae occupies empty places
         free = np.intersect1d(nreef, np.where(REEF==0))
-        REEF[free]=1
         larvae_emptycoral = larvae[:len(free), :]
         fitness_emptycoral = larvaefitness[:len(free)]
         REEF, REEFpob, REEFfitness = self._settle_larvae(larvae_emptycoral, fitness_emptycoral,
@@ -238,7 +233,6 @@ class CRO(object):
 
         return (REEF,REEFpob,REEFfitness)
 
-
     def budding(self, REEF, REEFpob, fitness):
         """
         function  [Alarvae]=budding(REEF,pob,fitness,Fa)
@@ -267,8 +261,7 @@ class CRO(object):
         Alarvae = pob[ind[0:NA], :]
         Afitness = fitness[0:NA]
         return (Alarvae, Afitness)
-    
-    
+
     def depredation(self, REEF, REEFpob, REEFfitness):    
         """
         function [REEF,REEFpob,REEFfitness]=depredation(REEF,REEFpob,REEFfitness,Fd,Pd,opt)
@@ -303,7 +296,6 @@ class CRO(object):
         REEFfitness[sortind[dep]] = self.empty_coral_fitness
         return (REEF,REEFpob,REEFfitness)
 
-    
     def extremedepredation(self, REEF, REEFpob, REEFfitness, ke):
         """    
         Allow only K equal corals in the reef, the rest are eliminated.
@@ -337,8 +329,7 @@ class CRO(object):
                 count   = np.delete(count, zero_ind)
 
         return (REEF,REEFpob,REEFfitness)
-    
-    
+
     def plot_results(self, Bestfitness, Meanfitness):
             import matplotlib.pyplot as plt
             
@@ -363,8 +354,7 @@ class CRO(object):
             ax.annotate('Best: ' + str(Bestfitness[-1]) , (self.Ngen, Bestfitness[-1]))
             
             plt.show()
-   
-   
+
     def fit(self, X=None, y=None, clf=None):
         """    
         Description: 
