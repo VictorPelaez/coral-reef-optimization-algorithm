@@ -33,12 +33,12 @@ The following results can be reproduced with command:
 import numpy as np
 import seaborn as sns 
 from cro import *
-from cro.fitness import max_ones
+from fitness import max_ones
 
 ## ------------------------------------------------------
 ## Parameters initialization
 ## ------------------------------------------------------
-Ngen = 150                 # Number of generations
+Ngen = 75                 # Number of generations
 N  = 40                    # MxN: reef size
 M  = 40                    # MxN: reef size
 Fb = 0.7                   # Broadcast prob.
@@ -56,7 +56,7 @@ cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke
 (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
 ```
 
-<img src = 'cro/assets/max_ones_results/max_ones_ngen150_n40_m40_l100_fb07.png' height = '350px'> 
+<img src = 'cro/assets/max_ones_results/max_ones_ngen75_n40_m40_l100_fb07.png' height = '350px'> 
 
 ### Results for feature selection problem
 
@@ -68,15 +68,15 @@ from functools import partial
 import numpy as np
 import seaborn as sns 
 from cro import *
-from cro.utils import load_data
+from utils import load_data
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import roc_auc_score
-from cro.fitness import feature_selection
+from fitness import feature_selection
 
 ## ------------------------------------------------------
 ## Parameters initialization
 ## ------------------------------------------------------
-Ngen = 40                  # Number of generations
+Ngen = 20                  # Number of generations
 N  = 10                    # MxN: reef size
 M  = 10                    # MxN: reef size
 Fb = 0.8                   # Broadcast prob.
@@ -110,10 +110,11 @@ Output:
 <img src = 'cro/assets/max_ones_results/voice_feature_selection.png' height = '350px'> 
 
 ```
-Best coral:  [1 1 1 1 1 1 0 0 1 1 1 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-Best solution: 0.996353419417
-Wall time: 1min 1s
-['meanfreq' 'sd' 'median' 'Q25' 'Q75' 'IQR' 'sp.ent' 'sfm' 'mode' 'meanfun' 'minfun' 'maxfun']
+Best coral: [1 1 1 0 0 1 0 0 1 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+Best solution: 0.99980063795853269
+CPU times: user 52.3 s, sys: 400 ms, total: 52.7 s
+Wall time: 52.2 s
+['meanfreq' 'sd' 'median' 'IQR' 'sp.ent' 'sfm' 'mode' 'meanfun' 'maxfun']
 ```
 
 ## Folder structure
