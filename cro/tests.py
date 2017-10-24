@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 ###############################################################################
-
 import os
 import sys
-from cro import *
+
+import numpy as np
+
+from cro import CRO
 
 def test_croCreation():
     """
@@ -31,7 +33,6 @@ def test_croInit():
               fitness_coral=fitness_coral, opt='max', L=L)
     (REEF, REEFpob) = cro.reefinitialization()
     assert len(np.where(REEF!=0)[0]) > 0
-    
 
 def test_reefinitializationDisc():
     """
@@ -49,7 +50,34 @@ def test_reefinitializationDisc():
     (REEF, REEFpob) = cro.reefinitialization()
     p = sum(REEFpob[np.where(REEFpob!=0)]<grid['x'][0]) + sum(REEFpob[np.where(REEFpob!=0)]>grid['x'][1])
     assert p == 0
-    
-    
 
+def test_larvaesettling_emptyreef():
+    """
+    """
+    REEFpob = np.array([[0,0,0,0],
+                        [0,0,0,0], 
+                        [0,0,0,0],
+                        [0,0,0,0]])
     
+    REEF = np.array([0,0,0,0])
+    REEFfitness = np.array([0,0,0,0])
+
+    larvae = np.array([[1,0,0,0],
+                       [0,1,0,0], 
+                       [0,0,1,0],
+                       [0,0,0,1]])
+    
+    larvaefitness = np.array([1,1,1,1])
+
+    N, L = REEFpob.shape
+    M = 1
+    fitness_coral = lambda coral: 1 # Dummy fitness
+    cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+              fitness_coral=fitness_coral, opt='max', L=L)
+
+    REEF_res, REEFpob_res, REEFfitness_res = cro.larvaesettling(REEF, REEFpob, REEFfitness,
+                                                                larvae, larvaefitness)
+
+    np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
+    np.testing.assert_almost_equal(REEFpob_res, larvae)
+    np.testing.assert_almost_equal(REEFfitness_res, larvaefitness)
