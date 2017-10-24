@@ -81,3 +81,53 @@ def test_larvaesettling_emptyreef():
     np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
     np.testing.assert_almost_equal(REEFpob_res, larvae)
     np.testing.assert_almost_equal(REEFfitness_res, larvaefitness)
+
+def test_larvaesettling_nonemptyreef():
+    """
+    """
+    REEFpob = np.array([[0,0,0,0],
+                        [0,0,0,1], 
+                        [0,0,1,0],
+                        [1,0,1,1]])
+    
+    REEF = np.array([0,1,1,1])
+    REEFfitness = np.array([0,1,2,11])
+
+    larvae = np.array([[1,0,0,0],
+                       [0,1,1,0], 
+                       [0,1,0,0],
+                       [1,0,0,1]])
+    
+    larvaefitness = np.array([8,6,4,9])
+
+    N, L = REEFpob.shape
+    M = 1
+    fitness_coral = lambda coral: 1 # Dummy fitness
+    cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+              fitness_coral=fitness_coral, opt='max', L=L, seed=0)
+
+    REEF_res, REEFpob_res, REEFfitness_res = cro.larvaesettling(REEF, REEFpob, REEFfitness,
+                                                                larvae, larvaefitness)
+    """
+    Due to the passed seed,
+    [1,0,0,1] will be placed in the empty coral (index 0)
+
+    Then, larva [1,0,0,0] will try to settle in indices [3,3,3], being discarded
+    Larva [0,1,1,0] will try in indices [3,1,3], settling in the second try (index 1)
+    Larva [0,1,0,0] will try in indices [1,2,0], settling in the second try (index 2)
+    
+    Thus, the whole REEF will be populated after the settling, with a population:
+    [[1,0,0,1], and a fitness [[8,
+     [0,1,1,0],                 6,
+     [0,1,0,0],                 4,
+     [1,0,1,1]]                 11]]
+    """
+    REEFpob_exp = np.array([[1,0,0,1],
+                            [0,1,1,0],
+                            [0,1,0,0],
+                            [1,0,1,1]])
+    REEFfitness_exp = np.array([8,6,4,11])
+
+    np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
+    np.testing.assert_almost_equal(REEFpob_res, REEFpob_exp)
+    np.testing.assert_almost_equal(REEFfitness_res, REEFfitness_exp)
