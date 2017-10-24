@@ -198,12 +198,8 @@ class CRO(object):
         Nlarvae = larvae.shape[0]
         nREEF = len(REEF)
 
-        # Each larva is assigned a place in the reef to settle
-        nreef = np.random.permutation(nREEF)
-        nreef = nreef[0:Nlarvae]
-
-        # larvae occupies empty places
-        free = np.intersect1d(nreef, np.where(REEF==0))
+        # First larvae occupy empty places
+        free = np.where(REEF==0)[0]
         larvae_emptycoral = larvae[:len(free), :]
         fitness_emptycoral = larvaefitness[:len(free)]
         REEF, REEFpob, REEFfitness = self._settle_larvae(larvae_emptycoral, fitness_emptycoral,
