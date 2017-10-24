@@ -110,23 +110,23 @@ def test_larvaesettling_nonemptyreef():
                                                                 larvae, larvaefitness)
     """
     Due to the passed seed,
-    [1,0,0,1] will be placed in the empty coral (index 0)
+    [1,0,0,0] will be placed in the empty coral (index 0)
 
-    Then, larva [1,0,0,0] will try to settle in indices [3,3,3], being discarded
-    Larva [0,1,1,0] will try in indices [3,1,3], settling in the second try (index 1)
-    Larva [0,1,0,0] will try in indices [1,2,0], settling in the second try (index 2)
+    Then, larva [0,1,1,0] will try to settle in indices [0,3,1], settling in the third try (index 1)
+    Larva [0,1,0,0] will try in indices [0,3,3], being discarded
+    Larva [1,0,0,1] will try in indices [3,3,1], settling in the third try (index 1)
     
     Thus, the whole REEF will be populated after the settling, with a population:
-    [[1,0,0,1], and a fitness [[8,
-     [0,1,1,0],                 6,
-     [0,1,0,0],                 4,
+    [[1,0,0,0], and a fitness [[8,
+     [1,0,0,1],                 9,
+     [0,0,1,0],                 2,
      [1,0,1,1]]                 11]]
     """
-    REEFpob_exp = np.array([[1,0,0,1],
-                            [0,1,1,0],
-                            [0,1,0,0],
+    REEFpob_exp = np.array([[1,0,0,0],
+                            [1,0,0,1],
+                            [0,0,1,0],
                             [1,0,1,1]])
-    REEFfitness_exp = np.array([8,6,4,11])
+    REEFfitness_exp = np.array([8,9,2,11])
 
     np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
     np.testing.assert_almost_equal(REEFpob_res, REEFpob_exp)
