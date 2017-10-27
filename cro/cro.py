@@ -5,8 +5,6 @@ import os
 import time
 import numpy as np
 
-
-
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke = 0.2, seed=13, mode='bin', param_grid={}, verbose=False):
@@ -30,8 +28,7 @@ class CRO(object):
         self.verbose = verbose
         
         print("[*Running] Initialization: ", self.opt) 
-    
-    
+
     def reefinitialization (self):   
         """    
         function [REEF,REEFpob]=reefinitialization(M,N,r0,L)
@@ -88,7 +85,6 @@ class CRO(object):
 
         return np.array(REEF_fitness)
 
-
     def broadcastspawning(self, REEF,REEFpob): 
         """
         function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
@@ -130,7 +126,6 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
-    
     def brooding(self, REEF, REEFpob, type_brooding='op_mutation'):
         """
         function [ISlarvae]=brooding(REEF,REEFpob,Fb,type)
@@ -169,10 +164,19 @@ class CRO(object):
         
         return ISlarvae
 
-    
-    def larvaesetting(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
+    def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
         """
-        function [REEF,REEFpob]=larvaesetting(REEF,REEFpob,ESlarvae,ISlarvae)
+        Settle the given larvae in the REEF in the given indices
+        """
+        REEF[indices] = 1
+        REEFpob[indices, :] = larvae
+        REEFfitness[indices] = larvaefitness
+
+        return REEF, REEFpob, REEFfitness
+
+    def larvaesettling(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
+        """
+        function [REEF,REEFpob]=larvaesettling(REEF,REEFpob,ESlarvae,ISlarvae)
         Settle the best larvae in the reef, eliminating those which are not good enough
         Input:    
             - REEF: coral reef
@@ -180,7 +184,7 @@ class CRO(object):
             - REEFfitness: reef fitness
             - larvae: larvae population
             - larvaefitness: larvae fitness
-            - k0: number of oportunities for each larva to settle in the reef
+            - k: number of oportunities for each larva to settle in the reef
             - opt: type of optimization ('min' or 'max')
         Output:
             - REEF: new coral reef
@@ -188,56 +192,42 @@ class CRO(object):
             - REEFfitness: new reef fitness
         """
         k = self.k
+        opt = self.opt
 
-        np.random.seed(seed = self.seed)
+        np.random.seed(seed=self.seed)
         Nlarvae = larvae.shape[0]
-        a = np.random.permutation(Nlarvae)
-        larvae = larvae[a, :]
-        larvaefitness = larvaefitness[a]
+        nREEF = len(REEF)
 
-        # Each larva is assigned a place in the reef to settle
-        P = REEFpob.shape[0]
-        nreef = np.random.permutation(P)
-        nreef = nreef[0:Nlarvae]
-
-        # larvae occupies empty places
-        free = np.intersect1d(nreef, np.where(REEF==0))
-        REEF[free]=1
-        REEFpob[free, :] = larvae[:len(free), :]
-        REEFfitness[free] = larvaefitness[:len(free)]
+        # First larvae occupy empty places
+        free = np.where(REEF==0)[0]
+        larvae_emptycoral = larvae[:len(free), :]
+        fitness_emptycoral = larvaefitness[:len(free)]
+        REEF, REEFpob, REEFfitness = self._settle_larvae(larvae_emptycoral, fitness_emptycoral,
+                                                         REEF, REEFpob, REEFfitness, free)
 
         larvae = larvae[len(free):, :]  # update larvae
         larvaefitness = larvaefitness[len(free):] 
 
-        # in the occupied places a fight for the space is produced
-        nreef = np.random.permutation(P)
-        ocup = np.intersect1d(nreef, np.where(REEF==1))
-        Nlarvae = larvae.shape[0]
-        
-        for nlarvae in range(Nlarvae):
-            for k0 in range(k):
-                if(len(larvaefitness)==0) | (len(ocup)==0) : 
-                    REEF = np.array((REEFpob.any(axis=1)),int) 
-                    return (REEF, REEFpob, REEFfitness)
-                
-                ind = np.random.randint(len(ocup))
-                
-                #check if the larva is better than the installed coral
-                if ( (self.opt=='max') & (larvaefitness[0] > REEFfitness[ocup[ind]])) | ( (self.opt=='min') 
-                                                                      & (larvaefitness[0] < REEFfitness[ocup[ind]])): 
-                    #settle the larva
-                    REEF[ocup[ind]] = 1
-                    REEFpob[ocup[ind], :] = larvae[0, :]
-                    REEFfitness[ocup[ind]] = larvaefitness[0]
-                    
-                    #eliminate the larva from the larvae list
-                    larvae = larvae[1:, :]  # update larvae
-                    larvaefitness = larvaefitness[1:]
-                    #eliminate the place from the occupied ones
-                    ocup = np.delete(ocup, ind)      
-        
-        return (REEF,REEFpob,REEFfitness)
+        for larva, larva_fitness in zip(larvae, larvaefitness):
+            reef_indices = np.random.randint(nREEF, size=k)
+            reef_index = reef_indices[0]
 
+            if not REEF[reef_index]: # empty coral
+                REEFpob[reef_index] = larva
+                REEFfitness[reef_index] = larva_fitness
+                REEF[reef_index] = 1
+            else:                  # occupied coral
+                if opt == "max":
+                    fitness_comparison = larva_fitness > REEFfitness[reef_indices]
+                else:
+                    fitness_comparison = larva_fitness < REEFfitness[reef_indices]
+
+                if np.any(fitness_comparison):
+                    reef_index = reef_indices[np.where(fitness_comparison)[0][0]]
+                    REEF, REEFpob, REEFfitness = self._settle_larvae(larva, larva_fitness, REEF,
+                                                                     REEFpob, REEFfitness, reef_index)
+
+        return (REEF,REEFpob,REEFfitness)
 
     def budding(self, REEF, REEFpob, fitness):
         """
@@ -267,8 +257,7 @@ class CRO(object):
         Alarvae = pob[ind[0:NA], :]
         Afitness = fitness[0:NA]
         return (Alarvae, Afitness)
-    
-    
+
     def depredation(self, REEF, REEFpob, REEFfitness):    
         """
         function [REEF,REEFpob,REEFfitness]=depredation(REEF,REEFpob,REEFfitness,Fd,Pd,opt)
@@ -303,7 +292,6 @@ class CRO(object):
         REEFfitness[sortind[dep]] = self.empty_coral_fitness
         return (REEF,REEFpob,REEFfitness)
 
-    
     def extremedepredation(self, REEF, REEFpob, REEFfitness, ke):
         """    
         Allow only K equal corals in the reef, the rest are eliminated.
@@ -337,8 +325,7 @@ class CRO(object):
                 count   = np.delete(count, zero_ind)
 
         return (REEF,REEFpob,REEFfitness)
-    
-    
+
     def plot_results(self, Bestfitness, Meanfitness):
             import matplotlib.pyplot as plt
             
@@ -363,8 +350,7 @@ class CRO(object):
             ax.annotate('Best: ' + str(Bestfitness[-1]) , (self.Ngen, Bestfitness[-1]))
             
             plt.show()
-   
-   
+
     def fit(self, X=None, y=None, clf=None):
         """    
         Description: 
@@ -419,11 +405,11 @@ class CRO(object):
             # Larvae setting
             larvae = np.concatenate([ESlarvae,ISlarvae])
             larvaefitness = np.concatenate([ESfitness, ISfitness])
-            (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, larvae, larvaefitness)
+            (REEF, REEFpob, REEFfitness) = self.larvaesettling(REEF, REEFpob, REEFfitness, larvae, larvaefitness)
 
             # Asexual reproduction
             (Alarvae, Afitness) = self.budding(REEF, REEFpob, REEFfitness)
-            (REEF, REEFpob, REEFfitness) = self.larvaesetting(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
+            (REEF, REEFpob, REEFfitness) = self.larvaesettling(REEF, REEFpob, REEFfitness, Alarvae, Afitness)
 
             if n!=Ngen:
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
@@ -449,5 +435,3 @@ class CRO(object):
         print('Best solution:', REEFfitness[ind_best])
         
         return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
-
-   
