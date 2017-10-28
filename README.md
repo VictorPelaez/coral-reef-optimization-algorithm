@@ -38,9 +38,9 @@ from cro.fitness import max_ones
 ## ------------------------------------------------------
 ## Parameters initialization
 ## ------------------------------------------------------
-Ngen = 75                 # Number of generations
-N  = 40                    # MxN: reef size
-M  = 40                    # MxN: reef size
+Ngen = 30                  # Number of generations
+N  = 20                    # MxN: reef size
+M  = 20                    # MxN: reef size
 Fb = 0.7                   # Broadcast prob.
 Fa = 0.1                   # Asexual reproduction prob.
 Fd = 0.1                   # Fraction of the corals to be eliminated in the depredation operator.
