@@ -117,7 +117,7 @@ class CRO(object):
         (a,b) = spawners1.shape
         mask = np.random.randint(2, size=[a,b])
         
-        # all zeros and all ones doesn't make sense. Not produces crossover
+        # all zeros and all ones doesn't make sense, Not produces crossover
         pos = np.where(np.sum(mask, axis= 1)==0)[0] 
         mask[pos, np.random.randint(self.L, size=[len(pos)])] = 1
         pos = np.where(np.sum(mask, axis= 1)==1)[0]
@@ -170,7 +170,8 @@ class CRO(object):
 
     def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
         """
-        Settle the given larvae in the REEF in the given indices
+        Description:
+            Settle the given larvae in the REEF in the given indices
         """
         REEF[indices] = 1
         REEFpob[indices, :] = larvae
@@ -180,16 +181,16 @@ class CRO(object):
 
     def larvaesettling(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
         """
-        function [REEF,REEFpob]=larvaesettling(REEF,REEFpob,ESlarvae,ISlarvae)
-        Settle the best larvae in the reef, eliminating those which are not good enough
+        Description:
+            Settle the best larvae in the reef, eliminating those which are not good enough
         Input:    
             - REEF: coral reef
             - REEFpob: reef population
             - REEFfitness: reef fitness
             - larvae: larvae population
             - larvaefitness: larvae fitness
-            - k: number of oportunities for each larva to settle in the reef
-            - opt: type of optimization ('min' or 'max')
+            - self.k: number of oportunities for each larva to settle in the reef
+            - self.opt: type of optimization ('min' or 'max')
         Output:
             - REEF: new coral reef
             - REEFpob: new reef population

@@ -33,7 +33,7 @@ The following results can be reproduced with command:
 import numpy as np
 import seaborn as sns 
 from cro import *
-from fitness import max_ones
+from cro.fitness import max_ones
 
 ## ------------------------------------------------------
 ## Parameters initialization
@@ -53,10 +53,20 @@ ke = 0.2
 ## ------------------------------------------------------
 
 cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke)
-(REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
+%time (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
+```
+Output:
+
+<img src = 'cro/assets/max_ones_results/max_ones_ngen30_n20_m20_l100_fb07.png' height = '350px'> 
+
+```
+Best coral:  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+Best solution: 100.0
+Wall time: 1.06 s
 ```
 
-<img src = 'cro/assets/max_ones_results/max_ones_ngen75_n40_m40_l100_fb07.png' height = '350px'> 
 
 ### Results for feature selection problem
 
@@ -67,11 +77,13 @@ More examples in this [notebook](cro/test.ipynb)
 from functools import partial
 import numpy as np
 import seaborn as sns 
-from cro import *
-from utils import load_data
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import roc_auc_score
-from fitness import feature_selection
+
+from cro import *
+from cro.utils import load_data
+from cro.fitness import feature_selection
+
 
 ## ------------------------------------------------------
 ## Parameters initialization
@@ -110,11 +122,10 @@ Output:
 <img src = 'cro/assets/max_ones_results/voice_feature_selection.png' height = '350px'> 
 
 ```
-Best coral: [1 1 1 0 0 1 0 0 1 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-Best solution: 0.99980063795853269
-CPU times: user 52.3 s, sys: 400 ms, total: 52.7 s
-Wall time: 52.2 s
-['meanfreq' 'sd' 'median' 'IQR' 'sp.ent' 'sfm' 'mode' 'meanfun' 'maxfun']
+Best coral:  [0 0 0 1 0 1 1 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+Best solution: 0.98179427934
+Wall time: 35.9 s
+['Q25' 'IQR' 'skew' 'centroid' 'meanfun' 'maxfun' 'mindom']
 ```
 
 ## Folder structure
