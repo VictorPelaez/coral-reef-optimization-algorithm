@@ -91,14 +91,14 @@ def test_larvaesettling_nonemptyreef():
                         [1,0,1,1]])
     
     REEF = np.array([0,1,1,1])
-    REEFfitness = np.array([0,1,2,11])
+    REEFfitness = -np.array([0,1,2,11])
 
     larvae = np.array([[1,0,0,0],
                        [0,1,1,0], 
                        [0,1,0,0],
                        [1,0,0,1]])
     
-    larvaefitness = np.array([8,6,4,9])
+    larvaefitness = -np.array([8,6,4,9])
 
     N, L = REEFpob.shape
     M = 1
@@ -126,7 +126,7 @@ def test_larvaesettling_nonemptyreef():
                             [1,0,0,1],
                             [0,0,1,0],
                             [1,0,1,1]])
-    REEFfitness_exp = np.array([8,9,2,11])
+    REEFfitness_exp = -np.array([8,9,2,11])
 
     np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
     np.testing.assert_almost_equal(REEFpob_res, REEFpob_exp)
