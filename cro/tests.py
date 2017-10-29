@@ -142,10 +142,12 @@ def test_larvaemutattion():
                        [3, 7, 8, 10, 6, 7, 8, 8]])
     
     pos = np.array([[0, 3, 5]])
-    
+    mode = 'disc'
+    grid = {'x': [2, 10]}      # Discrete values between 2 and 10
+   
     fitness_coral = lambda coral: 1 # Dummy fitness
     cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
-              fitness_coral=fitness_coral, opt='max', L=10, seed=0)
+              fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
     
     larvaemutated = cro._larvaemutation(larvae, pos)
     goodsol = np.array([[3, 4, 4, 9, 10, 8, 3, 9],
