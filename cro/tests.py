@@ -150,9 +150,9 @@ def test_larvaemutattion():
               fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
     
     larvaemutated = cro._larvaemutation(larvae, pos)
-    goodsol = np.array([[3, 4, 4, 9, 10, 8, 3, 9],
-                        [2, 9, 6, 6, 6, 5, 8, 3],
-                        [3, 7, 8, 10, 6, 6, 8, 8]])
+    goodsol = np.array([[6, 4, 4, 9, 10, 8, 3, 9],
+                        [2, 9, 6, 5, 6, 5, 8, 3],
+                        [3, 7, 8, 10, 6, 5, 8, 8]])
 
     np.testing.assert_almost_equal(larvaemutated, goodsol) 
     
