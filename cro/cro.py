@@ -279,10 +279,8 @@ class CRO(object):
         Pd = self.Pd
         np.random.seed(seed = self.seed)
         
-        if (self.opt=='max'):
-            ind = np.argsort(REEFfitness)
-        else: 
-            ind = np.argsort(-REEFfitness)
+        # Sort by worse fitness (hence the minus sign)
+        ind = np.argsort(-REEFfitness)
 
         sortind = ind[:int(np.round(Fd*REEFpob.shape[0]))]
         p = np.random.rand(len(sortind))
@@ -388,7 +386,7 @@ class CRO(object):
         Bestfitness.append(self.opt_multiplier*np.min(REEFfitness))
         Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
         if verbose:
-          print('Reef initialization:', self.opt_multiplier*np.min(REEFfitness))
+            print('Reef initialization:', self.opt_multiplier*np.min(REEFfitness))
 
 
         for n in range(Ngen):
