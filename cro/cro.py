@@ -131,6 +131,35 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
+    
+    def _larvaemutation(self, larvae, pos, delta=1):
+        """
+        Description:
+            This function modifies the larvae with mutation 
+        Input:
+            - larvae: new individuals to be mutated
+            - pos: selected positions to be mutated
+        Output:
+            - larvae: modified individuals
+        """
+        (nlarvaes, b) = larvae.shape
+        MM = np.zeros([nlarvaes, b], int) # Mutation matrix
+
+        for key, value in self.param_grid.items():
+            m = value[0]
+            M = value[1]        
+
+        inc = (M - larvae[range(nlarvaes), pos])
+        dec = (larvae[range(nlarvaes), pos] -m) 
+        Inc = np.where(inc>dec)[1]  # pos y where increase
+        Dec = np.where(inc<=dec)[1] # pos y where decrease
+
+        MM[Inc, pos[:, Inc]] = delta
+        MM[Dec, pos[:, Dec]] = -delta
+
+        return larvae + MM
+    
+    
     def brooding(self, REEF, REEFpob, type_brooding='op_mutation'):
         """
         function [ISlarvae]=brooding(REEF,REEFpob,Fb,type)
@@ -164,7 +193,12 @@ class CRO(object):
         if type_brooding == 'op_mutation':
             # one point mutation
             pos = np.random.randint(brooders.shape[1], size=(1, nbrooders))
-            brooders[range(brooders.shape[0]), pos] = np.logical_not(brooders[range(brooders.shape[0]), pos])
+            
+            if self.mode =='bin':
+                brooders[range(brooders.shape[0]), pos] = np.logical_not(brooders[range(brooders.shape[0]), pos])
+            if self.mode =='disc':
+                brooders = self._larvaemutation(brooders, pos)
+                
             ISlarvae = brooders
         
         return ISlarvae

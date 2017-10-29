@@ -131,3 +131,26 @@ def test_larvaesettling_nonemptyreef():
     np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
     np.testing.assert_almost_equal(REEFpob_res, REEFpob_exp)
     np.testing.assert_almost_equal(REEFfitness_res, REEFfitness_exp)
+    
+def test_larvaemutattion():
+    """
+    Test mutated larvae in a given position, discrete mode
+    """
+    
+    larvae = np.array([[2, 4, 4, 9, 10, 8, 3, 9],
+                       [2, 9, 6, 7, 6, 5, 8, 3],
+                       [3, 7, 8, 10, 6, 7, 8, 8]])
+    
+    pos = np.array([[0, 3, 5]])
+    
+    fitness_coral = lambda coral: 1 # Dummy fitness
+    cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+              fitness_coral=fitness_coral, opt='max', L=L, seed=0)
+    
+    larvaemutated = cro._larvaemutation(larvae, pos)
+    goodsol = np.array([[3, 4, 4, 9, 10, 8, 3, 9],
+                        [2, 9, 6, 6, 6, 5, 8, 3],
+                        [3, 7, 8, 10, 6, 6, 8, 8]])
+
+    np.testing.assert_almost_equal(larvaemutated, goodsol) 
+    
