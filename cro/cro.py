@@ -77,7 +77,8 @@ class CRO(object):
 
     def fitness(self, REEFpob):
         """
-        Description: This function calculates the health function for each coral in the reef
+        Description:
+            This function calculates the health function for each coral in the reef
         """
         REEF_fitness = []
         for coral in REEFpob:
@@ -160,49 +161,42 @@ class CRO(object):
         return larvae + MM
     
     
-    def brooding(self, REEF, REEFpob, type_brooding='op_mutation'):
+    def brooding(self, REEF, REEFpob, npolyp=1):
         """
-        function [ISlarvae]=brooding(REEF,REEFpob,Fb,type)
-        Create new larvae by internal sexual reproduction.   
+        Description:
+            Create new larvae by internal sexual reproduction   
         Input:
-            - REEF: coral reef, 
-            - REEFpob: reef population, 
-            - Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
-            - type_brooding: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc', 'bin')
+            - REEF: coral reef
+            - REEFpob: reef population 
+            - npolyp: number of polyps to be mutated (as genes in a evolutionary)  
+            - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
+            - self.mode: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc','bin')
         Output:
             - ISlarvae: created larvae
         """
         
         Fb = self.Fb
         
-        #get the brooders
+        # get the brooders
         np.random.seed(seed = self.seed)
         nbrooders= int(np.round((1-Fb)*np.sum((REEF))))
-        #nbrooders = int(np.round((1-Fb)*REEF.shape[0]))
 
         p = np.where(REEF!=0)[0] 
         a = np.random.permutation(p)
-        brooders= a[0:nbrooders]
-        brooders=REEFpob[brooders, :]
-
-        ISlarvae=np.zeros(brooders.shape)
-        if type_brooding == 'bin':
-            A = np.random.randint(2, size=brooders.shape)
-            ISlarvae = (brooders + A) % 2
-            
-        if type_brooding == 'op_mutation':
-            # one point mutation
+        brooders = a[0:nbrooders]
+        brooders = REEFpob[brooders, :]
+                
+        if npolyp==1: # one-point mutation
             pos = np.random.randint(brooders.shape[1], size=(1, nbrooders))
             
             if self.mode =='bin':
-                brooders[range(brooders.shape[0]), pos] = np.logical_not(brooders[range(brooders.shape[0]), pos])
+                brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
             if self.mode =='disc':
                 brooders = self._larvaemutation(brooders, pos)
-                
-            ISlarvae = brooders
-        
-        return ISlarvae
+                        
+        return brooders
 
+    
     def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
         """
         Description:
