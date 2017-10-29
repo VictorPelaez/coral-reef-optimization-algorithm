@@ -7,7 +7,7 @@ import numpy as np
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke = 0.2, seed=13, mode='bin', param_grid={}, verbose=False):
+                 ke = 0.2, npolyps = 1, seed=13, mode='bin', param_grid={}, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -22,7 +22,8 @@ class CRO(object):
         self.opt  = opt           
         self.opt_multiplier = -1 if opt == "max" else 1
         self.L    = L                          
-        self.ke   = ke     
+        self.ke   = ke
+        self.npolyps = npolyps
         self.seed = seed
         self.mode = mode
         self.param_grid = param_grid
@@ -152,30 +153,31 @@ class CRO(object):
 
         inc = (M - larvae[range(nlarvaes), pos])
         dec = (larvae[range(nlarvaes), pos] -m) 
-        Inc = np.where(inc>dec)[1]  # pos y where increase
-        Dec = np.where(inc<=dec)[1] # pos y where decrease
+        Inc = np.where(inc>dec)  
+        Dec = np.where(inc<=dec) 
 
-        MM[Inc, pos[:, Inc]] = delta
-        MM[Dec, pos[:, Dec]] = -delta
+        MM[Inc[1], pos[Inc]] = delta
+        MM[Dec[1], pos[Dec]] = -delta
 
         return larvae + MM
     
     
-    def brooding(self, REEF, REEFpob, npolyp=1):
+    def brooding(self, REEF, REEFpob):
         """
         Description:
             Create new larvae by internal sexual reproduction   
         Input:
             - REEF: coral reef
             - REEFpob: reef population 
-            - npolyp: number of polyps to be mutated (as genes in a evolutionary)  
+            - self.npolyps: number of polyps to be mutated (as genes in a evolutionary)  
             - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
             - self.mode: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc','bin')
         Output:
-            - ISlarvae: created larvae
+            - brooders: created larvae
         """
         
         Fb = self.Fb
+        npolyps = self.npolyps
         
         # get the brooders
         np.random.seed(seed = self.seed)
@@ -186,13 +188,12 @@ class CRO(object):
         brooders = a[0:nbrooders]
         brooders = REEFpob[brooders, :]
                 
-        if npolyp==1: # one-point mutation
-            pos = np.random.randint(brooders.shape[1], size=(1, nbrooders))
+        pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
             
-            if self.mode =='bin':
-                brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
-            if self.mode =='disc':
-                brooders = self._larvaemutation(brooders, pos)
+        if self.mode =='bin':
+            brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
+        if self.mode =='disc':
+            brooders = self._larvaemutation(brooders, pos)
                         
         return brooders
 
