@@ -145,7 +145,7 @@ def test_larvaemutattion():
     
     fitness_coral = lambda coral: 1 # Dummy fitness
     cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
-              fitness_coral=fitness_coral, opt='max', L=L, seed=0)
+              fitness_coral=fitness_coral, opt='max', L=10, seed=0)
     
     larvaemutated = cro._larvaemutation(larvae, pos)
     goodsol = np.array([[3, 4, 4, 9, 10, 8, 3, 9],
