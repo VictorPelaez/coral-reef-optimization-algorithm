@@ -141,11 +141,13 @@ class CRO(object):
         Input:
             - larvae: new individuals to be mutated
             - pos: selected positions to be mutated
+            - delta: represents an increment or decrement in each mutation (it could be placed as arg in param_grid)
         Output:
             - larvae: modified individuals
         """
         (nlarvaes, b) = larvae.shape
         MM = np.zeros([nlarvaes, b], int) # Mutation matrix
+        # int just for disc mode, replace when cont mode takes place
 
         for key, value in self.param_grid.items():
             m = value[0]
@@ -155,9 +157,9 @@ class CRO(object):
         dec = (larvae[range(nlarvaes), pos] -m) 
         Inc = np.where(inc>dec)  
         Dec = np.where(inc<=dec) 
-
-        MM[Inc[1], pos[Inc]] = delta
-        MM[Dec[1], pos[Dec]] = -delta
+        
+        MM[Inc[1], pos[Inc]] = np.random.randint(delta, np.min(inc[Inc])) if len(Inc[1]) !=0 else delta 
+        MM[Dec[1], pos[Dec]] = -np.random.randint(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
 
         return larvae + MM
     
@@ -169,7 +171,8 @@ class CRO(object):
         Input:
             - REEF: coral reef
             - REEFpob: reef population 
-            - self.npolyps: number of polyps to be mutated (as genes in a evolutionary)  
+            - self.npolyps: number of polyps to be mutated (as genes in a evolutionary). 
+                            Coral reefs are therefore created by millions of tiny polyps forming large carbonate structures  
             - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
             - self.mode: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc','bin')
         Output:
