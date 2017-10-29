@@ -20,6 +20,7 @@ class CRO(object):
         self.Pd   = Pd
         self.fitness_coral = fitness_coral
         self.opt  = opt           
+        self.opt_multiplier = -1 if opt == "max" else 1
         self.L    = L                          
         self.ke   = ke     
         self.seed = seed
@@ -83,7 +84,7 @@ class CRO(object):
             coral_fitness = self.fitness_coral(coral)
             REEF_fitness.append(coral_fitness)
 
-        return np.array(REEF_fitness)
+        return self.opt_multiplier*np.array(REEF_fitness)
 
     def broadcastspawning(self, REEF, REEFpob): 
         """
@@ -197,7 +198,6 @@ class CRO(object):
             - REEFfitness: new reef fitness
         """
         k = self.k
-        opt = self.opt
 
         np.random.seed(seed=self.seed)
         Nlarvae = larvae.shape[0]
@@ -222,10 +222,7 @@ class CRO(object):
                 REEFfitness[reef_index] = larva_fitness
                 REEF[reef_index] = 1
             else:                  # occupied coral
-                if opt == "max":
-                    fitness_comparison = larva_fitness > REEFfitness[reef_indices]
-                else:
-                    fitness_comparison = larva_fitness < REEFfitness[reef_indices]
+                fitness_comparison = larva_fitness < REEFfitness[reef_indices]
 
                 if np.any(fitness_comparison):
                     reef_index = reef_indices[np.where(fitness_comparison)[0][0]]
@@ -243,7 +240,6 @@ class CRO(object):
             - pob: reef population
             - fitness: reef fitness 
             - Fa: fraction of corals to be duplicated
-            - opt: type of optimization ('max' or 'min')
         Output: 
             - Alarvae: created larvae,
             - Afitness: larvae's fitness
@@ -255,8 +251,7 @@ class CRO(object):
         N = pob.shape[0]
         NA = int(np.round(Fa*N))
         
-        if self.opt=='max': ind = np.argsort(-fitness); 
-        else: ind = np.argsort(fitness)    
+        ind = np.argsort(fitness)    
             
         fitness = fitness[ind]
         Alarvae = pob[ind[0:NA], :]
@@ -284,10 +279,8 @@ class CRO(object):
         Pd = self.Pd
         np.random.seed(seed = self.seed)
         
-        if (self.opt=='max'):
-            ind = np.argsort(REEFfitness)
-        else: 
-            ind = np.argsort(-REEFfitness)
+        # Sort by worse fitness (hence the minus sign)
+        ind = np.argsort(-REEFfitness)
 
         sortind = ind[:int(np.round(Fd*REEFpob.shape[0]))]
         p = np.random.rand(len(sortind))
@@ -390,13 +383,10 @@ class CRO(object):
         Bestfitness = []
         Meanfitness = []
 
-        if opt=='max':
-            if verbose: print('Reef initialization:', np.max(REEFfitness))
-            Bestfitness.append(np.max(REEFfitness))
-        else: 
-            if verbose: print('Reef initialization:', np.min(REEFfitness))
-            Bestfitness.append(np.min(REEFfitness))
-        Meanfitness.append(np.mean(REEFfitness))
+        Bestfitness.append(self.opt_multiplier*np.min(REEFfitness))
+        Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
+        if verbose:
+            print('Reef initialization:', self.opt_multiplier*np.min(REEFfitness))
 
 
         for n in range(Ngen):
@@ -420,23 +410,18 @@ class CRO(object):
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
                 (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
 
-            if opt=='max': Bestfitness.append(np.max(REEFfitness))
-            else: Bestfitness.append(np.min(REEFfitness))              
-            Meanfitness.append(np.mean(REEFfitness))
+            Bestfitness.append(self.opt_multiplier*np.min(REEFfitness))
+            Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
 
-            if (n%10==0) & (n!=Ngen):
-                if (opt=='max') & (verbose): print('Best-fitness:', np.max(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
-                if (opt=='min') & (verbose): print('Best-fitness:', np.min(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
+            if all([n%10 == 0, n != Ngen, verbose]):
+                print('Best-fitness:', self.opt_multiplier*np.min(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
 
-        if opt=='max':
-            if verbose: print('Best-fitness:', np.max(REEFfitness), '\n', str(100) + '% completado \n' ) 
-            ind_best = np.where(REEFfitness == np.max(REEFfitness))[0][0]
-        else:
-            if verbose: print('Best-fitness:', np.min(REEFfitness), '\n', str(100) + '% completado \n' ) 
-            ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
+        if verbose:
+            print('Best-fitness:', self.opt_multiplier*np.min(REEFfitness), '\n', str(100) + '% completado \n' ) 
+        ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
 
         self.plot_results(Bestfitness, Meanfitness)
         print('Best coral: ', REEFpob[ind_best, :])
-        print('Best solution:', REEFfitness[ind_best])
+        print('Best solution:', self.opt_multiplier*REEFfitness[ind_best])
         
         return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
