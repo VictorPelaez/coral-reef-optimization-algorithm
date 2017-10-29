@@ -86,16 +86,15 @@ class CRO(object):
 
         return self.opt_multiplier*np.array(REEF_fitness)
 
-    def broadcastspawning(self, REEF,REEFpob): 
+    def broadcastspawning(self, REEF, REEFpob): 
         """
-        function [ESlarvae]=broadcastspawning(REEF,REEFpob,Fb,type)
-        Create new larvae by external sexual reproduction. Cross-over operation
-
+        Description:
+            Create new larvae by external sexual reproduction. Cross-over operation
         Input: 
             - REEF: coral reef
             - REEFpob: reef population
-            - Fb: fraction of broadcast spawners with respect to the overall amount of existing corals
-            - mode: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc','bin')
+            - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals
+            - self.mode: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc','bin')
         Output:
             - ESlarvae: created larvae
         """
@@ -104,7 +103,6 @@ class CRO(object):
         # get  number of spawners, forzed to be even (pairs of corals to create one larva)
         np.random.seed(seed = self.seed)
         nspawners = int(np.round(Fb*np.sum(REEF)))
-        #nspawners = int(np.round(Fb*REEF.shape[0]))
 
         if (nspawners%2) !=0: 
             nspawners=nspawners-1
@@ -116,10 +114,16 @@ class CRO(object):
         spawners1 = REEFpob[spawners[0:int(nspawners/2)], :]
         spawners2 = REEFpob[spawners[int(nspawners/2):], :]
 
-        # get crossover mask for some of the methods below (one point crossover)
+        # get crossover mask for some of the methods below
         (a,b) = spawners1.shape
         mask = np.random.randint(2, size=[a,b])
-        mask = np.sort(mask, axis=0)
+        
+        # all zeros and all ones doesn't make sense, Not produces crossover
+        pos = np.where(np.sum(mask, axis= 1)==0)[0] 
+        mask[pos, np.random.randint(self.L, size=[len(pos)])] = 1
+        pos = np.where(np.sum(mask, axis= 1)==1)[0]
+        mask[pos, np.random.randint(self.L, size=[len(pos)])] = 0
+        
         notmask = np.logical_not(mask)
 
         ESlarvae1 = np.multiply(spawners1, np.logical_not(mask)) + np.multiply(spawners2, mask)
@@ -167,7 +171,8 @@ class CRO(object):
 
     def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
         """
-        Settle the given larvae in the REEF in the given indices
+        Description:
+            Settle the given larvae in the REEF in the given indices
         """
         REEF[indices] = 1
         REEFpob[indices, :] = larvae
@@ -177,16 +182,16 @@ class CRO(object):
 
     def larvaesettling(self, REEF, REEFpob, REEFfitness, larvae, larvaefitness):
         """
-        function [REEF,REEFpob]=larvaesettling(REEF,REEFpob,ESlarvae,ISlarvae)
-        Settle the best larvae in the reef, eliminating those which are not good enough
+        Description:
+            Settle the best larvae in the reef, eliminating those which are not good enough
         Input:    
             - REEF: coral reef
             - REEFpob: reef population
             - REEFfitness: reef fitness
             - larvae: larvae population
             - larvaefitness: larvae fitness
-            - k: number of oportunities for each larva to settle in the reef
-            - opt: type of optimization ('min' or 'max')
+            - self.k: number of oportunities for each larva to settle in the reef
+            - self.opt: type of optimization ('min' or 'max')
         Output:
             - REEF: new coral reef
             - REEFpob: new reef population
