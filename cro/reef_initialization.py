@@ -13,6 +13,9 @@ It should accept the following arguments:
 
 It should return a tuple with (REEF, REEFpob)
 """
+import sys
+from inspect import getmembers, isfunction
+
 import numpy as np
 
 def bin_binaryReefInitialization(M, N, r0, L):
@@ -36,3 +39,10 @@ def disc_equalRange(M, N, r0, L, param_grid):
         REEFpob = np.concatenate([A,B]) # Population creation
         REEF = np.array((REEFpob.any(axis=1)),int)  
         return (REEF, REEFpob)
+
+"""""
+UTILS
+"""""
+def getFunctions():
+    current_module = sys.modules[__name__]
+    return dict(getmembers(current_module, predicate=isfunction))
