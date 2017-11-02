@@ -18,6 +18,8 @@ It should return a tuple with (REEF, REEFpob)
 """
 import numpy as np
 
+from utils import get_module_functions
+
 def bin_binary(M, N, r0, L, **kwargs):
     """
     """
@@ -48,3 +50,20 @@ def disc_equalRange(M, N, r0, L, **kwargs):
 """""
 UTILS
 """""
+def get_reefinit_function(mode):
+    """
+    """
+    reef_init_functions = get_module_functions(__name__)
+    mode_functions = [(name, func) for name, func in reef_init_functions.items()
+                                   if name.startswith(mode)]
+    if not mode_functions:
+        raise ValueError("No initialization function for mode {}".format(mode))
+    elif len(mode_functions) > 1:
+        print("More than one initialization function for mode {}".format(mode))
+        name, func = mode_functions[0]
+        print("Using {}".format(name))
+    else:
+        name, func = mode_functions[0]
+        print("Using {} for initializing the reef".format(name))
+
+    return func
