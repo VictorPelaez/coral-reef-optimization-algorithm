@@ -47,7 +47,7 @@ class CRO(object):
         """  
         np.random.seed(seed = self.seed) # commom for all modes
         reefinit_function = get_reefinit_function(self.mode)
-        REEF, REEFpob = reefinit_function(self.M, self.N, self.r0, self.L, **self.param_grid)
+        REEF, REEFpob = reefinit_function(self.M, self.N, self.r0, self.L, param_grid=self.param_grid)
         return REEF, REEFpob
 
     def fitness(self, REEFpob):
