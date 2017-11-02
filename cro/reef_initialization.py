@@ -16,6 +16,8 @@ It should accept the following arguments:
 
 It should return a tuple with (REEF, REEFpob)
 """
+import logging
+
 import numpy as np
 
 from utils import get_module_functions
@@ -74,11 +76,11 @@ def get_reefinit_function(mode):
     if not mode_functions:
         raise ValueError("No initialization function for mode {}".format(mode))
     elif len(mode_functions) > 1:
-        print("More than one initialization function for mode {}".format(mode))
+        logging.warning("More than one initialization function for mode {}".format(mode))
         name, func = mode_functions[0]
-        print("Using {}".format(name))
+        logging.info("Using {}".format(name))
     else:
         name, func = mode_functions[0]
-        print("Using {} for initializing the reef".format(name))
+        logging.info("Using {} for initializing the reef".format(name))
 
     return func

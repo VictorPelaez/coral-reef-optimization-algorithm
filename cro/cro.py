@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
-from __future__ import division
+from __future__ import division, print_function
+import sys
+import logging
 
 import os
 import time
@@ -30,7 +32,12 @@ class CRO(object):
         self.param_grid = param_grid
         self.verbose = verbose
         
-        print("[*Running] Initialization: ", self.opt) 
+        # Set logging configuration
+        logging_level = logging.INFO if verbose else logging.WARNING
+        logging.basicConfig(stream=sys.stdout,
+                            format="%(message)s")
+        logging.getLogger().setLevel(logging_level)
+        logging.info("Running Initialization: %s", self.opt) 
 
     def reefinitialization (self):   
         """    
@@ -360,8 +367,7 @@ class CRO(object):
 
         Bestfitness.append(self.opt_multiplier*np.min(REEFfitness))
         Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
-        if verbose:
-            print('Reef initialization:', self.opt_multiplier*np.min(REEFfitness))
+        logging.info('Reef initialization: %s', self.opt_multiplier*np.min(REEFfitness))
 
 
         for n in range(Ngen):
@@ -389,14 +395,13 @@ class CRO(object):
             Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
 
             if all([n%10 == 0, n != Ngen, verbose]):
-                print('Best-fitness:', self.opt_multiplier*np.min(REEFfitness), '\n', str(n/Ngen*100) + '% completado \n' );
+                logging.info('Best-fitness: %s, (%.2f%% completado)', self.opt_multiplier*np.min(REEFfitness), n/Ngen*100)
 
-        if verbose:
-            print('Best-fitness:', self.opt_multiplier*np.min(REEFfitness), '\n', str(100) + '% completado \n' ) 
+        logging.info('Best-fitness: %s. (100%% completado)', self.opt_multiplier*np.min(REEFfitness))
         ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
 
         self.plot_results(Bestfitness, Meanfitness)
         print('Best coral: ', REEFpob[ind_best, :])
-        print('Best solution:', self.opt_multiplier*REEFfitness[ind_best])
+        print('Best solution: ', self.opt_multiplier*REEFfitness[ind_best])
         
         return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
