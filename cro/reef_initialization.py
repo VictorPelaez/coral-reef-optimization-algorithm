@@ -10,15 +10,15 @@ It should accept the following arguments:
     - N: Reef size
     - r0: occupied/total ratio
     - L: coral length
+    - kwargs: extra arguments that the function might need (see
+              https://stackoverflow.com/a/1769475 for an 
+              explanation on kwargs)
 
 It should return a tuple with (REEF, REEFpob)
 """
-import sys
-from inspect import getmembers, isfunction
-
 import numpy as np
 
-def bin_binaryReefInitialization(M, N, r0, L):
+def bin_binaryReefInitialization(M, N, r0, L, **kwargs):
     """
     """
     O = int(np.round(N*M*r0)) # number of occupied reefs 
@@ -28,11 +28,16 @@ def bin_binaryReefInitialization(M, N, r0, L):
     REEF = np.array((REEFpob.any(axis=1)),int) 
     return (REEF, REEFpob)
 
-def disc_equalRange(M, N, r0, L, param_grid):
+def disc_equalRange(M, N, r0, L, **kwargs):
     """
     """
+    try:
+        param_grid = kwargs["param_grid"]
+    except KeyError:
+        raise ValueError("disc mode needs a param_grid as a dictionary")
+
     O = int(np.round(N*M*r0)) # number of occupied reefs 
-    for key, value in param_grid.items():
+    for _, value in param_grid.items():
         valmax = (value[1] - value[0] + 1)
         A = np.random.randint(valmax, size=[O, L]) + value[0]
         B = np.zeros([((N*M)-O), L], int)
@@ -43,6 +48,3 @@ def disc_equalRange(M, N, r0, L, param_grid):
 """""
 UTILS
 """""
-def getFunctions():
-    current_module = sys.modules[__name__]
-    return dict(getmembers(current_module, predicate=isfunction))
