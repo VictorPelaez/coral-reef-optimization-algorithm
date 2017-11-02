@@ -18,7 +18,7 @@ It should return a tuple with (REEF, REEFpob)
 """
 import numpy as np
 
-def bin_binaryReefInitialization(M, N, r0, L, **kwargs):
+def bin_binary(M, N, r0, L, **kwargs):
     """
     """
     O = int(np.round(N*M*r0)) # number of occupied reefs 
