@@ -22,6 +22,8 @@ from utils import get_module_functions
 
 def bin_binary(M, N, r0, L, **kwargs):
     """
+    Each value in each coral in the reef is a boolean value, i.e,
+    either a 0 or a 1
     """
     O = int(np.round(N*M*r0)) # number of occupied reefs 
     A = np.random.randint(2, size=[O, L])
@@ -32,6 +34,17 @@ def bin_binary(M, N, r0, L, **kwargs):
 
 def disc_equalRange(M, N, r0, L, **kwargs):
     """
+    Each value in each coral in the reef is an integer in the range
+    specified by the keyword argument `param_grid`. `param_grid`
+    must have the next format:
+
+    >>> param_grid = {
+            "x": [2, 10]   
+        }
+
+    where "x" can be basically anything, and its value is a list
+    with both minimum and maximum value.
+    In this example each coral will contain integers between 2 and 10
     """
     try:
         param_grid = kwargs["param_grid"]
@@ -52,6 +65,8 @@ UTILS
 """""
 def get_reefinit_function(mode):
     """
+    Returns the init function for the given mode.
+    If more than one function exists, return one randomly.
     """
     reef_init_functions = get_module_functions(__name__)
     mode_functions = [(name, func) for name, func in reef_init_functions.items()
