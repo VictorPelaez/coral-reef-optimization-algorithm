@@ -7,7 +7,7 @@ import os
 import time
 import numpy as np
 
-from reef_initialization import get_reefinit_function
+from .reef_initialization import get_reefinit_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
