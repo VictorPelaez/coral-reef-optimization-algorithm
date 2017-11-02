@@ -5,6 +5,8 @@ import os
 import time
 import numpy as np
 
+from reef_initialization import get_reefinit_function
+
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke = 0.2, seed=13, mode='bin', param_grid={}, verbose=False):
@@ -43,37 +45,10 @@ class CRO(object):
             - REEF: reef matrix
             - REEFpob: population matrix
         """  
-        
-        # print error. Maybe use other place for all arg-checks
-        if ( (self.param_grid=={}) & (self.mode =='disc') ):
-            print('\nThis mode (', self.mode, ') needs a param_grid as a dictionary')
-            return -1
- 
-        # commom for all modes
-        np.random.seed(seed = self.seed)
-        O = int(np.round(self.N*self.M*self.r0)) # number of occupied reefs 
-        
-        # Binary mode
-        if self.mode =='bin': 
-            A = np.random.randint(2, size=[O, self.L])
-            B = np.zeros([( (self.N*self.M)-O), self.L], int)          
-            REEFpob = np.concatenate([A,B]) # Population creation
-            REEF = np.array((REEFpob.any(axis=1)),int) 
-            return (REEF, REEFpob)
-        
-        # Discrete mode
-        elif self.mode =='disc':
-            for key, value in self.param_grid.items():
-                valmax = (value[1] - value[0] + 1)
-                A = np.random.randint(valmax, size=[O, self.L]) + value[0]
-                B = np.zeros([( (self.N*self.M)-O), self.L], int)
-                REEFpob = np.concatenate([A,B]) # Population creation
-                REEF = np.array((REEFpob.any(axis=1)),int) 
-                return (REEF, REEFpob)
-        
-        else: 
-            print('\nThis mode (', self.mode, ') is not available')
-            return -1
+        np.random.seed(seed = self.seed) # commom for all modes
+        reefinit_function = get_reefinit_function(self.mode)
+        REEF, REEFpob = reefinit_function(self.M, self.N, self.r0, self.L, **self.param_grid)
+        return REEF, REEFpob
 
     def fitness(self, REEFpob):
         """
