@@ -34,7 +34,7 @@ def bin_binary(M, N, r0, L, **kwargs):
     REEF = np.array((REEFpob.any(axis=1)),int) 
     return (REEF, REEFpob)
 
-def disc_equalRange(M, N, r0, L, **kwargs):
+def disc_equal_range(M, N, r0, L, **kwargs):
     """
     Each value in each coral in the reef is an integer in the range
     specified by the keyword argument `param_grid`. `param_grid`
