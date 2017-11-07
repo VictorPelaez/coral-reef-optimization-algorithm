@@ -17,6 +17,7 @@ from .utils import get_module_functions
 
 def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
     """
+    TB documented
     """
     (nbrooders, _) = brooders.shape
     brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
@@ -24,6 +25,7 @@ def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
 
 def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
     """
+    TB documented
     """
     try:
         param_grid = kwargs["param_grid"]
