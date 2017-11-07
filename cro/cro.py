@@ -5,6 +5,8 @@ import os
 import time
 import numpy as np
 
+from larvaemutation import get_larvaemutation_function
+
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke = 0.2, npolyps = 1, seed=13, mode='bin', param_grid={}, verbose=False):
@@ -134,35 +136,6 @@ class CRO(object):
         return ESlarvae
 
     
-    def _larvaemutation(self, larvae, pos, delta=1):
-        """
-        Description:
-            This function modifies the larvae with mutation 
-        Input:
-            - larvae: new individuals to be mutated
-            - pos: selected positions to be mutated
-            - delta: represents an increment or decrement in each mutation (it could be placed as arg in param_grid)
-        Output:
-            - larvae: modified individuals
-        """
-        (nlarvaes, b) = larvae.shape
-        MM = np.zeros([nlarvaes, b], int) # Mutation matrix
-        # int just for disc mode, replace when cont mode takes place
-
-        for key, value in self.param_grid.items():
-            m, M = value
-
-        inc = (M - larvae[range(nlarvaes), pos])
-        dec = (larvae[range(nlarvaes), pos] -m) 
-        Inc = np.where(inc>dec)  
-        Dec = np.where(inc<=dec) 
-        
-        MM[Inc[1], pos[Inc]] = np.random.randint(delta, np.min(inc[Inc])) if len(Inc[1]) !=0 else delta 
-        MM[Dec[1], pos[Dec]] = -np.random.randint(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
-
-        return larvae + MM
-    
-    
     def brooding(self, REEF, REEFpob):
         """
         Description:
@@ -191,12 +164,10 @@ class CRO(object):
         brooders = REEFpob[brooders, :]
                 
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
-                     
-        if self.mode =='disc':
-            brooders = self._larvaemutation(brooders, pos)
-        elif self.mode == 'bin':    
-            brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
-                        
+        
+        larvaemutation_function = get_larvaemutation_function(self.mode)
+        brooders = larvaemutation_function(brooders, pos, delta=1, param_grid=self.param_grid)
+                                     
         return brooders
 
     

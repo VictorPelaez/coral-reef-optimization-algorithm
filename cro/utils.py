@@ -1,3 +1,6 @@
+import sys
+from inspect import getmembers, isfunction
+
 import pandas as pd
 import numpy as np
 from sklearn import datasets
@@ -20,5 +23,13 @@ def load_data(name):
     
     dataset = datasets.base.Bunch(data= X, target=np.array(data.label), feature_names=feature_cols)
     return dataset
+
+def get_module_functions(module_name):
+    """
+    Given the name of a module, return a dict with (name, function)
+    for all the functions in the module
+    """
+    current_module = sys.modules[module_name]
+    return dict(getmembers(current_module, predicate=isfunction))
 
 
