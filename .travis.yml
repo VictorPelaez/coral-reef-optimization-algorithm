@@ -7,7 +7,7 @@ cache:
 install:
 - pip install -r requirements.txt
 script:
-- pytest
+- cd cro && pytest
 deploy:
   provider: pypi
   user: victorpelaez
