@@ -5,7 +5,11 @@ import os
 import time
 import numpy as np
 
-from .larvaemutation import get_larvaemutation_function
+try:
+    from .larvaemutation import get_larvaemutation_function
+except Exception:
+    from larvaemutation import get_larvaemutation_function
+
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
