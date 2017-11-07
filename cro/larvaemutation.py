@@ -13,7 +13,7 @@ It should return a mutated brooders
 
 import logging
 import numpy as np
-from utils import get_module_functions
+from .utils import get_module_functions
 
 def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
     """
