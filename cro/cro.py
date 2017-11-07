@@ -150,8 +150,7 @@ class CRO(object):
         # int just for disc mode, replace when cont mode takes place
 
         for key, value in self.param_grid.items():
-            m = value[0]
-            M = value[1]        
+            m, M = value
 
         inc = (M - larvae[range(nlarvaes), pos])
         dec = (larvae[range(nlarvaes), pos] -m) 
