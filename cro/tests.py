@@ -151,7 +151,7 @@ def test_larvaemutattion():
               fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
     
     larvaemutation_function = get_larvaemutation_function(mode)
-    brooders = larvaemutation_function(larvae, pos, delta=1, param_grid=grid)
+    larvaemutated = larvaemutation_function(larvae, pos, delta=1, param_grid=grid)
     
     #larvaemutated = cro._larvaemutation(larvae, pos)
     goodsol = np.array([[6, 4, 4, 9, 10, 8, 3, 9],
