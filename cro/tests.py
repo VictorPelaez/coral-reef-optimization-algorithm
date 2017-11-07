@@ -7,7 +7,7 @@ import sys
 import numpy as np
 
 from cro import CRO
-from larvaemutation import get_larvaemutation_function
+from .larvaemutation import get_larvaemutation_function
 
 def test_croCreation():
     """
