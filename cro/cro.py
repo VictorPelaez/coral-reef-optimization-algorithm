@@ -191,11 +191,11 @@ class CRO(object):
         brooders = REEFpob[brooders, :]
                 
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
-            
-        if self.mode =='bin':
-            brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
+                     
         if self.mode =='disc':
             brooders = self._larvaemutation(brooders, pos)
+        elif self.mode == 'bin':    
+            brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
                         
         return brooders
 
