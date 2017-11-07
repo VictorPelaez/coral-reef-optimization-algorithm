@@ -7,6 +7,7 @@ import sys
 import numpy as np
 
 from cro import CRO
+from larvaemutation import get_larvaemutation_function
 
 def test_croCreation():
     """
@@ -149,7 +150,10 @@ def test_larvaemutattion():
     cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
               fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
     
-    larvaemutated = cro._larvaemutation(larvae, pos)
+    larvaemutation_function = get_larvaemutation_function(mode)
+    brooders = larvaemutation_function(larvae, pos, delta=1, param_grid=grid)
+    
+    #larvaemutated = cro._larvaemutation(larvae, pos)
     goodsol = np.array([[6, 4, 4, 9, 10, 8, 3, 9],
                         [2, 9, 6, 5, 6, 5, 8, 3],
                         [3, 7, 8, 10, 6, 5, 8, 8]])
