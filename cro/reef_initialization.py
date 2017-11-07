@@ -20,7 +20,7 @@ import logging
 
 import numpy as np
 
-from .utils import get_module_functions
+from utils import get_module_functions
 
 def bin_binary(M, N, r0, L, **kwargs):
     """
