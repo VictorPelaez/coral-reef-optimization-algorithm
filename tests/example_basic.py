@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+from context import *
 from cro.cro import CRO
 from cro.fitness import max_ones
 
@@ -13,7 +10,6 @@ if __name__ == '__main__':
     print(CRO)
     print(max_ones)
     
-
     ## ------------------------------------------------------
     ## Parameters initialization
     ## ------------------------------------------------------
