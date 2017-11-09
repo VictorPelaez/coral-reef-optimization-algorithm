@@ -34,9 +34,12 @@ def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
     """
     try:
         param_grid = kwargs["param_grid"]
+        seed = kwargs["seed"]
     except KeyError:
         raise ValueError("disc mode needs a param_grid as a dictionary")
-
+    
+    np.random.seed(seed)
+            
     (nbrooders, lbrooders) = brooders.shape
     MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
 
