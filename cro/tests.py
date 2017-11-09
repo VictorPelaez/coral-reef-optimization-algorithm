@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 ###############################################################################
-import os
-import sys
 
 import numpy as np
-
 from cro import CRO
 
 try:
@@ -76,7 +73,6 @@ def test_larvaesettling_emptyreef():
     larvaefitness = np.array([1,1,1,1])
 
     N, L = REEFpob.shape
-    M = 1
     fitness_coral = lambda coral: 1 # Dummy fitness
     cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
               fitness_coral=fitness_coral, opt='max', L=L)
@@ -107,7 +103,6 @@ def test_larvaesettling_nonemptyreef():
     larvaefitness = -np.array([8,6,4,9])
 
     N, L = REEFpob.shape
-    M = 1
     fitness_coral = lambda coral: 1 # Dummy fitness
     cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
               fitness_coral=fitness_coral, opt='max', L=L, seed=0)
@@ -152,9 +147,9 @@ def test_larvaemutattion():
     mode = 'disc'
     grid = {'x': [2, 10]}      # Discrete values between 2 and 10
    
-    fitness_coral = lambda coral: 1 # Dummy fitness
-    cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
-              fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
+    #fitness_coral = lambda coral: 1 # Dummy fitness
+    #cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+    #          fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
     
     larvaemutation_function = get_larvaemutation_function(mode)
     larvaemutated = larvaemutation_function(larvae, pos, delta=1, param_grid=grid)
