@@ -8,7 +8,7 @@ from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke = 0.2, npolyps = 1, seed=13, mode='bin', param_grid={}, verbose=False):
+                 ke = 0.2, npolyps = 1, seed=None, mode='bin', param_grid={}, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -127,10 +127,10 @@ class CRO(object):
         pos = np.where(np.sum(mask, axis= 1)==1)[0]
         mask[pos, np.random.randint(self.L, size=[len(pos)])] = 0
         
-        notmask = np.logical_not(mask)
+        not_mask = np.logical_not(mask)
 
-        ESlarvae1 = np.multiply(spawners1, np.logical_not(mask)) + np.multiply(spawners2, mask)
-        ESlarvae2 = np.multiply(spawners2, np.logical_not(mask)) + np.multiply(spawners1, mask)
+        ESlarvae1 = np.multiply(spawners1, not_mask) + np.multiply(spawners2, mask)
+        ESlarvae2 = np.multiply(spawners2, not_mask) + np.multiply(spawners1, mask)
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
@@ -201,7 +201,6 @@ class CRO(object):
         k = self.k
 
         np.random.seed(seed=self.seed)
-        Nlarvae = larvae.shape[0]
         nREEF = len(REEF)
 
         # First larvae occupy empty places
@@ -370,7 +369,6 @@ class CRO(object):
         N = self.N
         M = self.M
         verbose = self.verbose 
-        opt = self.opt
        
         #Reef initialization
         (REEF, REEFpob) = self.reefinitialization ()

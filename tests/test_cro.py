@@ -151,7 +151,7 @@ def test_brooding():
 
     fitness_coral = lambda coral: 1 # Dummy fitness
     cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
-              fitness_coral=fitness_coral, opt='max')
+              fitness_coral=fitness_coral, opt='max', seed=13)
     
     REEFpob = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
                        [1, 1, 1, 1, 0, 0, 0, 0],
