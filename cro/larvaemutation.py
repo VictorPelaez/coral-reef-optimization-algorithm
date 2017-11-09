@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# coding=utf-8
+###############################################################################
+
 """
 Module that contains all the functions that perform the larvae-mutation operators
 Every function should start with the mode name it performs, followed by an underscore and the function name.

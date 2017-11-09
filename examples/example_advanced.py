@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Nov  9 14:02:14 2017
-
-@author: victor
-"""
 
 import context
 from cro.cro import CRO
