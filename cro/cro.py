@@ -3,11 +3,7 @@
 ###############################################################################
 
 from __future__ import division
-
-import os
-import time
 import numpy as np
-
 from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):

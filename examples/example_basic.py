@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding=utf-8
+###############################################################################
 
 import context
 from cro.cro import CRO
@@ -57,3 +59,4 @@ if __name__ == '__main__':
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke, npolyps=npolyps, mode=mode, param_grid=grid)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
     print("Example II: max problem in a discrete interval", time.time() - start, "seconds.")
+    

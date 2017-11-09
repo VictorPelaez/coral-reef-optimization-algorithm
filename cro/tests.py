@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 # coding=utf-8
 ###############################################################################
+# run with:
+# python -m pytest cro/tests.py
 
 import numpy as np
 from cro import CRO
 from .larvaemutation import get_larvaemutation_function
 
-
+# ------------------------------------------------------
+# cro module
+# ------------------------------------------------------
 
 def test_croCreation():
     """
@@ -21,6 +25,7 @@ def test_croCreation():
     (REEF, REEFpob) = cro.reefinitialization()
     assert REEFpob.shape == (N*M, L)
 
+
 def test_croInit():
     """
     Test that the number of corals in the reef is greater than 0
@@ -33,6 +38,7 @@ def test_croInit():
               fitness_coral=fitness_coral, opt='max', L=L)
     (REEF, REEFpob) = cro.reefinitialization()
     assert len(np.where(REEF!=0)[0]) > 0
+
 
 def test_reefinitializationDisc():
     """
@@ -50,6 +56,7 @@ def test_reefinitializationDisc():
     (REEF, REEFpob) = cro.reefinitialization()
     p = sum(REEFpob[np.where(REEFpob!=0)]<grid['x'][0]) + sum(REEFpob[np.where(REEFpob!=0)]>grid['x'][1])
     assert p == 0
+
 
 def test_larvaesettling_emptyreef():
     """
@@ -80,6 +87,7 @@ def test_larvaesettling_emptyreef():
     np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
     np.testing.assert_almost_equal(REEFpob_res, larvae)
     np.testing.assert_almost_equal(REEFfitness_res, larvaefitness)
+
 
 def test_larvaesettling_nonemptyreef():
     """
@@ -129,11 +137,57 @@ def test_larvaesettling_nonemptyreef():
     np.testing.assert_almost_equal(REEF_res, np.array([1,1,1,1]))
     np.testing.assert_almost_equal(REEFpob_res, REEFpob_exp)
     np.testing.assert_almost_equal(REEFfitness_res, REEFfitness_exp)
+ 
+    
+def test_brooding(): 
+    """
+    Test brooding function in cro module
+    TARGET: cro -> brooding
+    """
 
+    fitness_coral = lambda coral: 1 # Dummy fitness
+    cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+              fitness_coral=fitness_coral, opt='max')
+    
+    REEFpob = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 1, 1, 1, 1]])
+        
+    REEF = np.array((REEFpob.any(axis=1)),int)
+    brooders = cro.brooding(REEF, REEFpob)
+    np.testing.assert_almost_equal(brooders, np.array([[1, 0, 0, 0, 1, 1, 1, 1]]))
+        
 
-def test_larvaemutattion():
+# ------------------------------------------------------
+# larvaemutation module
+# ------------------------------------------------------
+
+def test_bin_larvaemutattion():
+    """
+    Test mutated larvae in a given position, binary mode
+    TARGET: larvaemutation -> bin_larvaemutation
+    """
+    
+    larvae = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 1, 1, 1, 1]])
+    
+    pos = np.array([[0, 3, 5]])
+    mode = 'bin'
+   
+    larvaemutation_function = get_larvaemutation_function(mode)
+    larvaemutated = larvaemutation_function(larvae, pos)
+    
+    goodsol = np.array([[1, 0, 0, 0, 0, 0, 0, 0],
+                       [1, 1, 1, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 1, 0, 1, 1]])
+
+    np.testing.assert_almost_equal(larvaemutated, goodsol) 
+    
+def test_disc_larvaemutattion():
     """
     Test mutated larvae in a given position, discrete mode
+    TARGET: larvaemutation -> disc_larvaemutation
     """
     
     larvae = np.array([[2, 4, 4, 9, 10, 8, 3, 9],
@@ -143,17 +197,32 @@ def test_larvaemutattion():
     pos = np.array([[0, 3, 5]])
     mode = 'disc'
     grid = {'x': [2, 10]}      # Discrete values between 2 and 10
-   
-    #fitness_coral = lambda coral: 1 # Dummy fitness
-    #cro = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
-    #          fitness_coral=fitness_coral, opt='max', L=10, seed=0, mode=mode, param_grid=grid)
     
     larvaemutation_function = get_larvaemutation_function(mode)
     larvaemutated = larvaemutation_function(larvae, pos, delta=1, param_grid=grid)
     
-    #larvaemutated = cro._larvaemutation(larvae, pos)
-    goodsol = np.array([[6, 4, 4, 9, 10, 8, 3, 9],
-                        [2, 9, 6, 5, 6, 5, 8, 3],
-                        [3, 7, 8, 10, 6, 5, 8, 8]])
+    goodsol = np.array([[5, 4, 4, 9, 10, 8, 3, 9],
+                        [2, 9, 6, 6, 6, 5, 8, 3],
+                        [3, 7, 8, 10, 6, 6, 8, 8]])
 
     np.testing.assert_almost_equal(larvaemutated, goodsol)   
+
+
+def test_cont_larvaemutattion():
+    """
+    Test mutated larvae in a given position, cont mode
+    TARGET: larvaemutation -> cont_larvaemutation
+    """   
+    pass   
+    
+
+def test_get_larvaemutation_function():
+    """
+    Test get_larvaemutation_function which returns mutation funcion for a mode
+    TARGET: larvaemutation -> get_larvaemutation_function
+    """
+    
+    f = get_larvaemutation_function('bin')
+    assert 'function bin_larvaemutation' in str(f)
+    f = get_larvaemutation_function('disc')
+    assert 'function disc_larvaemutation' in str(f)
