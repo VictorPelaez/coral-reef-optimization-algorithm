@@ -8,8 +8,7 @@ cache:
 install:
 - pip install -r requirements.txt
 script:
-- pytest tests/test_cro.py
-- pytest tests/test_larvaemutation.py
+- pytest tests/
 
 deploy:
   provider: pypi
