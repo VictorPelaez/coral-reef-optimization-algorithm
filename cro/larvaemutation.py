@@ -3,16 +3,16 @@
 ###############################################################################
 
 """
-Module that contains all the functions that perform the larvae-mutation operators
-Every function should start with the mode name it performs, followed by an underscore and the function name.
-It should accept the following arguments:
+Description:
+    Module that contains all the functions that perform the larvae-mutation operators
+    Every function should start with the mode name it performs, followed by an underscore and the function name
+Input:
     - brooders: individuals to be mutated
     - pos: selected positions to be mutated
     - delta: represents an increment or decrement in each mutation (it could be placed as arg in param_grid)
-    - kwargs: extra arguments that the function might need (see
-              https://stackoverflow.com/a/1769475 for an 
-              explanation on kwargs)
-It should return a mutated brooders
+    - kwargs: extra arguments that the function might need (see https://stackoverflow.com/a/1769475 for an explanation on kwargs)
+Output:
+    - brooders: mutated larvaes or brooders
 """
 
 import logging
@@ -22,7 +22,8 @@ from .utils import get_module_functions
 
 def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
     """
-    TB documented
+    Description:
+        larvae-mutation in a binary mode   
     """
     (nbrooders, _) = brooders.shape
     brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
@@ -30,7 +31,8 @@ def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
 
 def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
     """
-    TB documented
+    Description:
+        larvae-mutation in a discrete mode   
     """
     try:
         param_grid = kwargs["param_grid"]
@@ -56,13 +58,23 @@ def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
 
     return (brooders + MM)
 
-"""""
-UTILS
-"""""
+def cont_larvaemutation(brooders, pos, delta=1, **kwargs):
+    """
+    Description:
+        larvae-mutation in a continuous mode   
+    """
+    pass
+    
+
+# ------------------------------------------------------
+# UTILS
+# ------------------------------------------------------
+
 def get_larvaemutation_function(mode):
     """
-    Returns the larvaemutation function for the given mode.
-    If more than one function exists, return one randomly.
+    Description: 
+        Returns the larvaemutation function for the given mode. 
+        If more than one function exists, return one randomly.
     """
     larvaemutation_functions = get_module_functions(__name__)
     mode_functions = [(name, func) for name, func in larvaemutation_functions.items()
