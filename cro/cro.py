@@ -170,7 +170,7 @@ class CRO(object):
         return brooders
 
     
-    def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
+    def _settle_larvae(self, larvae, larvaefitness, REEF, REEFpob, REEFfitness, indices):
         """
         Description:
             Settle the given larvae in the REEF in the given indices
