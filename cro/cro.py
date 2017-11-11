@@ -8,7 +8,7 @@ from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke = 0.2, npolyps = 1, seed=None, mode='bin', param_grid={}, verbose=False):
+                 ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -134,7 +134,6 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
-    
     def brooding(self, REEF, REEFpob):
         """
         Description:
@@ -168,8 +167,7 @@ class CRO(object):
         brooders = larvaemutation_function(brooders, pos, delta=1, param_grid=self.param_grid, seed=self.seed)
                                      
         return brooders
-
-    
+   
     def _settle_larvae(self, larvae, larvaefitness, REEF, REEFpob, REEFfitness, indices):
         """
         Description:
@@ -233,8 +231,10 @@ class CRO(object):
 
     def budding(self, REEF, REEFpob, fitness):
         """
-        function  [Alarvae]=budding(REEF,pob,fitness,Fa)
-        Duplicate the better corals in the reef.
+        Description:
+            Best corals reproduction in the reef, it simulates corals 
+            asexual reproduction by budding, a coral npolyp reaches a certain size and divides,
+            produding a genetically identical new polyp
         Input: 
             - REEF: coral reef 
             - pob: reef population
