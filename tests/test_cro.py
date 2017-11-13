@@ -3,11 +3,6 @@
 ###############################################################################
 # run with:
 # python -m pytest tests/test_cro.py
-
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import numpy as np
 
 from cro.cro import CRO
