@@ -13,6 +13,12 @@ class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
                  ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, verbose=False):
         
+        # Set logging configuration
+        logging_level = logging.INFO if verbose else logging.WARNING
+        logging.basicConfig(stream=sys.stdout,
+                            format="%(message)s")
+        logging.getLogger().setLevel(logging_level)
+
         self.Ngen = Ngen
         self.N    = N
         self.M    = M
@@ -32,14 +38,11 @@ class CRO(object):
         self.mode = mode
         self.param_grid = param_grid
         self.verbose = verbose
-        
-        # Set logging configuration
-        logging_level = logging.INFO if verbose else logging.WARNING
-        logging.basicConfig(stream=sys.stdout,
-                            format="%(message)s")
-        logging.getLogger().setLevel(logging_level)
-        logging.info("Running Initialization: %s", self.opt) 
 
+        self.reefinit_function = get_reefinit_function(mode)
+        self.larvaemutation_function = get_larvaemutation_function(mode)
+        logging.info("Running Initialization: %s", self.opt) 
+        
     def reefinitialization (self):   
         """    
         function [REEF,REEFpob]=reefinitialization(M,N,r0,L)
@@ -54,8 +57,7 @@ class CRO(object):
             - REEFpob: population matrix
         """  
         np.random.seed(seed = self.seed) # commom for all modes
-        reefinit_function = get_reefinit_function(self.mode)
-        REEF, REEFpob = reefinit_function(self.M, self.N, self.r0, self.L, param_grid=self.param_grid)
+        REEF, REEFpob = self.reefinit_function(self.M, self.N, self.r0, self.L, param_grid=self.param_grid)
         return REEF, REEFpob
 
     def fitness(self, REEFpob):
@@ -144,8 +146,8 @@ class CRO(object):
                 
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
         
-        larvaemutation_function = get_larvaemutation_function(self.mode)
-        brooders = larvaemutation_function(brooders, pos, delta=1, param_grid=self.param_grid, seed=self.seed)
+        brooders = self.larvaemutation_function(brooders, pos, delta=1,
+                                                param_grid=self.param_grid, seed=self.seed)
                                      
         return brooders
    
