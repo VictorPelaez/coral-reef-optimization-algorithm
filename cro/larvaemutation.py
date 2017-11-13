@@ -87,6 +87,6 @@ def get_larvaemutation_function(mode):
         logging.info("Using {}".format(name))
     else:
         name, func = mode_functions[0]
-        logging.info("Using {} for initializing the reef".format(name))
+        logging.info("Using {} for the brooding operator".format(name))
 
     return func

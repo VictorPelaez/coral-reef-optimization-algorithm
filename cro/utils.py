@@ -31,5 +31,3 @@ def get_module_functions(module_name):
     """
     current_module = sys.modules[module_name]
     return dict(getmembers(current_module, predicate=isfunction))
-
-

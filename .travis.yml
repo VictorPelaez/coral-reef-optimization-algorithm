@@ -9,7 +9,6 @@ install:
 - pip install -r requirements.txt
 script:
 - pytest tests/
-
 deploy:
   provider: pypi
   user: victorpelaez
