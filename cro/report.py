@@ -3,7 +3,7 @@ plt.style.use("ggplot")
 
 def plot_results(Bestfitness, Meanfitness, title_info=None, filename=None):
     Ngen = len(Bestfitness)
-    ngen = range(1, Ngen+1)  
+    ngen = range(Ngen)  
     fig, ax = plt.subplots(figsize=(10,10))
     ax.grid(True)
     ax.plot(ngen, Bestfitness, 'b')     
