@@ -5,9 +5,9 @@ from __future__ import division, print_function
 import sys
 import logging
 import numpy as np
-from .larvaemutation import get_larvaemutation_function
 
-from reef_initialization import get_reefinit_function
+from .reef_initialization import get_reefinit_function
+from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
