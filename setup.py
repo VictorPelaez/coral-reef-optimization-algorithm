@@ -11,8 +11,13 @@ import os
 
 with open('README.txt') as file:
     long_description = file.read()
+    
+def get_version():
+    " Get version from cro.__init__ "
+    path = os.path.join(os.path.dirname(__file__), 'cro/__init__.py')
+    return open(path).readlines()[-1].split()[-1].strip("\"'")   
 
-_version = '0.0.4.11'	
+_version = get_version()	
 
 setup(
     name='cro',

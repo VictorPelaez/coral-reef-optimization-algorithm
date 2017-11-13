@@ -21,10 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-__author__ = "CRO Team"
-__version__ = "0.0.5.0"
 
 from .cro import *
 from .utils import *
 from .fitness import *
 from .larvaemutation import *
+
+__author__ = "CRO Team"
+__version__ = "0.0.5.0"

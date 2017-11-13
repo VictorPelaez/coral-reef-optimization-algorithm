@@ -34,6 +34,7 @@ import numpy as np
 import seaborn as sns 
 from cro import *
 from cro.fitness import max_ones
+from cro.report import plot_results
 
 ## ------------------------------------------------------
 ## Parameters initialization
@@ -54,6 +55,7 @@ ke = 0.2
 
 cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke)
 %time (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
+plot_results(Bestfitness, Meanfitness, cro)
 ```
 Output:
 
@@ -71,7 +73,7 @@ Wall time: 1.06 s
 ### Results for feature selection problem
 
 This example uses a database which was created to identify a voice as male or female (binary target), based upon acoustic properties of the voice and speech. Originally, it contains 20 features and I added 10 noisy ones at the end.
-More examples in this [notebook](cro/test.ipynb)
+More examples in [examples](examples/)
 
 ```python
 from functools import partial
@@ -148,6 +150,11 @@ The following shows basic folder structure.
 │   ├── example_basic.py
 │   ├── example_advanced.py
 ├── tests
+│   ├── __init__.py
+│   ├── test_cro.py
+│   ├── test_fitness.py
+│   ├── test_larvaemutation.py
+│   ├── test_reefinitialization.py
 
 ```
 
