@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+plt.style.use("ggplot")
 
 def plot_results(Bestfitness, Meanfitness, title_info=None, filename=None):
     Ngen = len(Bestfitness)
@@ -33,7 +34,7 @@ def plot_results(Bestfitness, Meanfitness, title_info=None, filename=None):
 
         plt.title(titlepro+'\n'+ titlepar)
     
-    ax.scatter(Ngen, Bestfitness[-1])
+    ax.scatter(Ngen, Bestfitness[-1], c='b')
     ax.annotate('Best: ' + str(Bestfitness[-1]) , (1.01*Ngen, 1.01*Bestfitness[-1]))
     
     if filename:
