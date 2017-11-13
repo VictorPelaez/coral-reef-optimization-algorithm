@@ -1,15 +1,16 @@
-#-*- coding: utf-8 -*-
-from __future__ import division
+#!/usr/bin/env python
+# coding=utf-8
+###############################################################################
 
-import os
-import time
+from __future__ import division
 import numpy as np
+from .larvaemutation import get_larvaemutation_function
 
 from report import plot_results
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke = 0.2, seed=13, mode='bin', param_grid={}, verbose=False):
+                 ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, verbose=False):
         
         self.Ngen = Ngen
         self.N    = N
@@ -24,7 +25,8 @@ class CRO(object):
         self.opt  = opt           
         self.opt_multiplier = -1 if opt == "max" else 1
         self.L    = L                          
-        self.ke   = ke     
+        self.ke   = ke
+        self.npolyps = npolyps
         self.seed = seed
         self.mode = mode
         self.param_grid = param_grid
@@ -79,7 +81,8 @@ class CRO(object):
 
     def fitness(self, REEFpob):
         """
-        Description: This function calculates the health function for each coral in the reef
+        Description:
+            This function calculates the health function for each coral in the reef
         """
         REEF_fitness = []
         for coral in REEFpob:
@@ -126,52 +129,48 @@ class CRO(object):
         pos = np.where(np.sum(mask, axis= 1)==1)[0]
         mask[pos, np.random.randint(self.L, size=[len(pos)])] = 0
         
-        notmask = np.logical_not(mask)
+        not_mask = np.logical_not(mask)
 
-        ESlarvae1 = np.multiply(spawners1, np.logical_not(mask)) + np.multiply(spawners2, mask)
-        ESlarvae2 = np.multiply(spawners2, np.logical_not(mask)) + np.multiply(spawners1, mask)
+        ESlarvae1 = np.multiply(spawners1, not_mask) + np.multiply(spawners2, mask)
+        ESlarvae2 = np.multiply(spawners2, not_mask) + np.multiply(spawners1, mask)
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
-    def brooding(self, REEF, REEFpob, type_brooding='op_mutation'):
+    def brooding(self, REEF, REEFpob):
         """
-        function [ISlarvae]=brooding(REEF,REEFpob,Fb,type)
-        Create new larvae by internal sexual reproduction.   
+        Description:
+            Create new larvae by internal sexual reproduction   
         Input:
-            - REEF: coral reef, 
-            - REEFpob: reef population, 
-            - Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
-            - type_brooding: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc', 'bin')
+            - REEF: coral reef
+            - REEFpob: reef population 
+            - self.npolyps: number of polyps to be mutated (as genes in a evolutionary). 
+                            Coral reefs are therefore created by millions of tiny polyps forming large carbonate structures  
+            - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
+            - self.mode: type of crossover depending on the type. type can be set to one of these options ('cont', 'disc','bin')
         Output:
-            - ISlarvae: created larvae
+            - brooders: created larvae
         """
         
         Fb = self.Fb
+        npolyps = self.npolyps
         
-        #get the brooders
+        # get the brooders
         np.random.seed(seed = self.seed)
         nbrooders= int(np.round((1-Fb)*np.sum((REEF))))
-        #nbrooders = int(np.round((1-Fb)*REEF.shape[0]))
 
         p = np.where(REEF!=0)[0] 
         a = np.random.permutation(p)
-        brooders= a[0:nbrooders]
-        brooders=REEFpob[brooders, :]
-
-        ISlarvae=np.zeros(brooders.shape)
-        if type_brooding == 'bin':
-            A = np.random.randint(2, size=brooders.shape)
-            ISlarvae = (brooders + A) % 2
-            
-        if type_brooding == 'op_mutation':
-            # one point mutation
-            pos = np.random.randint(brooders.shape[1], size=(1, nbrooders))
-            brooders[range(brooders.shape[0]), pos] = np.logical_not(brooders[range(brooders.shape[0]), pos])
-            ISlarvae = brooders
+        brooders = a[0:nbrooders]
+        brooders = REEFpob[brooders, :]
+                
+        pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
         
-        return ISlarvae
-
-    def _settle_larvae(self, larvae, larvaefitness,  REEF, REEFpob, REEFfitness, indices):
+        larvaemutation_function = get_larvaemutation_function(self.mode)
+        brooders = larvaemutation_function(brooders, pos, delta=1, param_grid=self.param_grid, seed=self.seed)
+                                     
+        return brooders
+   
+    def _settle_larvae(self, larvae, larvaefitness, REEF, REEFpob, REEFfitness, indices):
         """
         Description:
             Settle the given larvae in the REEF in the given indices
@@ -202,7 +201,6 @@ class CRO(object):
         k = self.k
 
         np.random.seed(seed=self.seed)
-        Nlarvae = larvae.shape[0]
         nREEF = len(REEF)
 
         # First larvae occupy empty places
@@ -235,8 +233,10 @@ class CRO(object):
 
     def budding(self, REEF, REEFpob, fitness):
         """
-        function  [Alarvae]=budding(REEF,pob,fitness,Fa)
-        Duplicate the better corals in the reef.
+        Description:
+            Best corals reproduction in the reef, it simulates corals 
+            asexual reproduction by budding, a coral npolyp reaches a certain size and divides,
+            produding a genetically identical new polyp
         Input: 
             - REEF: coral reef 
             - pob: reef population
@@ -346,7 +346,6 @@ class CRO(object):
         N = self.N
         M = self.M
         verbose = self.verbose 
-        opt = self.opt
        
         #Reef initialization
         (REEF, REEFpob) = self.reefinitialization ()
