@@ -6,6 +6,7 @@ import context
 from cro.cro import CRO
 from cro.fitness import feature_selection
 from cro.utils import load_data
+from cro.report import plot_results
 
 import time
 from functools import partial
@@ -53,6 +54,9 @@ if __name__ == '__main__':
     start = time.time()
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, seed=13, verbose=True)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, clf)
+
+    info = dict(N=N, M=M, Fb=Fb, Fa=Fa, Fd=Fd, r0=r0, k=k, L=L, Pd=Pd)
+    plot_results(Bestfitness, Meanfitness, title_info=info, filename=None)
     print("Example I: feature selection Classification (max auc): ", time.time() - start, "seconds.")
     
     names = np.array(dataset.feature_names)
@@ -93,6 +97,9 @@ if __name__ == '__main__':
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, verbose=True)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, gbr)
     print("Example II: feature selection, regression (min mse): ", time.time() - start, "seconds.")
+
+    info = dict(N=N, M=M, Fb=Fb, Fa=Fa, Fd=Fd, r0=r0, k=k, L=L, Pd=Pd)
+    plot_results(Bestfitness, Meanfitness, title_info=info, filename=None)
     
     names = np.array(['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT'])
     print(names[REEFpob[ind_best, :]>0])
