@@ -5,6 +5,7 @@
 import context
 from cro.cro import CRO
 from cro.fitness import max_ones
+from cro.report import plot_results
 
 import time
 
@@ -33,6 +34,8 @@ if __name__ == '__main__':
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=True, ke=ke, npolyps=npolyps)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
     print("Example I: max_ones problem", time.time() - start, "seconds.")
+
+    plot_results(Bestfitness, Meanfitness, cro, filename=None)
     
     ## ------------------------------------------------------
     ## Parameters initialization
@@ -59,4 +62,5 @@ if __name__ == '__main__':
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke, npolyps=npolyps, mode=mode, param_grid=grid)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
     print("Example II: max problem in a discrete interval", time.time() - start, "seconds.")
-    
+
+    plot_results(Bestfitness, Meanfitness, cro, filename=None)

@@ -307,31 +307,6 @@ class CRO(object):
 
         return (REEF,REEFpob,REEFfitness)
 
-    def plot_results(self, Bestfitness, Meanfitness):
-            import matplotlib.pyplot as plt
-            
-            ngen = range(self.Ngen+1)  
-            fig, ax = plt.subplots()
-            ax.grid(True)
-            ax.plot(ngen, Bestfitness, 'b')     
-            ax.plot(ngen, Meanfitness, 'r--')           
-            plt.xlabel('Number of generation')
-            
-            if self.opt=='min': legend_place = (1,1);
-            else: legend_place = (1,.3);
-            plt.legend(['Best fitness', 'Mean fitness'], bbox_to_anchor=legend_place)
-            
-            
-            titlepro = ' Problem with Length vector (L): ' + str(self.L)
-            titlepar = 'Ngen: '+ str(self.Ngen)+', N: '+str(self.N)+', M: '+ str(self.M)+', Fb: '+str(self.Fb)+', Fa: '+str(self.Fa)+', Fd: '+str(self.Fd)+', Pd: '+ str(self.Pd)
-
-            plt.title( titlepro+'\n'+ titlepar)
-            
-            ax.scatter(self.Ngen, Bestfitness[-1])
-            ax.annotate('Best: ' + str(Bestfitness[-1]) , (self.Ngen, Bestfitness[-1]))
-            
-            plt.show()
-
     def fit(self, X=None, y=None, clf=None):
         """    
         Description: 
@@ -400,7 +375,6 @@ class CRO(object):
         logging.info('Best-fitness: %s. (100%% completado)', self.opt_multiplier*np.min(REEFfitness))
         ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
 
-        self.plot_results(Bestfitness, Meanfitness)
         print('Best coral: ', REEFpob[ind_best, :])
         print('Best solution: ', self.opt_multiplier*REEFfitness[ind_best])
         
