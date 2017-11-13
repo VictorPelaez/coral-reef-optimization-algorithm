@@ -130,19 +130,26 @@ Wall time: 35.9 s
 
 ## Folder structure
 The following shows basic folder structure.
+
 ```
-├── cro #package name
+├── cro 
 │   ├── __init__.py
-│   ├── cro.py # libs
+│   ├── cro.py 
 │   ├── fitness.py
+│   ├── larvaemutation.py
 │   ├── utils.py
 │   ├── tests.py
-│   ├── test.ipynb
-│   ├── assests #folder
+│   ├── assests 
 │   |   ├── data
 │   |   |	├── voice.csv
+├── examples 
+│   ├── __init__.py
+│   ├── context.py
+│   ├── example_basic.py
+│   ├── example_advanced.py
+├── tests
 
 ```
 
 ## Acknowledgements
-This implementation has been based on Sancho Salcedo's idea and [this proyect](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) and tested with Python over version 3.0
+This implementation has been based on Sancho Salcedo's idea and [this proyect](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
