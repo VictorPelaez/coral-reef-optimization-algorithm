@@ -3,11 +3,6 @@
 ###############################################################################
 # run with:
 # python -m pytest tests/test_cro.py
-
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import numpy as np
 
 from cro.cro import CRO
@@ -119,7 +114,6 @@ def test_larvaesettling_nonemptyreef():
     """
     Due to the passed seed,
     [1,0,0,0] will be placed in the empty coral (index 0)
-
     Then, larva [0,1,1,0] will try to settle in indices [0,3,1], settling in the third try (index 1)
     Larva [0,1,0,0] will try in indices [0,3,3], being discarded
     Larva [1,0,0,1] will try in indices [3,3,1], settling in the third try (index 1)

@@ -90,7 +90,7 @@ if __name__ == '__main__':
                             get_prediction=lambda gbr, X: gbr.predict(X), 
                             metric=mean_squared_error)
     start = time.time()
-    cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, verbose=True)
+    cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, seed=13, verbose=True)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, gbr)
     print("Example II: feature selection, regression (min mse): ", time.time() - start, "seconds.")
     
