@@ -2,15 +2,15 @@ import matplotlib.pyplot as plt
 plt.style.use("ggplot")
 
 def plot_results(Bestfitness, Meanfitness, title_info=None, filename=None):
-    Ngen = len(Bestfitness)
-    ngen = range(Ngen)  
+    Ngen = len(Bestfitness) - 1
+    ngen = range(Ngen+1)  
     fig, ax = plt.subplots(figsize=(10,10))
     ax.grid(True)
     ax.plot(ngen, Bestfitness, 'b')     
     ax.plot(ngen, Meanfitness, 'r--')           
     plt.xlabel('Number of generation')
     plt.xticks(ngen)
-    plt.xlim(0, Ngen+1)
+    plt.xlim(-1, Ngen+1)
     
     plt.legend(['Best fitness', 'Mean fitness'], loc="best")
     
