@@ -35,8 +35,7 @@ if __name__ == '__main__':
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
     print("Example I: max_ones problem", time.time() - start, "seconds.")
 
-    info = dict(N=N, M=M, Fb=Fb, Fa=Fa, Fd=Fd, r0=r0, k=k, L=L, Pd=Pd)
-    plot_results(Bestfitness, Meanfitness, title_info=info, filename=None)
+    plot_results(Bestfitness, Meanfitness, cro, filename=None)
     
     ## ------------------------------------------------------
     ## Parameters initialization
@@ -64,5 +63,4 @@ if __name__ == '__main__':
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
     print("Example II: max problem in a discrete interval", time.time() - start, "seconds.")
 
-    info = dict(N=N, M=M, Fb=Fb, Fa=Fa, Fd=Fd, r0=r0, k=k, L=L, Pd=Pd)
-    plot_results(Bestfitness, Meanfitness, title_info=info, filename=None)
+    plot_results(Bestfitness, Meanfitness, cro, filename=None)

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
 
-def plot_results(Bestfitness, Meanfitness, title_info=None, filename=None):
+def plot_results(Bestfitness, Meanfitness, cro=None, filename=None):
     Ngen = len(Bestfitness) - 1
     ngen = range(Ngen+1)  
     fig, ax = plt.subplots(figsize=(10,10))
@@ -14,14 +14,14 @@ def plot_results(Bestfitness, Meanfitness, title_info=None, filename=None):
     
     plt.legend(['Best fitness', 'Mean fitness'], loc="best")
     
-    if title_info:
-        L = title_info["L"]
-        N = title_info["N"]
-        M = title_info["M"]
-        Fb = title_info["Fb"]
-        Fa = title_info["Fa"]
-        Fd = title_info["Fd"]
-        Pd = title_info["Pd"]
+    if cro:
+        L = cro.L
+        N = cro.N
+        M = cro.M
+        Fb = cro.Fb
+        Fa = cro.Fa
+        Fd = cro.Fd
+        Pd = cro.Pd
     
         titlepro = ' Problem with Length vector (L): ' + str(L)
         titlepar = ", ".join(['Ngen: ' + str(Ngen),
