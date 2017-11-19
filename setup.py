@@ -22,15 +22,14 @@ _version = get_version()
 setup(
     name='cro',
     version=_version,
-    author='Victor Pelaez',
-    author_email='victor.m.pelaez@outlook.com',
+    author='CRO Team',
+    author_email='cro_developers@googlegroups.com',
     packages= ['cro', 'examples'],
     url='https://github.com/VictorPelaez/coral-reef-optimization-algorithm',
     license = 'MIT',
     description='Coral Reef Optimization (CRO) Algorithm',
     long_description= long_description,
     keywords ='optimization algorithm meta-heuristic coral reef',
-    #python_requires='>=3',
     classifiers = [],
 
 )

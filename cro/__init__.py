@@ -28,7 +28,6 @@ from .fitness import *
 from .larvaemutation import *
 
 __author__ = "CRO Team"
-__version__ = "0.0.5.0"
 __email__ = "cro_developers@googlegroups.com"
-
-
+# version must be in the last line 
+__version__ = "0.0.5.0"

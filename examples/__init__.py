@@ -26,5 +26,4 @@ SOFTWARE.
 from .context import *
 
 __author__ = "CRO Team"
-__version__ = "0.0.5.0"
 __email__ = "cro_developers@googlegroups.com"
