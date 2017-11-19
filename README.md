@@ -8,11 +8,11 @@ Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, wh
 CRO is based on a reef, consisting of a _N_ _x_ _M_ square grid. It assumes that each square is able to allocate a coral (or colony of corals). As other evolutionary algorithms, is based on the fact that reef will progress, as long as healthier corals (better solutions at the problem) survive, while less stronger corals die.
 Also, as other genetic and evolutionary optimization algorithms, a phase of reproduction takes place. In this case, CRO applies several operators to imitate coral's reproduction: 
 
-* Modelling of sexual reproduction (broadcast spawning and brooding) 
-    * Broadcast spawning consists on external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm)
-    * Brooding is an internal reproduction (as mutation operator in a genetic algorithm)
-* Modelling of asexual reproduction (budding)
-    * Budding operator duplicates existing corals with a good level of healthiness (better solutions)
+* Modelling of sexual reproduction (Broadcast Spawning and Brooding) 
+    * *Broadcast Spawning* consists on external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm)
+    * *Brooding* is an internal reproduction (as mutation operator in a genetic algorithm)
+* Modelling of asexual reproduction (Budding)
+    * *Budding* operator duplicates existing corals with a good level of healthiness (best solutions)
 * Also some catastrophic events as coral depredation
 
 Flow diagram of the proposed CRO algorithm:
