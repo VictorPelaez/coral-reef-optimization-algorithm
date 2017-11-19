@@ -9,7 +9,7 @@ CRO is based on a reef, consisting of a _N_ _x_ _M_ square grid. It assumes that
 Also, as other genetic and evolutionary optimization algorithms, a phase of reproduction takes place. In this case, CRO applies several operators to imitate coral's reproduction: 
 
 * Modelling of sexual reproduction (Broadcast Spawning and Brooding) 
-    * *Broadcast Spawning* consists on external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm)
+    * *Broadcast Spawning* consists of external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm)
     * *Brooding* is an internal reproduction (as mutation operator in a genetic algorithm)
 * Modelling of asexual reproduction (Budding)
     * *Budding* operator duplicates existing corals with a good level of healthiness (best solutions)
@@ -190,8 +190,4 @@ This implementation has been based on Sancho Salcedo's idea and [this project](h
 
 _Contact point:_ [cro_developers@googlegroups.com](cro_developers@googlegroups.com) 
 
-If you want to develop CRO library with us, we will be pleased to work with you on this project. Ask for be added to the email group. 
- 
-
-
-
+If you want to develop CRO library with us, we will be pleased to work with you on this project. Ask to be added to the email group. 
