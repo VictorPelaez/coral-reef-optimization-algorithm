@@ -1,14 +1,41 @@
 [![pypi](https://img.shields.io/pypi/v/cro.svg)](https://pypi.python.org/pypi/cro)
 [![Travis](https://secure.travis-ci.org/VictorPelaez/coral-reef-optimization-algorithm.png)](http://travis-ci.org/VictorPelaez/coral-reef-optimization-algorithm)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/cro.svg)](https://pypi.python.org/pypi/cro/)
 
 # coral-reef-optimization-algorithm
 Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space and find depredation.
+
+CRO is based on a reef, consisting of a _N_ _x_ _M_ square grid. It assumes that each square is able to allocate a coral (or colony of corals). As other evolutionary algorithms, is based on the fact that reef will progress, as long as healthier corals (better solutions at the problem) survive, while less stronger corals die.
+Also, as other genetic and evolutionary optimization algorithms, a phase of reproduction takes place. In this case, CRO applies several operators to imitate coral's reproduction: 
+
+* Modelling of sexual reproduction (Broadcast Spawning and Brooding) 
+    * *Broadcast Spawning* consists on external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm)
+    * *Brooding* is an internal reproduction (as mutation operator in a genetic algorithm)
+* Modelling of asexual reproduction (Budding)
+    * *Budding* operator duplicates existing corals with a good level of healthiness (best solutions)
+* Also some catastrophic events as coral depredation
 
 Flow diagram of the proposed CRO algorithm:
 
 <img src = 'cro/assets/flow_diagram_cro.png' height ='500px'>
 
 Publication link: [The Coral Reefs Optimization Algorithm: A Novel Metaheuristic for Efficiently Solving Optimization Problems](https://www.researchgate.net/publication/264985908_The_Coral_Reefs_Optimization_Algorithm_A_Novel_Metaheuristic_for_Efficiently_Solving_Optimization_Problems)
+
+CRO includes the following features:
+
+* Optimization algorithm using your own fitness functions, automatically defined functions
+* Focus on Feature selection problem, allowing any kind of machine learning model and metric (ie. scikit-learn) 
+* Binary and Discrete modes as corals representation, grid values interval is allowed
+* Few external dependences, CRO uses Numpy as standard library in order to operate with arrays 
+* Hall of Fame of the best corals in the reef
+
+In future releases:
+
+* Parallelization of the fitness function evaluations
+* Continuous mode as corals representation
+* Add a benchmark module containing most common test functions
+* Multi-objective optimization, colony of corals in each grid position 
+* Focus on ML hyperparameters optimization and feature selection as a multi-objective approach
 
 
 Install
@@ -34,6 +61,7 @@ import numpy as np
 import seaborn as sns 
 from cro import *
 from cro.fitness import max_ones
+from cro.report import plot_results
 
 ## ------------------------------------------------------
 ## Parameters initialization
@@ -54,6 +82,7 @@ ke = 0.2
 
 cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke)
 %time (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
+plot_results(Bestfitness, Meanfitness, cro)
 ```
 Output:
 
@@ -71,7 +100,7 @@ Wall time: 1.06 s
 ### Results for feature selection problem
 
 This example uses a database which was created to identify a voice as male or female (binary target), based upon acoustic properties of the voice and speech. Originally, it contains 20 features and I added 10 noisy ones at the end.
-More examples in this [notebook](cro/test.ipynb)
+More examples in [examples](examples/)
 
 ```python
 from functools import partial
@@ -148,8 +177,21 @@ The following shows basic folder structure.
 │   ├── example_basic.py
 │   ├── example_advanced.py
 ├── tests
+│   ├── __init__.py
+│   ├── test_cro.py
+│   ├── test_fitness.py
+│   ├── test_larvaemutation.py
+│   ├── test_reefinitialization.py
 
 ```
 
 ## Acknowledgements
-This implementation has been based on Sancho Salcedo's idea and [this proyect](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
+This implementation has been based on Sancho Salcedo's idea and [this project](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
+
+_Contact point:_ [cro_developers@googlegroups.com](cro_developers@googlegroups.com) 
+
+If you want to develop CRO library with us, we will be pleased to work with you on this project. Ask for be added to the email group. 
+ 
+
+
+
