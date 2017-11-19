@@ -31,6 +31,7 @@ CRO includes the following features:
 In future releases:
 
 * Parallelization of the fitness function evaluations
+* Continuous mode as corals representation
 * Add a benchmark module containing most common test functions
 * Multi-objective optimization, colony of corals in each grid position 
 * Focus on ML hyperparameters optimization and feature selection as a multi-objective approach
@@ -187,6 +188,7 @@ The following shows basic folder structure.
 This implementation has been based on Sancho Salcedo's idea and [this project](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
 
 _Contact point:_ [cro_developers@googlegroups.com](cro_developers@googlegroups.com) 
+
 If you want to develop CRO library with us, we will be pleased to work with you on this project. Ask for be added to the email group. 
  
 
