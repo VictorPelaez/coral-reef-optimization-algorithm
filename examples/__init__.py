@@ -22,12 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .cro import *
-from .utils import *
-from .fitness import *
-from .larvaemutation import *
+"""Test cro module"""
+from .context import *
 
 __author__ = "CRO Team"
 __email__ = "cro_developers@googlegroups.com"
-# version must be in the last line 
-__version__ = "0.0.5.0"
