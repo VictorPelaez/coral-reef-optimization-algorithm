@@ -29,8 +29,20 @@ setup(
     license = 'MIT',
     description='Coral Reef Optimization (CRO) Algorithm',
     long_description= long_description,
-    keywords ='optimization algorithm meta-heuristic coral reef',
-    classifiers = [],
+    keywords = ["optimization algorithm", "evolutionary", "meta-heuristic", "feature selection", "coral reef"],
+    classifiers = [
+            "Development Status :: 4 - Beta",
+            "License :: OSI Approved :: MIT License", 
+            "Topic :: Software Development :: Libraries :: Python Modules",
+            "Topic :: Scientific/Engineering :: Artificial Intelligence",
+            "Topic :: Scientific/Engineering :: Information Analysis",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: Implementation :: PyPy"
+            ],
+    
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, , !=3.5.*',
 
 )
 
