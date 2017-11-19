@@ -4,12 +4,15 @@
 # coral-reef-optimization-algorithm
 Coral Reefs Optimization (CRO) algorithm artificially simulates a coral reef, where different corals (which are the solutions for the considered optimization problem) grow and reproduce in a coral-reef, fighting with other corals for space and find depredation.
 
-CRO is based on a reef, consisting of a N x M square grid. It assumes that each square is able to allocate a coral (or colony of corals). As other evolutionary algorithms, is based on the fact that reef will progress, as long as healthier corals (better solutions at the problem) survive, while less stronger corals die.
+CRO is based on a reef, consisting of a _N_ _x_ _M_ square grid. It assumes that each square is able to allocate a coral (or colony of corals). As other evolutionary algorithms, is based on the fact that reef will progress, as long as healthier corals (better solutions at the problem) survive, while less stronger corals die.
 Also, as other genetic and evolutionary optimization algorithms, a phase of reproduction takes place. In this case, CRO applies several operators to imitate coral's reproduction: 
 
-* modelling of sexual reproduction (broadcast spawning and brooding). Broadcast spawning consists on external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm). Other hand, Brooding is an internal reproduction (as mutation operator in a genetic algorithm)
-* modelling of asexual reproduction (budding). Budding operator duplicates existing corals with a good level of healthiness (better solutions)
-* also some catastrophic events as coral depredation
+* Modelling of sexual reproduction (broadcast spawning and brooding) 
+    * Broadcast spawning consists on external reproduction, selecting couples of the pool of broadcast spawner corals (as i.e cross-over operator in a genetic algorithm)
+    * Brooding is an internal reproduction (as mutation operator in a genetic algorithm)
+* Modelling of asexual reproduction (budding)
+    * Budding operator duplicates existing corals with a good level of healthiness (better solutions)
+* Also some catastrophic events as coral depredation
 
 Flow diagram of the proposed CRO algorithm:
 
@@ -30,7 +33,7 @@ In future releases:
 * Parallelization of the fitness function evaluations
 * Add a benchmark module containing most common test functions
 * Multi-objective optimization, colony of corals in each grid position 
-* Focus on ML hyperparamters optimization and feature selection as a multi-objective approach
+* Focus on ML hyperparameters optimization and feature selection as a multi-objective approach
 
 
 Install
