@@ -184,4 +184,11 @@ The following shows basic folder structure.
 ```
 
 ## Acknowledgements
-This implementation has been based on Sancho Salcedo's idea and [this proyect](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
+This implementation has been based on Sancho Salcedo's idea and [this project](http://agamenon.tsc.uah.es/Personales/sancho/CRO.html) 
+
+_Contact point:_ [cro_developers@googlegroups.com](cro_developers@googlegroups.com) 
+If you want to develop CRO library with us, we will be pleased to work with you on this project. Ask for be added to the email group. 
+ 
+
+
+
