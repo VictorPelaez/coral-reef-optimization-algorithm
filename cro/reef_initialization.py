@@ -62,6 +62,33 @@ def disc_equal_range(M, N, r0, L, **kwargs):
         REEF = np.array((REEFpob.any(axis=1)),int)  
         return (REEF, REEFpob)
 
+def cont_equal_range(M, N, r0, L, **kwargs):
+    """
+    Each value in each coral in the reef is an float, continuous element in the range
+    specified by the keyword argument `param_grid`. `param_grid`
+    must have the next format:
+
+    >>> param_grid = {
+            "x": [2.2, 10.]   
+        }
+
+    where "x" can be basically anything, and its value is a list
+    with both minimum and maximum value. It is a half-open interval [low, high) (includes low, but excludes high).
+    In this example each coral will contain floats between 2.2 and 10.
+    """
+    try:
+        param_grid = kwargs["param_grid"]
+    except KeyError:
+        raise ValueError("disc mode needs a param_grid as a dictionary")
+
+    O = int(np.round(N*M*r0)) # number of occupied reefs 
+    for _, value in param_grid.items():
+        A = np.random.uniform(value[0], value[1], size=[O, L])
+        B = np.zeros([((N*M)-O), L], int)      
+        REEFpob = np.concatenate([A,B]) # Population creation
+        REEF = np.array((REEFpob.any(axis=1)),int)  
+        return (REEF, REEFpob)
+    
 """""
 UTILS
 """""

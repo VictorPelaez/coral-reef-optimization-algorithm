@@ -5,7 +5,7 @@
 # python -m pytest tests/test_larvaemutation.py
 import numpy as np
 
-from cro.reef_initialization import bin_binary, disc_equal_range
+from cro.reef_initialization import bin_binary, disc_equal_range, cont_equal_range
 
 # ------------------------------------------------------
 # reefinitialization module
@@ -26,5 +26,16 @@ def test_disc_equal_range():
     grid = {'x': [2, 10]}      # Discrete values between 2 and 10
 
     REEF, REEFpob = disc_equal_range(M, N, r0, L, param_grid=grid)
+    p = sum(REEFpob[np.where(REEFpob!=0)]<grid['x'][0]) + sum(REEFpob[np.where(REEFpob!=0)]>grid['x'][1])
+    assert p == 0
+
+def test_cont_equal_range():
+    """
+    Test that corals in population contain values specified in the grid
+    """
+    M, N, r0, L = 2, 2, 0.6, 8
+    grid = {'x': [2.2, 10.]}      # Discrete values between 2 and 10
+
+    REEF, REEFpob = cont_equal_range(M, N, r0, L, param_grid=grid)  
     p = sum(REEFpob[np.where(REEFpob!=0)]<grid['x'][0]) + sum(REEFpob[np.where(REEFpob!=0)]>grid['x'][1])
     assert p == 0
