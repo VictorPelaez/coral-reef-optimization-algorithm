@@ -60,7 +60,7 @@ def test_disc_larvaemutattion():
 def test_cont_simple_larvaemutattion():
     """
     Test mutated larvae in a given position, cont mode
-    mutation type: simple gaussian
+    mutation type: simple gaussian + correction
     TARGET: larvaemutation -> cont_larvaemutation
     """ 
     

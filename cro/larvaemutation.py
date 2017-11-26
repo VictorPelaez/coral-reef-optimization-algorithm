@@ -82,7 +82,7 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
         
     if mut_type == 'simple':    
         brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
-        correction_larvaemutation(brooders, m, M)
+        brooders = correction_larvaemutation(brooders, m, M)
     
     if mut_type == 'delta':
         inc = (M - brooders[range(nbrooders), pos])
