@@ -40,8 +40,7 @@ def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
     except KeyError:
         raise ValueError("disc mode needs a param_grid as a dictionary")
     
-    np.random.seed(seed)
-            
+    np.random.seed(seed)           
     (nbrooders, lbrooders) = brooders.shape
     MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
 
@@ -63,8 +62,24 @@ def cont_larvaemutation(brooders, pos, delta=1, **kwargs):
     Description:
         larvae-mutation in a continuous mode   
     """
-    pass
+    try:
+        param_grid = kwargs["param_grid"]
+        seed = kwargs["seed"]
+        mut_type = kwargs["mut_type"]
+    except KeyError:
+        raise ValueError("continuous mode needs a param_grid as a dictionary")
+        
+    np.random.seed(seed)  
+    (nbrooders, lbrooders) = brooders.shape
     
+    for key, value in param_grid.items():
+        m, M = value
+    if mut_type =='simple':    
+        brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
+        brooders[np.where(brooders<m)] = m
+        brooders[np.where(brooders>M)] = M
+
+    return (brooders)
 
 # ------------------------------------------------------
 # UTILS

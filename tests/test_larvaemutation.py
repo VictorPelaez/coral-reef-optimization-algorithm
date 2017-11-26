@@ -61,9 +61,24 @@ def test_cont_larvaemutattion():
     """
     Test mutated larvae in a given position, cont mode
     TARGET: larvaemutation -> cont_larvaemutation
-    """   
-    pass   
+    """ 
     
+    larvae = np.array([[2.1, 4.2, 4.3, 9.4, 9.9, 8.6, 3.7, 9.8],
+                       [2.1, 9.2, 6.3, 7.4, 6.5, 5.6, 8.7, 3.8],
+                       [3.1, 7.2, 8.3, 9.4, 6.5, 7.6, 8.7, 8.8]])
+    
+    pos = np.array([[0, 3, 5]])
+    mode = 'cont'
+    grid = {'x': [2., 10.]}      # Discrete values between 2 and 10
+    
+    larvaemutation_function = get_larvaemutation_function(mode)
+    larvaemutated = larvaemutation_function(larvae, pos, param_grid=grid, mut_type='simple', seed=13)
+    
+    goodsol = np.array([[2., 4.2, 4.3, 9.4, 9.9, 8.6, 3.7, 9.8],
+                       [2.1, 9.2, 6.3, 8.1537664, 6.5, 5.6, 8.7, 3.8],
+                       [3.1, 7.2, 8.3, 9.4, 6.5, 7.55549692, 8.7, 8.8]])
+
+    np.testing.assert_almost_equal(larvaemutated, goodsol)   
 
 def test_get_larvaemutation_function():
     """
