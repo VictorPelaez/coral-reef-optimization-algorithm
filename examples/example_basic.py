@@ -68,7 +68,7 @@ if __name__ == '__main__':
     ## ------------------------------------------------------
     ## Parameters initialization
     ## ------------------------------------------------------
-    Ngen = 50                  # Number of generations
+    Ngen = 38                  # Number of generations
     N  = 30                    # MxN: reef size
     M  = 30                    # MxN: reef size
     Fb = 0.85                  # Broadcast prob.

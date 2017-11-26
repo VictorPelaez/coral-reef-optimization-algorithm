@@ -147,7 +147,7 @@ class CRO(object):
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
         
         brooders = self.larvaemutation_function(brooders, pos, delta=1,
-                                                param_grid=self.param_grid, seed=self.seed, mut_type='simple')
+                                                param_grid=self.param_grid, seed=self.seed, mut_type='delta')
                                      
         return brooders
    

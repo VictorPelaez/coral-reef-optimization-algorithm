@@ -57,7 +57,7 @@ def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
 
     return (brooders + MM)
 
-def cont_larvaemutation(brooders, pos, delta=1, **kwargs):
+def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
     """
     Description:
         larvae-mutation in a continuous mode   
@@ -71,14 +71,26 @@ def cont_larvaemutation(brooders, pos, delta=1, **kwargs):
         
     np.random.seed(seed)  
     (nbrooders, lbrooders) = brooders.shape
-    
+    MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
+   
     for key, value in param_grid.items():
         m, M = value
-    if mut_type =='simple':    
+        
+    if mut_type == 'simple':    
         brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
         brooders[np.where(brooders<m)] = m
         brooders[np.where(brooders>M)] = M
-
+    
+    if mut_type == 'delta':
+        inc = (M - brooders[range(nbrooders), pos])
+        dec = (brooders[range(nbrooders), pos] -m) 
+        Inc = np.where(inc>dec)  
+        Dec = np.where(inc<=dec) 
+        
+        MM[Inc[1], pos[Inc]] = np.random.randint(delta, np.min(inc[Inc])) if len(Inc[1]) !=0 else delta 
+        MM[Dec[1], pos[Dec]] = -np.random.randint(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
+        brooders = brooders + MM
+        
     return (brooders)
 
 # ------------------------------------------------------
