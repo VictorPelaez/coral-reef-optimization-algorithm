@@ -60,7 +60,11 @@ def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
 def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
     """
     Description:
-        larvae-mutation in a continuous mode   
+        larvae-mutation in a continuous mode
+        mutation type:
+            - "simple": simple gaussian mutation + larvae correction
+            - "delta" : increase and decrease delta values controlling where (positions) increase or decrease
+
     """
     try:
         param_grid = kwargs["param_grid"]
@@ -78,8 +82,7 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
         
     if mut_type == 'simple':    
         brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
-        brooders[np.where(brooders<m)] = m
-        brooders[np.where(brooders>M)] = M
+        correction_larvaemutation(brooders, m, M)
     
     if mut_type == 'delta':
         inc = (M - brooders[range(nbrooders), pos])
@@ -92,6 +95,13 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
         brooders = brooders + MM
         
     return (brooders)
+
+def correction_larvaemutation(larvae, m, M):
+    """
+    Description:
+        larvae correction after mutation operator  
+    """          
+    return np.interp(larvae, [m, M], [m, M])  
 
 # ------------------------------------------------------
 # UTILS
