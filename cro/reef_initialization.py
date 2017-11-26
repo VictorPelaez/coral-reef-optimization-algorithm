@@ -83,7 +83,7 @@ def cont_equal_range(M, N, r0, L, **kwargs):
 
     O = int(np.round(N*M*r0)) # number of occupied reefs 
     for _, value in param_grid.items():
-        A = np.random.uniform(value[0], value[1], size=[O, L])
+        A = np.random.uniform(float(value[0]), float(value[1]), size=[O, L])
         B = np.zeros([((N*M)-O), L], int)      
         REEFpob = np.concatenate([A,B]) # Population creation
         REEF = np.array((REEFpob.any(axis=1)),int)  
