@@ -4,11 +4,9 @@
 from __future__ import division, print_function
 import sys
 import logging
-from multiprocessing import cpu_count
+from multiprocess import Pool, cpu_count
 
-import dill as pickle
 import numpy as np
-from joblib import Parallel, delayed
 
 from .reef_initialization import get_reefinit_function
 from .larvaemutation import get_larvaemutation_function
@@ -32,7 +30,7 @@ class CRO(object):
         self.r0   = r0
         self.k    = k
         self.Pd   = Pd
-        self.fitness_coral = delayed(fitness_coral)
+        self.fitness_coral = fitness_coral
         self.opt  = opt           
         self.opt_multiplier = -1 if opt == "max" else 1
         self.L    = L                          
@@ -72,8 +70,8 @@ class CRO(object):
         try:
             p = self.parallel
         except AttributeError:
-            p = self.parallel = Parallel(n_jobs=cpu_count())
-        REEF_fitness = p(self.fitness_coral(coral) for coral in REEFpob)
+            p = self.parallel = Pool(cpu_count())
+        REEF_fitness = p.map(self.fitness_coral, REEFpob)
 
         return self.opt_multiplier*np.array(REEF_fitness)
 
