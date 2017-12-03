@@ -10,6 +10,7 @@ Description:
 Input:
     - brooders: individuals to be mutated
     - pos: selected positions to be mutated
+    - pNgen: generation ratio 
     - delta: represents an increment or decrement in each mutation (it could be placed as arg in param_grid)
     - kwargs: extra arguments that the function might need (see https://stackoverflow.com/a/1769475 for an explanation on kwargs)
 Output:
@@ -21,7 +22,7 @@ import numpy as np
 
 from .utils import get_module_functions
 
-def bin_larvaemutation(brooders, pos, pNgen=1, delta=None,**kwargs):
+def bin_larvaemutation(brooders, pos, pNgen=1, delta=None, **kwargs):
     """
     Description:
         larvae-mutation in a binary mode   
@@ -37,10 +38,10 @@ def disc_larvaemutation(brooders, pos, pNgen=1, delta=1, **kwargs):
     """
     try:
         param_grid = kwargs["param_grid"]
-        seed = kwargs["seed"]
     except KeyError:
         raise ValueError("disc mode needs a param_grid as a dictionary")
     
+    seed = kwargs["seed"]
     np.random.seed(seed)           
     (nbrooders, lbrooders) = brooders.shape
     MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
@@ -65,17 +66,16 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
         mutation type:
             - "ga": simple gaussian mutation + larvae correction
             - "shrink": Gaussian mutation, controls the rate at which the average amount of mutation decreases.
-                        The standard deviation decreases linearly so that its final value equals 1 – Shrink times its initial value at the first generation.
-                        For example, if Shrink has the default value of 1, then the amount of mutation decreases to 0 at the final step.
+                        The standard deviation decreases linearly so that its final value equals (1 – Shrink) times its initial value at the first generation
             - "uniform": increase and decrease delta values controlling where (positions) increase or decrease
     """
     try:
         param_grid = kwargs["param_grid"]
-        seed = kwargs["seed"]
-        mutation = kwargs["mutation"]
     except KeyError:
         raise ValueError("continuous mode needs a param_grid as a dictionary")
-                
+      
+    seed = kwargs["seed"]
+    mutation = kwargs["mutation"]          
     np.random.seed(seed)  
     (nbrooders, lbrooders) = brooders.shape
     MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
@@ -91,6 +91,7 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
         brooders = correction_larvaemutation(brooders, m, M)
     
     elif mutName == 'shrink':
+        if mutValue==None: mutValue=1
         mu = np.mean(brooders, 1)
         sigma = (1-mutValue)*pNgen
         brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], mu, sigma)
