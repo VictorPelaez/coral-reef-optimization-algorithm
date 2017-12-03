@@ -75,18 +75,19 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
         mutation = kwargs["mutation"]
     except KeyError:
         raise ValueError("continuous mode needs a param_grid as a dictionary")
-        
-    (mutName, mutValue) = get_paramsMutation(mutation)    
-        
+                
     np.random.seed(seed)  
     (nbrooders, lbrooders) = brooders.shape
     MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
-   
+    (mutName, mutValue) = get_paramsMutation(mutation)    
+
     for key, value in param_grid.items():
         m, M = value
         
-    if mutName == 'ga':    
-        brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], 0, 1)
+    if mutName == 'ga':  
+        if mutValue==None: (mu, sigma)=(0,1)
+        else: (mu, sigma) = mutValue
+        brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], mu, sigma)
         brooders = correction_larvaemutation(brooders, m, M)
     
     elif mutName == 'shrink':
@@ -109,6 +110,10 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
         
     return (brooders)
 
+# ------------------------------------------------------
+# GA Mutations
+# ------------------------------------------------------
+
 def gaussian_mutation(larvaes, mu, sigma):
     """
     Description:
@@ -116,13 +121,7 @@ def gaussian_mutation(larvaes, mu, sigma):
     """
     larvaes += np.random.normal(mu, sigma, larvaes.shape)
     return larvaes
-    
-def correction_larvaemutation(larvae, m, M):
-    """
-    Description:
-        larvae correction after mutation operator  
-    """          
-    return np.interp(larvae, [m, M], [m, M])  
+
 
 # ------------------------------------------------------
 # UTILS
@@ -148,6 +147,13 @@ def get_larvaemutation_function(mode):
         logging.info("Using {} for the brooding operator".format(name))
 
     return func
+
+def correction_larvaemutation(larvae, m, M):
+    """
+    Description:
+        larvae correction after mutation operator  
+    """          
+    return np.interp(larvae, [m, M], [m, M]) 
 
 def get_paramsMutation(mutation):
     """
