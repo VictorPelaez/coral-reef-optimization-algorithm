@@ -21,7 +21,7 @@ import numpy as np
 
 from .utils import get_module_functions
 
-def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
+def bin_larvaemutation(brooders, pos, pNgen=1, delta=None,**kwargs):
     """
     Description:
         larvae-mutation in a binary mode   
@@ -30,7 +30,7 @@ def bin_larvaemutation(brooders, pos, delta=None, **kwargs):
     brooders[range(nbrooders), pos] = np.logical_not(brooders[range(nbrooders), pos])
     return (brooders)
 
-def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
+def disc_larvaemutation(brooders, pos, pNgen=1, delta=1, **kwargs):
     """
     Description:
         larvae-mutation in a discrete mode   
@@ -58,12 +58,15 @@ def disc_larvaemutation(brooders, pos, delta=1, **kwargs):
 
     return (brooders + MM)
 
-def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
+def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
     """
     Description:
         larvae-mutation in a continuous mode
         mutation type:
             - "ga": simple gaussian mutation + larvae correction
+            - "shrink": Gaussian mutation, controls the rate at which the average amount of mutation decreases.
+                        The standard deviation decreases linearly so that its final value equals 1 – Shrink times its initial value at the first generation.
+                        For example, if Shrink has the default value of 1, then the amount of mutation decreases to 0 at the final step.
             - "uniform": increase and decrease delta values controlling where (positions) increase or decrease
     """
     try:
@@ -81,10 +84,17 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
         m, M = value
         
     if mutation == 'ga':    
-        brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
+        brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], 0, 1)
         brooders = correction_larvaemutation(brooders, m, M)
     
-    if mutation == 'uniform':
+    elif mutation == 'shrink':
+        mu = np.mean(brooders, 1)
+        shrink=1
+        sigma = (1-shrink)*pNgen
+        brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], mu, sigma)
+        brooders = correction_larvaemutation(brooders, m, M)    
+    
+    elif mutation == 'uniform':
         inc = (M - brooders[range(nbrooders), pos])
         dec = (brooders[range(nbrooders), pos] -m) 
         Inc = np.where(inc>dec)  
@@ -92,10 +102,20 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
         
         MM[Inc[1], pos[Inc]] = np.random.uniform(delta, np.min(inc[Inc])) if len(Inc[1]) !=0 else delta 
         MM[Dec[1], pos[Dec]] = -np.random.uniform(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
-        brooders = brooders + MM
+        brooders = brooders + MM  
+    else:    
+        raise ValueError("Mutation %s is not available" %(mutation))
         
     return (brooders)
 
+def gaussian_mutation(larvaes, mu, sigma):
+    """
+    Description:
+        This function applies a gaussian mutation of mean *mu* and standard deviation *sigma* on larvaes
+    """
+    larvaes += np.random.normal(mu, sigma, larvaes.shape)
+    return larvaes
+    
 def correction_larvaemutation(larvae, m, M):
     """
     Description:

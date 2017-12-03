@@ -118,13 +118,14 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
-    def brooding(self, REEF, REEFpob):
+    def brooding(self, REEF, REEFpob, pNgen):
         """
         Description:
             Create new larvae by internal sexual reproduction   
         Input:
             - REEF: coral reef
             - REEFpob: reef population 
+            - pNgen: generation rate (n/Ngen)
             - self.npolyps: number of polyps to be mutated (as genes in a evolutionary). 
                             Coral reefs are therefore created by millions of tiny polyps forming large carbonate structures  
             - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
@@ -147,7 +148,7 @@ class CRO(object):
                 
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
         
-        brooders = self.larvaemutation_function(brooders, pos, delta=1,
+        brooders = self.larvaemutation_function(brooders, pos, pNgen=pNgen, delta=1,
                                                 param_grid=self.param_grid, seed=self.seed, mutation=self.mutation)
                                      
         return brooders
@@ -348,7 +349,7 @@ class CRO(object):
 
         for n in range(Ngen):
             ESlarvae = self.broadcastspawning(REEF, REEFpob)
-            ISlarvae = self.brooding(REEF, REEFpob)
+            ISlarvae = self.brooding(REEF, REEFpob, n/Ngen)
 
             # larvae fitness
             ESfitness = self.fitness(ESlarvae)

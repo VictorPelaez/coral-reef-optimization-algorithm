@@ -83,8 +83,8 @@ if __name__ == '__main__':
     L = 20
     ke = 0.2
     mode = 'cont'
-    mutation = 'ga'
-    grid = {'x': [1.1, 10.]}      # Discrete values between 2 and 10
+    mutation = 'shrink' #{'shrink': 1}
+    grid = {'x': [1.1, 100.]}      # Discrete values between 2 and 10
     ## ------------------------------------------------------
     
     start = time.time()
