@@ -76,6 +76,8 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
     except KeyError:
         raise ValueError("continuous mode needs a param_grid as a dictionary")
         
+    (mutName, mutValue) = get_paramsMutation(mutation)    
+        
     np.random.seed(seed)  
     (nbrooders, lbrooders) = brooders.shape
     MM = np.zeros([nbrooders, lbrooders], int) # Mutation matrix
@@ -83,18 +85,17 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
     for key, value in param_grid.items():
         m, M = value
         
-    if mutation == 'ga':    
+    if mutName == 'ga':    
         brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], 0, 1)
         brooders = correction_larvaemutation(brooders, m, M)
     
-    elif mutation == 'shrink':
+    elif mutName == 'shrink':
         mu = np.mean(brooders, 1)
-        shrink=1
-        sigma = (1-shrink)*pNgen
+        sigma = (1-mutValue)*pNgen
         brooders[range(nbrooders), pos] =  gaussian_mutation(brooders[range(nbrooders), pos], mu, sigma)
         brooders = correction_larvaemutation(brooders, m, M)    
     
-    elif mutation == 'uniform':
+    elif mutName == 'uniform':
         inc = (M - brooders[range(nbrooders), pos])
         dec = (brooders[range(nbrooders), pos] -m) 
         Inc = np.where(inc>dec)  
@@ -104,7 +105,7 @@ def cont_larvaemutation(brooders, pos, pNgen=1, delta=.1, **kwargs):
         MM[Dec[1], pos[Dec]] = -np.random.uniform(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
         brooders = brooders + MM  
     else:    
-        raise ValueError("Mutation %s is not available" %(mutation))
+        raise ValueError("Mutation %s is not available" %(mutName))
         
     return (brooders)
 
@@ -147,3 +148,16 @@ def get_larvaemutation_function(mode):
         logging.info("Using {} for the brooding operator".format(name))
 
     return func
+
+def get_paramsMutation(mutation):
+    """
+    Description: 
+        Returns the params for mutation variable, ex. (key, value) if a dictionary
+    """
+    if type(mutation)== dict:
+        (mutName, mutValue), = mutation.items()
+    elif type(mutation)== str:
+        (mutName, mutValue) = (mutation, None)
+    else:
+        raise ValueError("Mutation should be a dictionary or a string")
+    return (mutName, mutValue)

@@ -68,7 +68,7 @@ if __name__ == '__main__':
     ## ------------------------------------------------------
     ## Parameters initialization
     ## ------------------------------------------------------
-    Ngen = 40                  # Number of generations
+    Ngen = 15                  # Number of generations
     N  = 30                    # MxN: reef size
     M  = 30                    # MxN: reef size
     Fb = 0.85                  # Broadcast prob.
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     L = 20
     ke = 0.2
     mode = 'cont'
-    mutation = 'shrink' #{'shrink': 1}
+    mutation = {'shrink': 0.8}
     grid = {'x': [1.1, 100.]}      # Discrete values between 2 and 10
     ## ------------------------------------------------------
     
