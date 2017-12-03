@@ -6,6 +6,7 @@
 Description:
     Module that contains all the functions that perform the larvae-mutation operators
     Every function should start with the mode name it performs, followed by an underscore and the function name
+    Used names from https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)
 Input:
     - brooders: individuals to be mutated
     - pos: selected positions to be mutated
@@ -62,9 +63,8 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
     Description:
         larvae-mutation in a continuous mode
         mutation type:
-            - "simple": simple gaussian mutation + larvae correction
-            - "delta" : increase and decrease delta values controlling where (positions) increase or decrease
-
+            - "ga": simple gaussian mutation + larvae correction
+            - "uniform": increase and decrease delta values controlling where (positions) increase or decrease
     """
     try:
         param_grid = kwargs["param_grid"]
@@ -80,18 +80,18 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
     for key, value in param_grid.items():
         m, M = value
         
-    if mut_type == 'simple':    
+    if mut_type == 'ga':    
         brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
         brooders = correction_larvaemutation(brooders, m, M)
     
-    if mut_type == 'delta':
+    if mut_type == 'uniform':
         inc = (M - brooders[range(nbrooders), pos])
         dec = (brooders[range(nbrooders), pos] -m) 
         Inc = np.where(inc>dec)  
         Dec = np.where(inc<=dec) 
         
-        MM[Inc[1], pos[Inc]] = np.random.randint(delta, np.min(inc[Inc])) if len(Inc[1]) !=0 else delta 
-        MM[Dec[1], pos[Dec]] = -np.random.randint(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
+        MM[Inc[1], pos[Inc]] = np.random.uniform(delta, np.min(inc[Inc])) if len(Inc[1]) !=0 else delta 
+        MM[Dec[1], pos[Dec]] = -np.random.uniform(delta, np.min(dec[Dec])) if len(Dec[1]) !=0 else -delta 
         brooders = brooders + MM
         
     return (brooders)

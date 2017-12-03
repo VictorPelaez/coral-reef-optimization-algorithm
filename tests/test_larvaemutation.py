@@ -57,7 +57,7 @@ def test_disc_larvaemutattion():
     np.testing.assert_almost_equal(larvaemutated, goodsol)   
 
 
-def test_cont_simple_larvaemutattion():
+def test_cont_ga_larvaemutattion():
     """
     Test mutated larvae in a given position, cont mode
     mutation type: simple gaussian + correction
@@ -70,7 +70,7 @@ def test_cont_simple_larvaemutattion():
     
     pos = np.array([[0, 3, 5]])
     mode = 'cont'
-    mut_type = 'simple'
+    mut_type = 'ga'
     grid = {'x': [2., 10.]}      # Discrete values between 2 and 10
     
     larvaemutation_function = get_larvaemutation_function(mode)
@@ -82,7 +82,7 @@ def test_cont_simple_larvaemutattion():
 
     np.testing.assert_almost_equal(larvaemutated, goodsol)   
 
-def test_cont_delta_larvaemutattion():
+def test_cont_uniform_larvaemutattion():
     """
     Test mutated larvae in a given position, cont mode
     mutation type: delta
@@ -95,15 +95,15 @@ def test_cont_delta_larvaemutattion():
     
     pos = np.array([[0, 3, 5]])
     mode = 'cont'
-    mut_type = 'delta'
+    mut_type = 'uniform'
     grid = {'x': [2., 10.]}      # Discrete values between 2 and 10
     
     larvaemutation_function = get_larvaemutation_function(mode)
     larvaemutated = larvaemutation_function(larvae, pos, param_grid=grid, mut_type=mut_type, seed=13)
     
-    goodsol = np.array([[4.1, 4.2, 4.3, 9.4, 9.9, 8.6, 3.7, 9.8],
-                       [2.1, 9.2, 6.3, 7.4, 6.5, 5.6, 8.7, 3.8],
-                       [3.1, 7.2, 8.3, 9.4, 6.5, 7.6, 8.7, 8.8]])
+    goodsol = np.array([[8.1, 4.2, 4.3, 9.4, 9.9, 8.6, 3.7, 9.8],
+                       [2.1, 9.2, 6.3, 6.4, 6.5, 5.6, 8.7, 3.8],
+                       [3.1, 7.2, 8.3, 9.4, 6.5, 6.6, 8.7, 8.8]])
 
     np.testing.assert_almost_equal(larvaemutated, goodsol) 
     
@@ -117,3 +117,5 @@ def test_get_larvaemutation_function():
     assert 'function bin_larvaemutation' in str(f)
     f = get_larvaemutation_function('disc')
     assert 'function disc_larvaemutation' in str(f)
+    f = get_larvaemutation_function('cont')
+    assert 'function cont_larvaemutation' in str(f)

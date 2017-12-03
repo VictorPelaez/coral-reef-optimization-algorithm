@@ -11,7 +11,7 @@ from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, verbose=False):
+                 ke=0.2, npolyps=1, seed=None, mode='bin', mut_type='ga', param_grid={}, verbose=False):
         
         # Set logging configuration
         logging_level = logging.INFO if verbose else logging.WARNING
@@ -36,6 +36,7 @@ class CRO(object):
         self.npolyps = npolyps
         self.seed = seed
         self.mode = mode
+        self.mut_type = mut_type
         self.param_grid = param_grid
         self.verbose = verbose
 
@@ -147,7 +148,7 @@ class CRO(object):
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
         
         brooders = self.larvaemutation_function(brooders, pos, delta=1,
-                                                param_grid=self.param_grid, seed=self.seed, mut_type='delta')
+                                                param_grid=self.param_grid, seed=self.seed, mut_type=self.mut_type)
                                      
         return brooders
    
