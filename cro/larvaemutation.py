@@ -69,7 +69,7 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
     try:
         param_grid = kwargs["param_grid"]
         seed = kwargs["seed"]
-        mut_type = kwargs["mut_type"]
+        mutation = kwargs["mutation"]
     except KeyError:
         raise ValueError("continuous mode needs a param_grid as a dictionary")
         
@@ -80,11 +80,11 @@ def cont_larvaemutation(brooders, pos, delta=.1, **kwargs):
     for key, value in param_grid.items():
         m, M = value
         
-    if mut_type == 'ga':    
+    if mutation == 'ga':    
         brooders[range(nbrooders), pos] =  brooders[range(nbrooders), pos] + np.random.normal(0, 1, pos.shape)
         brooders = correction_larvaemutation(brooders, m, M)
     
-    if mut_type == 'uniform':
+    if mutation == 'uniform':
         inc = (M - brooders[range(nbrooders), pos])
         dec = (brooders[range(nbrooders), pos] -m) 
         Inc = np.where(inc>dec)  

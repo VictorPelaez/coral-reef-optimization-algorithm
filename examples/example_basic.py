@@ -83,12 +83,12 @@ if __name__ == '__main__':
     L = 20
     ke = 0.2
     mode = 'cont'
-    mut_type = 'ga'
+    mutation = 'ga'
     grid = {'x': [1.1, 10.]}      # Discrete values between 2 and 10
     ## ------------------------------------------------------
     
     start = time.time()
-    cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke, npolyps=npolyps, mode=mode, mut_type=mut_type, param_grid=grid)
+    cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke, npolyps=npolyps, mode=mode, mutation=mutation, param_grid=grid)
     (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
     print("Example II: max problem in a continuous interval", time.time() - start, "seconds.")
 
