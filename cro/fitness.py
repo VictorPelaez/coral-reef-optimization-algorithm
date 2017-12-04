@@ -58,3 +58,45 @@ def feature_selection(coral, X, y, model,
     fitness = metric(y_test, y_pred)
 
     return fitness
+
+def hyperparameter_selection(coral, X, y, model, 
+                      get_prediction = lambda model, X: model.predict(X),
+                      metric=roc_auc_score, random_seed=None):   
+    """
+    Description: Returns the fitness (given by metric) of just one hyperparam given by coral,
+    when using Xt and yt for training the model clf
+
+    Input:
+        - coral : an individual
+        - X: Data input
+        - y: Data output
+        - model: instance of the model to be trained
+        - get_prediction: function that accepts the model and X and outputs the vector 
+                          that will be used in the metric (predictions, scores...)
+        - metric: metric that will be used as fitness
+    Output:
+        - fitness
+    """
+    # offset % of data for training, the rest for testing
+    offset = int(X.shape[0] * 0.9)
+
+    Xs, ys = shuffle(X, y, random_state=random_seed)
+    # check why coral is .0?
+    if coral[0]!=0: 
+        model.learning_rate = coral[0]
+    else:   
+        model.learning_rate=1
+    #print(model)
+    #Xs = np.multiply(Xs, coral) 
+    
+    X_train, y_train = Xs[:offset], ys[:offset]
+    X_test, y_test   = Xs[offset:], ys[offset:]
+
+    # train model
+    model.fit(X_train, y_train)   
+
+    # Compute metric
+    y_pred = get_prediction(model, X_test)
+    fitness = metric(y_test, y_pred)
+
+    return fitness
