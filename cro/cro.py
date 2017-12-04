@@ -13,7 +13,8 @@ from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, verbose=False):
+                 ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, n_jobs=-1,
+                 verbose=False):
         
         # Set logging configuration
         logging_level = logging.INFO if verbose else logging.WARNING
@@ -39,6 +40,7 @@ class CRO(object):
         self.seed = seed
         self.mode = mode
         self.param_grid = param_grid
+        self.n_jobs = cpu_count() if n_jobs == -1 else max(int(n_jobs), 1) # at least 1
         self.verbose = verbose
 
         self.reefinit_function = get_reefinit_function(mode)
@@ -70,7 +72,7 @@ class CRO(object):
         try:
             p = self.parallel
         except AttributeError:
-            p = self.parallel = Pool(cpu_count())
+            p = self.parallel = Pool(self.n_jobs)
         REEF_fitness = p.map(self.fitness_coral, REEFpob)
 
         return self.opt_multiplier*np.array(REEF_fitness)
