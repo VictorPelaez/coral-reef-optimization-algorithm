@@ -4,3 +4,4 @@ scipy>=0.19.0
 pandas>=0.20.3
 matplotlib>=2.1.0
 multiprocess>=0.70.5
+pytest>=3.3.1
