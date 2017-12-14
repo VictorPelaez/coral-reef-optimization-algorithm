@@ -340,9 +340,9 @@ class CRO(object):
         Bestfitness = []
         Meanfitness = []
 
-        Bestfitness.append(self.opt_multiplier*np.min(REEFfitness))
-        Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
-        logging.info('Reef initialization: %s', self.opt_multiplier*np.min(REEFfitness))
+        Bestfitness.append(self.opt_multiplier*np.min(REEFfitness[REEF.astype(bool)]))
+        Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness[REEF.astype(bool)]))
+        logging.info('Reef initialization: %s', self.opt_multiplier*np.min(REEFfitness[REEF.astype(bool)]))
 
 
         for n in range(Ngen):
@@ -366,13 +366,14 @@ class CRO(object):
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
                 (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
 
-            Bestfitness.append(self.opt_multiplier*np.min(REEFfitness))
-            Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
+            Bestfitness.append(self.opt_multiplier*np.min(REEFfitness[REEF.astype(bool)]))
+            Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness[REEF.astype(bool)]))
 
             if all([n%10 == 0, n != Ngen, verbose]):
-                logging.info('Best-fitness: %s, (%.2f%% completado)', self.opt_multiplier*np.min(REEFfitness), n/Ngen*100)
+                logging.info('Best-fitness: %s, (%.2f%% completado)', self.opt_multiplier*np.min(REEFfitness[REEF.astype(bool)]), n/Ngen*100)
 
-        logging.info('Best-fitness: %s. (100%% completado)', self.opt_multiplier*np.min(REEFfitness))
+        logging.info('Best-fitness: %s. (100%% completado)', self.opt_multiplier*np.min(REEFfitness[REEF.astype(bool)]))
+
         ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
 
         print('Best coral: ', REEFpob[ind_best, :])
