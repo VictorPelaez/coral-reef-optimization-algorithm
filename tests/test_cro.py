@@ -59,6 +59,11 @@ def test_reefinitializationDisc():
 
 
 def test_fitness():
+    """
+    Test that the fitness is computed correctly.
+    Check that, when the CRO's opt parameter is "max", the fitness function
+        actually computes -fitness
+    """
     fitness_coral = lambda coral: coral.sum()
     REEFpob_test = np.array([[1,1,1,1],
                              [1,0,1,1],
