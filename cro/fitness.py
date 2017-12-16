@@ -61,9 +61,9 @@ def feature_selection(coral, X, y, model,
 
 def hyperparameter_selection(coral, X, y, model, 
                       get_prediction = lambda model, X: model.predict(X),
-                      metric=roc_auc_score, random_seed=None):   
+                      metric=roc_auc_score, param=None, random_seed=None):   
     """
-    Description: Returns the fitness (given by metric) of just one hyperparam given by coral,
+    Description: Returns the fitness (given by metric) of just ONE hyperparam given by coral,
     when using Xt and yt for training the model clf
 
     Input:
@@ -82,10 +82,12 @@ def hyperparameter_selection(coral, X, y, model,
 
     Xs, ys = shuffle(X, y, random_state=random_seed)
     # check why coral is .0?
-    if coral[0]!=0: 
-        model.learning_rate = coral[0]
+    
+    if np.max(coral)!=0: 
+        model.param = np.max(coral)
     else:   
         model.learning_rate=1
+       
     #print(model)
     #Xs = np.multiply(Xs, coral) 
     
