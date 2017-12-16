@@ -58,6 +58,34 @@ def test_reefinitializationDisc():
     assert p == 0
 
 
+def test_fitness():
+    """
+    Test that the fitness is computed correctly.
+    Check that, when the CRO's opt parameter is "max", the fitness function
+        actually computes -fitness
+    """
+    fitness_coral = lambda coral: coral.sum()
+    REEFpob_test = np.array([[1,1,1,1],
+                             [1,0,1,1],
+                             [1,0,0,1],
+                             [0,1,0,0]])
+
+    cro_min = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+              fitness_coral=fitness_coral, opt='min', L=L, seed=13)
+    fitness_min_expected = np.array([4,3,2,1])
+
+    fitness_min = cro_min.fitness(REEFpob_test)
+    np.testing.assert_array_equal(fitness_min, fitness_min_expected)
+
+    # When maximizing, internally we actually minimize -fitness function
+    cro_max = CRO(Ngen=10, N=2, M=2, Fb=0.7, Fa=.1, Fd=.1, r0=.6, k=3, Pd=.1,
+              fitness_coral=fitness_coral, opt='max', L=L, seed=13)
+    fitness_max_expected = -np.array([4,3,2,1])
+
+    fitness_max = cro_max.fitness(REEFpob_test)
+    np.testing.assert_array_equal(fitness_max, fitness_max_expected)
+
+
 def test_larvaesettling_emptyreef():
     """
     """

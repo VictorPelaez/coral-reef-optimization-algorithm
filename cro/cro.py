@@ -4,6 +4,8 @@
 from __future__ import division, print_function
 import sys
 import logging
+from multiprocess import Pool, cpu_count
+
 import numpy as np
 
 from .reef_initialization import get_reefinit_function
@@ -11,7 +13,8 @@ from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke=0.2, npolyps=1, seed=None, mode='bin', mutation='ga', param_grid={}, verbose=False):
+                 ke=0.2, npolyps=1, seed=None, mode='bin', mutation='ga', n_jobs=-1,
+                 param_grid={}, verbose=False):
         
         # Set logging configuration
         logging_level = logging.INFO if verbose else logging.WARNING
@@ -38,6 +41,7 @@ class CRO(object):
         self.mode = mode
         self.mutation = mutation
         self.param_grid = param_grid
+        self.n_jobs = cpu_count() if n_jobs == -1 else max(int(n_jobs), 1) # at least 1
         self.verbose = verbose
 
         self.reefinit_function = get_reefinit_function(mode)
@@ -66,10 +70,11 @@ class CRO(object):
         Description:
             This function calculates the health function for each coral in the reef
         """
-        REEF_fitness = []
-        for coral in REEFpob:
-            coral_fitness = self.fitness_coral(coral)
-            REEF_fitness.append(coral_fitness)
+        try:
+            p = self.parallel
+        except AttributeError:
+            p = self.parallel = Pool(self.n_jobs)
+        REEF_fitness = p.map(self.fitness_coral, REEFpob)
 
         return self.opt_multiplier*np.array(REEF_fitness)
 
