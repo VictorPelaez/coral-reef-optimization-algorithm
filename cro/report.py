@@ -12,14 +12,14 @@ def plot_results(cro=None, filename=None):
     Bestfitness = cro.opt_multiplier*((cro.opt_multiplier*Fitness).min(axis=0))
 
     fig, ax = plt.subplots(figsize=(10,10))
-    ax.grid = True
+    ax.grid(True)
     ax.plot(generations, Bestfitness, "b")     
     ax.plot(generations, Meanfitness, "r--")     
     plt.xlabel('Number of generation')
     plt.xticks(generations)
     plt.xlim(-1, Ngenp1)
     
-    plt.legend(['Mean fitness' , 'Best fitness'], loc="best")
+    plt.legend(['Best fitness' , 'Mean fitness'], loc="best")
     
     if cro:
         L = cro.L
