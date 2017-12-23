@@ -32,10 +32,11 @@ if __name__ == '__main__':
 
     start = time.time()
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=True, ke=ke, npolyps=npolyps)
-    (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
+    cro.fit()
+    REEF, REEFpob, REEFfitness, ind_best, Fitness = cro.get_results()
     print("Example I: max_ones problem", time.time() - start, "seconds.")
 
-    plot_results(Bestfitness, Meanfitness, cro, filename=None)
+    plot_results(cro, filename=None)
     
     ## ------------------------------------------------------
     ## Parameters initialization
@@ -60,7 +61,8 @@ if __name__ == '__main__':
     
     start = time.time()
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, max_ones, opt, L, verbose=False, ke=ke, npolyps=npolyps, mode=mode, param_grid=grid)
-    (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit()
+    cro.fit()
+    REEF, REEFpob, REEFfitness, ind_best, Fitness = cro.get_results()
     print("Example II: max problem in a discrete interval", time.time() - start, "seconds.")
 
-    plot_results(Bestfitness, Meanfitness, cro, filename=None)
+    plot_results(cro, filename=None)

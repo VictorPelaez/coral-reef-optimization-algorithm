@@ -342,15 +342,13 @@ class CRO(object):
         self.empty_coral = REEFpob[empty_coral_index, :].copy()
         self.empty_coral_fitness = self.fitness(self.empty_coral.reshape((1, len(self.empty_coral))))[0]
         
-        Bestfitness = []
-        Meanfitness = []
+        Fitness = np.zeros((N*M, Ngen+1))
 
-        Bestfitness.append(self.opt_multiplier*np.min(REEFfitness[REEF]))
-        Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness[REEF]))
+        Fitness[:, 0] = self.opt_multiplier*REEFfitness
         logging.info('Reef initialization: %s', self.opt_multiplier*np.min(REEFfitness[REEF]))
 
 
-        for n in range(Ngen):
+        for n in range(1, Ngen+1):
             ESlarvae = self.broadcastspawning(REEF, REEFpob)
             ISlarvae = self.brooding(REEF, REEFpob)
 
@@ -371,8 +369,7 @@ class CRO(object):
                 (REEF, REEFpob, REEFfitness) = self.depredation(REEF, REEFpob, REEFfitness)    
                 (REEF, REEFpob, REEFfitness) = self.extremedepredation(REEF, REEFpob, REEFfitness, int(np.round(self.ke*N*M)))
 
-            Bestfitness.append(self.opt_multiplier*np.min(REEFfitness[REEF]))
-            Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness[REEF]))
+            Fitness[:, n] = self.opt_multiplier*REEFfitness
 
             if all([n%10 == 0, n != Ngen, verbose]):
                 logging.info('Best-fitness: %s, (%.2f%% completado)', self.opt_multiplier*np.min(REEFfitness[REEF]), n/Ngen*100)
@@ -383,5 +380,21 @@ class CRO(object):
 
         print('Best coral: ', REEFpob[ind_best, :])
         print('Best solution: ', self.opt_multiplier*REEFfitness[ind_best])
-        
-        return (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness)
+
+        self.result = {
+            "REEF": REEF,
+            "REEFpob": REEFpob, 
+            "REEFfitness": REEFfitness,
+            "ind_best": ind_best,
+            "Fitness": Fitness,
+        }
+
+    def get_results(self):
+        results = (
+            self.result["REEF"],
+            self.result["REEFpob"],
+            self.result["REEFfitness"],
+            self.result["ind_best"],
+            self.result["Fitness"]
+        )
+        return results
