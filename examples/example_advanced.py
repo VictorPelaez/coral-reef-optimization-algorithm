@@ -53,9 +53,10 @@ if __name__ == '__main__':
     
     start = time.time()
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, seed=13, verbose=True)
-    (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, clf)
+    cro.fit()
+    REEF, REEFpob, REEFfitness, ind_best, Fitness = cro.get_results()
 
-    plot_results(Bestfitness, Meanfitness, cro, filename=None)
+    plot_results(cro, filename=None)
     print("Example I: feature selection Classification (max auc): ", time.time() - start, "seconds.")
     
     names = np.array(dataset.feature_names)
@@ -94,10 +95,11 @@ if __name__ == '__main__':
                             metric=mean_squared_error)
     start = time.time()
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, seed=13, verbose=True)
-    (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, gbr)
+    cro.fit(X, y, gbr)
+    REEF, REEFpob, REEFfitness, ind_best, Fitness = cro.get_results()
     print("Example II: feature selection, regression (min mse): ", time.time() - start, "seconds.")
 
-    plot_results(Bestfitness, Meanfitness, cro, filename=None)
+    plot_results(cro, filename=None)
     
     names = np.array(['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT'])
     print(names[REEFpob[ind_best, :]>0])
