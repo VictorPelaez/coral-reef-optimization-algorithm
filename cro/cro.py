@@ -354,8 +354,7 @@ class CRO(object):
 
         for n in range(Ngen):
             ESlarvae = self.broadcastspawning(REEF, REEFpob)
-            ISlarvae = self.brooding(REEF, REEFpob, n/Ngen)
-
+            ISlarvae = self.brooding(REEF, REEFpob, float(n/Ngen))
             # larvae fitness
             ESfitness = self.fitness(ESlarvae)
             ISfitness = self.fitness(ISlarvae)
