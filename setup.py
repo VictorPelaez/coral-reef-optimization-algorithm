@@ -44,6 +44,7 @@ setup(
     
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, , !=3.5.*',
     install_requires=[
+        'matplotlib',
         'numpy>=1.13.1',
         'scikit-learn>=0.18.0',
         'scipy>=0.19.0',
