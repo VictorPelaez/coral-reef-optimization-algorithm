@@ -24,7 +24,7 @@ setup(
     version=_version,
     author='CRO Team',
     author_email='cro_developers@googlegroups.com',
-    packages= ['cro', 'examples'],
+    packages= ['cro'],
     url='https://github.com/VictorPelaez/coral-reef-optimization-algorithm',
     license = 'MIT',
     description='Coral Reef Optimization (CRO) Algorithm',
