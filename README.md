@@ -19,7 +19,7 @@ Flow diagram of the proposed CRO algorithm:
 
 <img src = 'cro/assets/flow_diagram_cro.png' height ='500px'>
 
-Publication link: [The Coral Reefs Optimization Algorithm: A Novel Metaheuristic for Efficiently Solving Optimization Problems](https://www.researchgate.net/publication/264985908_The_Coral_Reefs_Optimization_Algorithm_A_Novel_Metaheuristic_for_Efficiently_Solving_Optimization_Problems)
+Publication link: [The Coral Reefs Optimization Algorithm: A Novel Metaheuristic for Efficiently Solving Optimization Problems](https://www.hindawi.com/journals/tswj/2014/739768/)
 
 CRO includes the following features:
 
