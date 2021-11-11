@@ -3,7 +3,7 @@ from inspect import getmembers, isfunction
 
 import pandas as pd
 import numpy as np
-from sklearn import datasets
+from sklearn.utils import Bunch
 
 # https://www.kaggle.com/adhok93/feature-importance-and-pca
 
@@ -21,7 +21,7 @@ def load_data(name):
     X = np.c_[np.array(data[feature_cols]), random_state.randn(data.shape[0], noisy_features)]
     feature_cols = feature_cols + noisy_features*['noise']
     
-    dataset = datasets.base.Bunch(data= X, target=np.array(data.label), feature_names=feature_cols)
+    dataset = Bunch(data= X, target=np.array(data.label), feature_names=feature_cols)
     return dataset
 
 def get_module_functions(module_name):
