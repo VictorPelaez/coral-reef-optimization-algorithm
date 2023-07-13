@@ -375,9 +375,9 @@ class CRO(object):
             Meanfitness.append(self.opt_multiplier*np.mean(REEFfitness))
 
             if all([n%10 == 0, n != Ngen, verbose]):
-                logging.info('Best-fitness: %s, (%.2f%% completado)', self.opt_multiplier*np.min(REEFfitness), n/Ngen*100)
+                logging.info('Best-fitness: %s, (%.2f%% complete)', self.opt_multiplier*np.min(REEFfitness), n/Ngen*100)
 
-        logging.info('Best-fitness: %s. (100%% completado)', self.opt_multiplier*np.min(REEFfitness))
+        logging.info('Best-fitness: %s. (100%% complete)', self.opt_multiplier*np.min(REEFfitness))
         ind_best = np.where(REEFfitness == np.min(REEFfitness))[0][0]
 
         print('Best coral: ', REEFpob[ind_best, :])
