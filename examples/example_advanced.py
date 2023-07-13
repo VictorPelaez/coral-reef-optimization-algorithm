@@ -78,26 +78,3 @@ if __name__ == '__main__':
     k  = 3                     # Number of opportunities for a new coral to settle in the reef
     Pd = 0.1                   # Depredation prob.
     opt= 'min'                 # flag: 'max' for maximizing and 'min' for minimizing
-    
-    ## ------------------------------------------------------
-    
-    dataset = datasets.load_boston()
-    L = dataset.data.shape[1] # number of features
-    X = dataset.data
-    y = dataset.target
-    
-    params = {'n_estimators': 60, 'max_depth': 4, 'min_samples_split': 2}
-    gbr = ensemble.GradientBoostingRegressor(**params)  
-    
-    fitness_coral = partial(feature_selection, X=X, y=y, model=gbr,
-                            get_prediction=lambda gbr, X: gbr.predict(X), 
-                            metric=mean_squared_error)
-    start = time.time()
-    cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, seed=13, verbose=True)
-    (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, gbr)
-    print("Example II: feature selection, regression (min mse): ", time.time() - start, "seconds.")
-
-    plot_results(Bestfitness, Meanfitness, cro, filename=None)
-    
-    names = np.array(['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT'])
-    print(names[REEFpob[ind_best, :]>0])
