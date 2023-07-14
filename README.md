@@ -1,5 +1,4 @@
 [![pypi](https://img.shields.io/pypi/v/cro.svg)](https://pypi.python.org/pypi/cro)
-[![Travis](https://secure.travis-ci.org/VictorPelaez/coral-reef-optimization-algorithm.png)](http://travis-ci.org/VictorPelaez/coral-reef-optimization-algorithm)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/cro.svg)](https://pypi.python.org/pypi/cro/)
 
 # coral-reef-optimization-algorithm
