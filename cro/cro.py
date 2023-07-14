@@ -13,8 +13,8 @@ from .larvaemutation import get_larvaemutation_function
 
 class CRO(object):
     def __init__(self, Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L=None,
-                 ke=0.2, npolyps=1, seed=None, mode='bin', param_grid={}, n_jobs=-1,
-                 verbose=False):
+                 ke=0.2, npolyps=1, seed=None, mode='bin', mutation='ga', n_jobs=-1,
+                 param_grid={}, verbose=False):
         
         # Set logging configuration
         logging_level = logging.INFO if verbose else logging.WARNING
@@ -39,6 +39,7 @@ class CRO(object):
         self.npolyps = npolyps
         self.seed = seed
         self.mode = mode
+        self.mutation = mutation
         self.param_grid = param_grid
         self.n_jobs = cpu_count() if n_jobs == -1 else max(int(n_jobs), 1) # at least 1
         self.verbose = verbose
@@ -122,13 +123,14 @@ class CRO(object):
         ESlarvae = np.concatenate([ESlarvae1, ESlarvae2])
         return ESlarvae
 
-    def brooding(self, REEF, REEFpob):
+    def brooding(self, REEF, REEFpob, pNgen):
         """
         Description:
             Create new larvae by internal sexual reproduction   
         Input:
             - REEF: coral reef
             - REEFpob: reef population 
+            - pNgen: generation rate (n/Ngen)
             - self.npolyps: number of polyps to be mutated (as genes in a evolutionary). 
                             Coral reefs are therefore created by millions of tiny polyps forming large carbonate structures  
             - self.Fb: fraction of broadcast spawners with respect to the overall amount of existing corals 
@@ -151,8 +153,8 @@ class CRO(object):
                 
         pos = np.random.randint(brooders.shape[1], size=(npolyps, nbrooders))
         
-        brooders = self.larvaemutation_function(brooders, pos, delta=1,
-                                                param_grid=self.param_grid, seed=self.seed)
+        brooders = self.larvaemutation_function(brooders, pos, pNgen=pNgen, delta=1,
+                                                param_grid=self.param_grid, seed=self.seed, mutation=self.mutation)
                                      
         return brooders
    
@@ -352,8 +354,7 @@ class CRO(object):
 
         for n in range(Ngen):
             ESlarvae = self.broadcastspawning(REEF, REEFpob)
-            ISlarvae = self.brooding(REEF, REEFpob)
-
+            ISlarvae = self.brooding(REEF, REEFpob, float(n/Ngen))
             # larvae fitness
             ESfitness = self.fitness(ESlarvae)
             ISfitness = self.fitness(ISlarvae)

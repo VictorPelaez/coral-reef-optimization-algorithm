@@ -174,7 +174,7 @@ def test_brooding():
                        [0, 0, 0, 0, 1, 1, 1, 1]])
         
     REEF = np.array((REEFpob.any(axis=1)),int)
-    brooders = cro_bin.brooding(REEF, REEFpob)
+    brooders = cro_bin.brooding(REEF, REEFpob, pNgen=1)
     np.testing.assert_almost_equal(brooders, np.array([[1, 0, 0, 0, 1, 1, 1, 1]]))
     
     
