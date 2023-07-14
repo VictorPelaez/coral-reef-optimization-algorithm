@@ -48,7 +48,8 @@ setup(
         'numpy>=1.13.1',
         'scikit-learn>=0.18.0',
         'scipy>=0.19.0',
-        'pandas>=0.20.3'
+        'pandas>=0.20.3',
+        'multiprocess',
     ]
 )
 
