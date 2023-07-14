@@ -9,7 +9,7 @@ from sklearn.utils import Bunch
 
 def load_data(name):
     # csv file
-    data = pd.read_csv('../cro/assets/data/' + name + '.csv')
+    data = pd.read_csv('cro/assets/data/' + name + '.csv')
     if name=='voice':
         data['label'] = data.label.apply(lambda x: 1 if x=='female' else 0) #one means female class
          
