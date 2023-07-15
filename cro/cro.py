@@ -46,7 +46,6 @@ class CRO(object):
         self.reefinit_function = get_reefinit_function(mode)
         self.larvaemutation_function = get_larvaemutation_function(mode)
         logging.info("Running Initialization: %s", self.opt) 
-        logging.info("Parallel jobs: %d", self.n_jobs)
         
     def reefinitialization (self):   
         """    
