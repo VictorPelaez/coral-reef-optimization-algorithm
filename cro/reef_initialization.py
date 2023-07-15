@@ -31,7 +31,7 @@ def bin_binary(M, N, r0, L, **kwargs):
     A = np.random.randint(2, size=[O, L])
     B = np.zeros([((N*M)-O), L], int)          
     REEFpob = np.concatenate([A, B]) # Population creation
-    REEF = np.array((REEFpob.any(axis=1)),int) 
+    REEF = np.array((REEFpob.any(axis=1)),bool) 
     return (REEF, REEFpob)
 
 def disc_equal_range(M, N, r0, L, **kwargs):
@@ -59,7 +59,7 @@ def disc_equal_range(M, N, r0, L, **kwargs):
         A = np.random.randint(valmax, size=[O, L]) + value[0]
         B = np.zeros([((N*M)-O), L], int)
         REEFpob = np.concatenate([A,B]) # Population creation
-        REEF = np.array((REEFpob.any(axis=1)),int)  
+        REEF = np.array((REEFpob.any(axis=1)),bool)  
         return (REEF, REEFpob)
 
 """""
