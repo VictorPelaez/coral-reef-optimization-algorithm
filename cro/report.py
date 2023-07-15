@@ -1,18 +1,25 @@
+import numpy as np
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
 
-def plot_results(Bestfitness, Meanfitness, cro=None, filename=None):
-    Ngen = len(Bestfitness) - 1
-    ngen = range(Ngen+1)  
+def plot_results(cro=None, filename=None):
+    Fitness = cro.result["Fitness"]
+
+    _, Ngenp1 = Fitness.shape # Ngen + 1
+    Ngen = Ngenp1 - 1
+    generations = np.arange(0, Ngenp1)
+    Meanfitness = Fitness.mean(axis=0)
+    Bestfitness = cro.opt_multiplier*((cro.opt_multiplier*Fitness).min(axis=0))
+
     fig, ax = plt.subplots(figsize=(10,10))
     ax.grid(True)
-    ax.plot(ngen, Bestfitness, 'b')     
-    ax.plot(ngen, Meanfitness, 'r--')           
+    ax.plot(generations, Bestfitness, "b")     
+    ax.plot(generations, Meanfitness, "r--")     
     plt.xlabel('Number of generation')
-    plt.xticks(ngen)
-    plt.xlim(-1, Ngen+1)
-    
-    plt.legend(['Best fitness', 'Mean fitness'], loc="best")
+    plt.xticks(generations)
+    plt.xlim(-1, Ngenp1)
+
+    plt.legend(['Best fitness' , 'Mean fitness'], loc="best")
     
     if cro:
         L = cro.L
@@ -34,8 +41,9 @@ def plot_results(Bestfitness, Meanfitness, cro=None, filename=None):
 
         plt.title(titlepro+'\n'+ titlepar)
     
-    ax.scatter(Ngen, Bestfitness[-1], c='b')
-    ax.annotate('Best: ' + str(Bestfitness[-1]) , (1.01*Ngen, 1.01*Bestfitness[-1]))
+    best_fitness = cro.opt_multiplier*((cro.opt_multiplier*Fitness[:, -1]).min())
+    ax.scatter(Ngen, best_fitness, c='b')
+    ax.annotate('Best: ' + str(best_fitness) , (1.01*Ngen, 1.01*best_fitness))
     
     if filename:
         fig.savefig(filename)

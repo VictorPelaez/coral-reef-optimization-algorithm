@@ -1,0 +1,4 @@
+wheel
+twine
+urllib3==1.26.6 
+pytest>=3.3.1

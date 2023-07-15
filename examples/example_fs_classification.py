@@ -11,8 +11,7 @@ from cro.report import plot_results
 import time
 from functools import partial
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import roc_auc_score, mean_squared_error
-from sklearn import datasets, ensemble
+from sklearn.metrics import roc_auc_score
 import numpy as np
 
 if __name__ == '__main__':
@@ -53,28 +52,13 @@ if __name__ == '__main__':
     
     start = time.time()
     cro = CRO(Ngen, N, M, Fb, Fa, Fd, r0, k, Pd, fitness_coral, opt, L, seed=13, verbose=True)
-    (REEF, REEFpob, REEFfitness, ind_best, Bestfitness, Meanfitness) = cro.fit(X, y, clf)
+    cro.fit()
+    REEF, REEFpob, REEFfitness, ind_best, Fitness = cro.get_results()
 
-    plot_results(Bestfitness, Meanfitness, cro, filename=None)
+    plot_results(cro, filename=None)
     print("Example I: feature selection Classification (max auc): ", time.time() - start, "seconds.")
     
     names = np.array(dataset.feature_names)
     print(names[REEFpob[ind_best, :]>0])
     
-    """
-    Example II: feature selection, regression (min mse) 
-    """
     
-    ## ------------------------------------------------------
-    ## Parameters initialization
-    ## ------------------------------------------------------
-    Ngen = 25                  # Number of generations
-    N  = 10                    # MxN: reef size
-    M  = 10                    # MxN: reef size
-    Fb = 0.8                   # Broadcast prob.
-    Fa = 0.2                   # Asexual reproduction prob.
-    Fd = 0.1                   # Fraction of the corals to be eliminated in the depredation operator.
-    r0 = 0.7                   # Free/total initial proportion
-    k  = 3                     # Number of opportunities for a new coral to settle in the reef
-    Pd = 0.1                   # Depredation prob.
-    opt= 'min'                 # flag: 'max' for maximizing and 'min' for minimizing
