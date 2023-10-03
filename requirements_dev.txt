@@ -1,4 +1,4 @@
 wheel
 twine
-urllib3==1.26.6 
+urllib3==1.26.17 
 pytest>=3.3.1
